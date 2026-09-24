@@ -1,11 +1,12 @@
 {
   inputs = {
     # 将官方 github:NixOS/nixpkgs 替换为清华镜像
-    # nixpkgs.url = "git+https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git?ref=nixos-unstable";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    my-rules.url = "github:e3e0261f/GEoIP-GEoSITE";
-    emacs-overlay.url = "github:nix-community/emacs-overlay";
-    my-rules.flake = false;
+    # nixpkgs.url = "git+https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    # my-rules.url = "github:e3e0261f/GEoIP-GEoSITE";
+    # emacs-overlay.url = "github:nix-community/emacs-overlay";
+    # my-rules.flake = false;
 
     caelestia-cli = {
       url = "github:caelestia-dots/cli";

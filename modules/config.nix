@@ -45,16 +45,16 @@
       # ./emacs.nix
     ];
 
-  nix.settings.substituters = [
-    # CHina mirrors
-    "https://mirrors.ustc.edu.cn/nix-channels/store"
-    "https://mirror.sjtu.edu.cn/nix-channels/store"
+  # nix.settings.substituters = [
+  #   # CHina mirrors
+  #   # "https://mirrors.ustc.edu.cn/nix-channels/store"
+  #   # "https://mirror.sjtu.edu.cn/nix-channels/store"
 
-    # nixos mirros
-    "https://cache.nixos.org/"
-  ];
+  #   # nixos mirros
+  #   "https://cache.nixos.org/"
+  # ];
   # oOPen FLack on my nixos
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # nix.settings.experimental-features = [ "nix-command" "flakes" ];
     
   # UEfi token install error
   boot.loader.systemd-boot.graceful = true;

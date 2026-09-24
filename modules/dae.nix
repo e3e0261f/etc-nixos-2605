@@ -62,11 +62,18 @@
       # =======================================================
       group {
           # 1. 大流量省錢池：排除 4倍、6倍、公告、香港
-          for146 {
+          for1 {
               # policy: min_moving_avg
               policy: random
               # policy: fixed(2)
               filter: subtag(my_sub) && !name(regex: '4倍|6倍|剩余|到期')
+          }
+
+          for146 {
+              # policy: min_moving_avg
+              policy: random
+              # policy: fixed(2)
+              filter: subtag(my_sub) && !name(regex: '剩余|到期')
           }
 
           # 2. Google AI 專用池：排除 HK、廣州、4倍、6倍與公告
@@ -102,10 +109,10 @@
           # 1. 阿爾比恩全流量直連放行（交給路由器 UU 加速器專線處理！）
           pname(Albion-Online, Albion-Online.bin, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
-          domain(suffix: githubusercontent.com) -> for146
+          domain(suffix: githubusercontent.com) -> for1
 
           pname(gix, aria2c, steam) -> direct(must)
-          pname(nix-daemon) -> for146
+          pname(nix-daemon) -> for1
 
           # 3. 國內 DNS (阿里) 與核心防回環
           dip(223.5.5.5, 223.6.6.6) -> direct(must)
@@ -125,6 +132,8 @@
           domain(suffix: mi.com) -> direct(must)
           domain(suffix: z.luxury) -> direct
           domain(suffix: rockey-repo.org) -> direct
+          domain(suffix: ustc.edu.cn) -> direct
+          domain(suffix: sjtu.edu.cn) -> direct
           
 
           # ⭐️【第 3 級】：Google AI 與相關服務（修正語法，拿掉錯誤的 must）
@@ -139,21 +148,21 @@
 
           # ⭐️ Add Git routing here:
           # Route Git process traffic and common code-hosting domains to your proxy pool
-          pname(git) -> for146
-          domain(suffix: github.com) -> for146
-          domain(suffix: gitlab.com) -> for146
-          domain(suffix: gitee.com) -> for146 # If you use Gitee, or keep it direct/fallback
+          pname(git) -> for1
+          domain(suffix: github.com) -> for1
+          domain(suffix: gitlab.com) -> for1
+          domain(suffix: gitee.com) -> for1 # If you use Gitee, or keep it direct/fallback
 
 
           # ⭐️【第 5 級】：阻斷普通網站的 QUIC (UDP 443) 享受 TCP 代理加速
-          l4proto(udp) && dport(443) -> block
+          # l4proto(udp) && dport(443) -> block
 
           # Mega.nz 專用高速通道
-          domain(suffix: mega.nz) -> for146
-          pname(discord) -> for146
+          domain(suffix: mega.nz) -> for1
+          pname(discord) -> for1
 
-          # ⭐️【終極兜底】：預設走 1倍 for146 省錢池！（非常明智的改動！）
-          fallback: for146
+          # ⭐️【終極兜底】：預設走 1倍 for1 省錢池！（非常明智的改動！）
+          fallback: for1
       }
     '';
   };
