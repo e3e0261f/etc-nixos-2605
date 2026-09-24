@@ -39,7 +39,7 @@
       echo "🧪 正在執行安全測試 (nixos-rebuild test)..."
       cd /etc/nixos
       git add -A
-      if sudo nixos-rebuild test; then
+      if sudo nixos-rebuild test --flake .#nixos; then
           echo "✅ 測試成功！目前效果已臨時生效。"
           
           # 核心平滑邏輯：重啟單一 Waybar 實例
@@ -114,7 +114,7 @@
       git add .
       echo "正在執行正式構建 (nixos-rebuild switch)..."
       
-      if sudo nixos-rebuild switch; then
+      if sudo nixos-rebuild switch --flake .#nixos; then
         echo "✅ 構建並生成新世代成功！"
         
         systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
@@ -164,7 +164,7 @@
       git reset --hard origin/main
 
       echo "🚀 同步完成！準備執行系統構建..."
-      if sudo nixos-rebuild switch; then
+      if sudo nixos-rebuild switch --flake .#nixos; then
           systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
           # pkill -9 waybar 2>/dev/null
           # systemctl --user restart waybar.service 2>/dev/null || hyprctl dispatch exec waybar

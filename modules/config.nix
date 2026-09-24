@@ -10,7 +10,6 @@
     dae
     fish
     kitty
-    # google-chrome
   ];
   imports =
     [ # Include the results of the hardware scan.
@@ -60,7 +59,7 @@
   };
 
   # oOPen FLack on my nixos
-  # nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # UEfi token install error
   boot.loader.systemd-boot.graceful = true;
