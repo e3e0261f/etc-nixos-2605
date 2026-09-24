@@ -1,8 +1,11 @@
 { pkgs, ... }:
 
 {
+  programs.helix = {
+    enable = true;
+
     # 外部 CLI 工具依賴
-    environment.systemPackages = with pkgs; [
+    extraPackages = with pkgs; [
       ripgrep       # 全域搜尋 (Space + /)
       fd            # 快速檔案搜尋 (Space + f)
       wl-clipboard  # Wayland 系統剪貼簿
@@ -18,8 +21,6 @@
 
     ];
 
-  programs.helix = {
-    enable = true;
     settings = {
       theme = "tokyonight";
 

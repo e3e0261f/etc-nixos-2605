@@ -114,14 +114,13 @@ let
   '';
 in
 {
-  # 1. 改用純 NixOS 的系統套件安裝
-  environment.systemPackages = [
+   home.packages = [
     copyfile
     pkgs.libnotify
     pkgs.wl-clipboard
   ];
 
-  # 2. NixOS 原生支援 programs.fish 設定，可以直接這樣寫
+  # ⭐️ 為 Fish 提供絲滑的自動補全
   programs.fish.interactiveShellInit = ''
     complete -c copyfile -s t -l txt -d "自動追加 .txt 並複製 (Apple 懶人模式)"
     complete -c copyfile -s h -l help -d "顯示幫助訊息"

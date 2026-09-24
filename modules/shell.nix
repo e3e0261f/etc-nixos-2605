@@ -44,7 +44,6 @@
       # 🛠️ 5. 其他極客日常縮寫
       top   = "btop";
       gcd   = "git clone --depth 1";
-      nu    = "nushell";
       helix = "hx";
       al    = "a -l";
       aa    = "a -a";
@@ -119,9 +118,6 @@
     '';
   };
 
-  # 2. ⭐️ Nushell 支援
-  programs.nushell.enable = true;
-
   # 3. ⭐️ 智能目錄跳躍 zoxide (z 命令)
   programs.zoxide = {
     enable = true;
@@ -129,10 +125,10 @@
   };
 
   # 4. ⭐️ 模糊搜索 FZF
-  programs.fzf = {
-    enable = true;
-    enableZshIntegration = true;
-  };
+  # programs.fzf = {
+  #   enable = true;
+  #   enableZshIntegration = true;
+  # };
 
   # 5. ⭐️ 跨終端極速提示符 Starship
   programs.starship = {

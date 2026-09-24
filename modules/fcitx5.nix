@@ -7,7 +7,7 @@ let
     owner = "e3e0261f";
     repo = "NIxos-RIme-GRam";
     rev = "main";
-    hash = "sha256-qnRjiSr2ekC6S8V/y/MfNrkohM/4yEMEnS/90P/auk4=";
+    hash = "sha256-A3CY9wwMEKmaaNWFKTEQGT9nS6CUnrnwFaxKaRn4mJs=";
   };
 in
 {

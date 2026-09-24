@@ -132,8 +132,7 @@
           domain(suffix: mi.com) -> direct(must)
           domain(suffix: z.luxury) -> direct
           domain(suffix: rockey-repo.org) -> direct
-          domain(suffix: ustc.edu.cn) -> direct
-          domain(suffix: sjtu.edu.cn) -> direct
+          domain(suffix: edu.cn) -> direct(must)
           
 
           # ⭐️【第 3 級】：Google AI 與相關服務（修正語法，拿掉錯誤的 must）
