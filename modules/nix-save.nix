@@ -134,7 +134,7 @@
             if git push; then
                 echo "🎉 全部完成！已同步至 GitHub。"
             else
-                echo "❌ Git 推送失敗，請檢查 SSH 443 埠連線！"
+                echo "❌ Git 推送失敗！"
                 exit 1
             fi
         else
