@@ -19,17 +19,23 @@
     '';
   };
 
+  
+
   # 2. default.lua 入口
   xdg.configFile."MYHYprLUa/default.lua".text = ''
-    require("window_rules")
+    hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
+    hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
+    hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
+    hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
+    require("AUTOSTART")
     require("bindings")
     require("MONITORS")
-    require("AUTOSTART")
     require("ENVIRONMENT")
     require("LOOKANDFEEL")
     require("MISC")
     require("INPUT")
     require("WINDOWSANDWORKSPACES")
+    require("window_rules")
   '';
 
   # =======================================================
@@ -117,7 +123,7 @@
     hl.bind(mainMod .. " + CTRL + SHIFT + R", hl.dsp.exec_cmd("record-screen fullscreen"))
 
     -- 基礎操作
-    hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
+    hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
     hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))

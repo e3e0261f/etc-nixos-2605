@@ -47,12 +47,14 @@
       # =======================================================
       dns {
         upstream {
-          cf_doh3_domains: 'https://cloudflare-dns.com/dns-query'
+          cf_doh3: 'https://cloudflare-dns.com/dns-query'
           ali_h3: 'h3://223.5.5.5:443/dns-query'
+          googledns: 'tcp+udp://8.8.8.8:53'
+          alidns: 'udp://dns.alidns.com:53'
         }
         routing {
           request {
-            fallback: ali_h3
+            fallback: googledns
           }
         }
       }
@@ -63,15 +65,15 @@
       group {
           # 1. 大流量省錢池：排除 4倍、6倍、公告、香港
           for1 {
-              # policy: min_moving_avg
-              policy: random
+              policy: min_moving_avg
+              # policy: random
               # policy: fixed(2)
               filter: subtag(my_sub) && !name(regex: '4倍|6倍|剩余|到期')
           }
 
           for146 {
-              # policy: min_moving_avg
-              policy: random
+              policy: min_moving_avg
+              # policy: random
               # policy: fixed(2)
               filter: subtag(my_sub) && !name(regex: '剩余|到期')
           }
@@ -109,10 +111,11 @@
           # 1. 阿爾比恩全流量直連放行（交給路由器 UU 加速器專線處理！）
           pname(Albion-Online, Albion-Online.bin, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
-          domain(suffix: githubusercontent.com) -> for1
+
+          # 1. ⭐ 內網 / 區域網路 / 本機 IP 直連（純 CIDR，不使用 geoip）
+          dip(127.0.0.0/8, 192.168.0.0/16) -> direct
 
           pname(gix, aria2c, steam) -> direct(must)
-          pname(nix-daemon) -> for1
 
           # 3. 國內 DNS (阿里) 與核心防回環
           dip(223.5.5.5, 223.6.6.6) -> direct(must)
@@ -139,6 +142,9 @@
           domain(suffix: aistudio.google.com) -> google_ai
           domain(suffix: google.dev) -> google_ai
           domain(suffix: ai.google.dev) -> google_ai
+          domain(suffix: gstatic.com) -> google_ai
+          domain(suffix: googleapis.com) -> google_ai
+          domain(suffix: googleusercontent.com) -> google_ai
           domain(suffix: gemini.google.com) -> google_ai
           domain(suffix: makersuite.google.com) -> google_ai
           domain(suffix: alkalimakersuite.googleapis.com) -> google_ai
@@ -151,6 +157,9 @@
           domain(suffix: github) -> for1
           domain(suffix: gitlab) -> for1
           domain(suffix: gitee) -> for1 # If you use Gitee, or keep it direct/fallback
+          domain(suffix: google-chrome) -> for1 
+          domain(suffix: githubusercontent.com) -> for1
+          pname(nix-daemon, nix, curl, wget) -> for1
 
 
           # ⭐️【第 5 級】：阻斷普通網站的 QUIC (UDP 443) 享受 TCP 代理加速

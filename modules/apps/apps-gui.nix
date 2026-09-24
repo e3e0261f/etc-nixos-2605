@@ -28,7 +28,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    # google-chrome       # 或 chromium
+    google-chrome
     # spotify
     discord
     keepassxc
