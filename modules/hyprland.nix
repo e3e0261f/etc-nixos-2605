@@ -340,7 +340,7 @@
         -- 1（最常用 ⭐️）：滑鼠移到哪裡，焦點就自動切換到哪個視窗（懸停即激活）。
         -- 2：分離模式（鍵盤焦點與滑鼠焦點分離，點擊才鎖定鍵盤輸入）。
         -- 3：完全點擊模式。
-        follow_mouse = 2,
+        follow_mouse = 1,
         sensitivity = 0,
         touchpad = { natural_scroll = false },
       },
