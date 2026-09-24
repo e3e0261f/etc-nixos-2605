@@ -143,7 +143,7 @@
       user.name = "Rhys";
       user.email = "e3e0261f@pm.me";
       user.signingkey = "31C81A9DE1AB870A8EDC3486D7C2DF9FA0283056";
-      commit.gpgsign = true;
+      commit.gpgsign = false;
       init.defaultBranch = "main";
     };
   };
