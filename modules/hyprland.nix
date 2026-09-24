@@ -23,6 +23,8 @@
 
   # 2. default.lua 入口
   xdg.configFile."MYHYprLUa/default.lua".text = ''
+    -- 定義全域核心變數（供所有子模組共用）
+    mainMod     = "SUPER"
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown"))
@@ -86,12 +88,11 @@
   # 2. 快捷鍵模組
   # =======================================================
   xdg.configFile."MYHYprLUa/bindings.lua".text = ''
-    local terminal    = "kitty"
-    -- ⭐️ 改為呼叫專屬 class，按 Super+E 時精準觸發 75% 置中懸浮 Yazi！
-    local fileManager = "nemo"
-    local menu        = "caelestia shell drawers toggle launcher"
-    local mainMod     = "SUPER"
-    
+    -- 定義全域核心變數（供所有子模組共用）
+    mainMod     = "SUPER"
+    terminal    = "kitty"
+    fileManager = "nemo"
+    menu        = "caelestia shell drawers toggle launcher"    
     -- =======================================================
     -- ⭐️ 官方原生：Alt + Tab 切換視窗並置頂層級 (誰在前誰在後)
     -- =======================================================
