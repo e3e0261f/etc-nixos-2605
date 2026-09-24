@@ -30,7 +30,7 @@
 
       if [ -f ~/.config/hypr/hyprland.lua ]; then
           echo "🔍 正在進行 Lua 語法安全檢查..."
-          if ! luajit -bl ~/.config/hypr/hyprland.lua >/dev/null; then
+          if ! Hyprland --verify-config; then
               echo "❌ 警告：~/.config/hypr/hyprland.lua 存在語法錯誤！"
               exit 1
           fi
