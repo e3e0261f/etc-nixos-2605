@@ -46,12 +46,18 @@
       # ./shell.nix
       # ./emacs.nix
     ];
+
+  nix.settings.substituters = [
+    "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+    "https://mirrors.ustc.edu.cn/nix-channels/store"
+    "https://mirror.sjtu.edu.cn/nix-channels/store"
+  ];
     
   # HYprland 
-  # programs.hyprland = {
-  #   enable = true;
-  #   # xwayland.enable = true; # 如果你需要執行舊的 X11 軟體，請開啟此項
-  # };
+  programs.hyprland = {
+    enable = true;
+    # xwayland.enable = true; # 如果你需要執行舊的 X11 軟體，請開啟此項
+  };
 
   # oOPen FLack on my nixos
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
