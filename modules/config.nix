@@ -1,4 +1,6 @@
 # /etc/nixos/modules/dev.nix
+# git clone https://gist.github.com/e3e0261f/951488c7b640b599b33c1aec6bc4399b
+# git clone https://github.com/e3e0261f/etc-nixos-2605.git
 { pkgs, ... }:
 
 {
@@ -44,18 +46,16 @@
       # ./shell.nix
       # ./emacs.nix
     ];
+    
+  # HYprland 
+  # programs.hyprland = {
+  #   enable = true;
+  #   # xwayland.enable = true; # 如果你需要執行舊的 X11 軟體，請開啟此項
+  # };
 
-  # nix.settings.substituters = [
-  #   # CHina mirrors
-  #   # "https://mirrors.ustc.edu.cn/nix-channels/store"
-  #   # "https://mirror.sjtu.edu.cn/nix-channels/store"
-
-  #   # nixos mirros
-  #   "https://cache.nixos.org/"
-  # ];
   # oOPen FLack on my nixos
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
-    
+
   # UEfi token install error
   boot.loader.systemd-boot.graceful = true;
   # TAgs for start list

@@ -52,7 +52,7 @@
         }
         routing {
           request {
-            fallback: cf_doh3_domains
+            fallback: ali_h3
           }
         }
       }
@@ -149,9 +149,9 @@
           # ⭐️ Add Git routing here:
           # Route Git process traffic and common code-hosting domains to your proxy pool
           pname(git) -> for1
-          domain(suffix: github.com) -> for1
-          domain(suffix: gitlab.com) -> for1
-          domain(suffix: gitee.com) -> for1 # If you use Gitee, or keep it direct/fallback
+          domain(suffix: github) -> for1
+          domain(suffix: gitlab) -> for1
+          domain(suffix: gitee) -> for1 # If you use Gitee, or keep it direct/fallback
 
 
           # ⭐️【第 5 級】：阻斷普通網站的 QUIC (UDP 443) 享受 TCP 代理加速
