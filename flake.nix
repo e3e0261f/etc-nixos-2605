@@ -10,6 +10,11 @@
     # emacs-overlay.url = "github:nix-community/emacs-overlay";
     # my-rules.flake = false;
 
+    a-cli = {
+      url = "github:e3e0261f/a";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
     caelestia-cli = {
       url = "github:caelestia-dots/cli";
       inputs.nixpkgs.follows = "nixpkgs";
