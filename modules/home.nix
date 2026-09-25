@@ -3,26 +3,41 @@
 {
   # 🎯 這裡成了唯一的「插線板 / 總路由」
   imports = [
-    ./hyprland.nix
-    #./waybar.nix
-    ./openmega.nix
-    ./kitty.nix
-    ./tools.nix
-    ./helix.nix
-    ./git.nix
-    ./fcitx5.nix
-    ./mako.nix
-    ./fuzzel.nix
-    ./scripts.nix
-    ./copyfile.nix
-    ./yazi.nix
-    ./alarm.nix
-    ./wall-random.nix
-    ./defaults.nix   # ⭐️ 預設軟體設定 (Chrome, Nemo, Helix)
-    ./dev.nix        # ⭐️ Rust + JS 主力開發環境
-    ./rhys.nix
-    ./shell.nix
-    # ./emacs.nix
+        # -----------------------------------------------------------------------
+    # 🖥️ 1. 桌面環境、外觀與視窗管理 (Hyprland / Shell)
+    # -----------------------------------------------------------------------
+    ./hyprland.nix      # 🪟 Hyprland 核心設定 (平鋪規則、動畫、毛玻璃、Caelestia drawers 快捷鍵)
+    #./waybar.nix       # 📊 [歷史備用] 原版 3D 水晶毛玻璃狀態列 (目前已由 Caelestia Shell 接管)
+    ./wall-random.nix   # 🖼️ 桌布輪播引擎 (Wallhaven 隨機抽 2K/4K 桌布盲盒，60FPS 轉場特效)
+    ./mako.nix          # 🔔 輕量級桌面通知守護進程 (Mako Notification Daemon)
+    ./fuzzel.nix        # 🔍 輕量 Wayland 應用程式搜尋與啟動器 (Fuzzel dmenu/rofi 替代品)
+
+    # -----------------------------------------------------------------------
+    # ⌨️ 2. 輸入法、終端機與主力編輯器 (Terminal & Productivity)
+    # -----------------------------------------------------------------------
+    ./fcitx5.nix        # ⌨️ Fcitx5 輸入法 (Rime 中州韻 + 小鶴雙拼 + 四葉草詞庫 + 八股文語意模型)
+    ./kitty.nix         # 🐱 Kitty GPU 加速終端機 (JetBrainsMono 字體、透明背景、按鍵穿透)
+    ./helix.nix         # 🧬 Helix 現代模態編輯器 (Space+w 存檔 | Space+Space 搜檔 | LSP 自動補全)
+    ./yazi.nix          # 📁 Yazi 終端檔案管理器 (g D 一秒跳 ~/DOwn，Enter 直連 Helix，極速預覽)
+    ./defaults.nix      # 🌐 全域預設應用程式關聯 (預設 Chrome、檔案管理 Nemo、播放器 VLC)
+
+    # -----------------------------------------------------------------------
+    # 🛠️ 3. 程式開發、版本控制與常用工具 (Dev & CLI Tools)
+    # -----------------------------------------------------------------------
+    ./dev.nix           # 🦀 核心開發鏈 (Rust/Cargo + Node.js 22/pnpm/Bun/Biome 雙主力環境)
+    ./git.nix           # 🐙 Git 版本控制 (全域郵箱、使用者名稱、Delta 語法高亮、簽名配置)
+    ./tools.nix         # 🧰 系統常用 CLI 瑞士軍刀小工具 (ripgrep, fd, bat, eza, fzf 等)
+    ./shell.nix         # 🐟 Fish Shell 設定 (命令別名 alias、自訂環境變數、終端行為優化)
+    # ./emacs.nix       # 🦄 [已停用備份] Emacs 編輯器設定
+
+    # -----------------------------------------------------------------------
+    # 🚀 4. 自製極客腳本、生活智慧與系統百科 (Custom Hacks & Tools)
+    # -----------------------------------------------------------------------
+    ./rhys.nix          # 📖 專屬全系統極客百科 (rhys -h 查快捷鍵 | rhys -t 工具箱 | rhys -r 斷網救急)
+    ./scripts.nix       # 📸 自訂快速指令集 (Super+Ctrl+S 凍結截圖、record-screen 錄影、即時翻譯)
+    ./copyfile.nix      # 📋 CLI 複製實體檔案進 Wayland 剪貼簿 (支援改名複製，可在瀏覽器/Dolphin直接貼上)
+    ./alarm.nix         # ⏰ 智慧定時鬧鐘與紀念日 (remind 指令預約 + 內建 17KB 6kg.xm 晶片音樂)
+    ./openmega.nix      # ☁️ MEGA 網盤雲端同步與專屬下載加速工具
   ];
 
   home.sessionVariables = {

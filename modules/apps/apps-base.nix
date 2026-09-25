@@ -2,13 +2,6 @@
 { pkgs, ... }:
 
 {
-
-
-
-
-
-
-  
   environment.systemPackages = with pkgs; [
     (discord.override {
       withOpenASAR = true;
@@ -41,5 +34,11 @@
     kdePackages.ark kdePackages.dolphin kdePackages.kservice
     easyeffects pavucontrol qpwgraph crosspipe
     appimage-run
+
+    # 解压缩
+    ouch      # 主力 Rust 万能解压
+    _7zz      # 工业级 7-Zip 备用
+    unar      # 乱码备用
+    dtrx      # 智能防炸弹备用
   ];
 }
