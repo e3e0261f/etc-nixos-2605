@@ -20,8 +20,14 @@
         # -c Hyprland: 登录后直接启动 Hyprland
         # --remember: 记住用户名
         # --asterisks: 输入密码时显示星号
+        # --matrix-length MIN,MAX
+        # --doom-spread
+        # --doom-colors
+        # --doom-height
+        # --matrix-speed MIN,MAX
+        # --matrix-colors HEAD,BRIGHT,DIM
         # 最标准的做法是使用 Hyprland 提供的启动入口
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --background Matrix --time --remember --asterisks --cmd start-hyprland wrapper";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --background matrix --background-fps 30 --matrix-colors '#CCFFCC,#33FF66,#006622' --matrix-speed 1,7 --time --remember --asterisks --cmd start-hyprland wrapper";
         # 注意这里改成了 uwsm start hyprland-session.target
         # command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd 'uwsm start hyprland-session.target'";
         user = "greeter";
