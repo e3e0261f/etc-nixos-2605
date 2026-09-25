@@ -7,7 +7,7 @@
     # ⭐️ 1. 字體設定（在這裡統一設定即可，不需要在 settings 裡重複寫）
     font = {
       name = "JetBrainsMono Nerd Font";
-      size = 24; # 字體大小 24
+      size = 20; # 字體大小 24
     };
 
     settings = {

@@ -13,7 +13,7 @@
     (discord.override {
       withOpenASAR = true;
     })
-    helix wget curl unzip
+    helix wget curl unzip gh
     procps lvm2 p7zip unrar
     polkit_gnome networkmanagerapplet
     dust pciutils scanmem alsa-utils keyd

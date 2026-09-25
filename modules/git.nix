@@ -28,15 +28,16 @@
     # 2. 所有原本的 userName, userEmail 和 extraConfig 统统塞进 settings 里
     settings = {
       user = {
-        name = "kevin lee";
+        name = "Rhys";
         email = "e3e0261f@pm.me";
       };
 
       init.defaultBranch = "main";
-      commit.gpgsign = true;
+      commit.gpgsign = false;
 
       # ⭐️ 核心宣告式規則：全域將所有 https://github.com/ 自動替換為 SSH 協議（走 GPG 密鑰握手）
-      url."git@github.com:".insteadOf = "https://github.com/";
+      # git clone https://v4.gh-proxy.org/https://github.com/ye3e0261f/etc-nixos-2605.git
+      url."https://v4.gh-proxy.org/https://github.com/".insteadOf = "https://github.com/";
     };
   };
 }

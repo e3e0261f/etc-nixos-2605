@@ -1,10 +1,12 @@
 # /etc/nixos/modules/dev.nix
 # git clone https://gist.github.com/e3e0261f/951488c7b640b599b33c1aec6bc4399b
 # git clone https://github.com/e3e0261f/etc-nixos-2605.git
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
+    # a command install
+    # inputs.a-cli.packages.${pkgs.system}.default
     helix
     git
     dae
@@ -137,17 +139,6 @@
   };
   programs.fish.enable = true;
   
-  programs.git = {
-    enable = true;
-    config = {
-      user.name = "Rhys";
-      user.email = "e3e0261f@pm.me";
-      user.signingkey = "31C81A9DE1AB870A8EDC3486D7C2DF9FA0283056";
-      commit.gpgsign = false;
-      init.defaultBranch = "main";
-    };
-  };
-  
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
@@ -173,11 +164,11 @@
     
   # oOPen FLack on my nixos
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
+   
   # UEfi token install error
   boot.loader.systemd-boot.graceful = true;
   # TAgs for start list
-  system.nixos.tags = [ "no-luks" ];
+  system.nixos.tags = [ "2605-DOne" ];
   # ⭐️ 為 Chromium 啟用 Widevine DRM 模組
   nixpkgs.config.chromium.enableWideVine = true;
   # ⭐️ 讓 NixOS 完美相容並執行通用二進位程式與遊戲

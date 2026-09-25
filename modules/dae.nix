@@ -169,7 +169,7 @@
           domain(suffix: mega.nz) -> for1
           pname(discord) -> for1
 
-          # ⭐️【終極兜底】：預設走 1倍 for1 省錢池！（非常明智的改動！）
+          # ⭐️【終極兜底】：預設走 1倍 for1 省錢池！
           fallback: for1
       }
     '';
