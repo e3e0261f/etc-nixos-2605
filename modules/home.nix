@@ -110,6 +110,30 @@
     };
   };
 
+  services.hypridle = {
+    enable = true;
+    # 这里通过 settings 属性，Nix 会自动帮你生成 hypridle.conf
+    settings = {
+      general = {
+        lock_cmd = "${pkgs.hyprlock}/bin/hyprlock"; # 假设你装了 hyprlock
+        before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+        after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+      };
+
+      listener = [
+        {
+          timeout = 300; # 5分钟
+          on-timeout = "${pkgs.systemd}/bin/loginctl lock-session";
+        }
+        {
+          timeout = 330; # 5.5分钟
+          on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
+          on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+        }
+      ];
+    };
+  };
+
   # 只有版本號留在此處
   home.stateVersion = "24.11";
 }

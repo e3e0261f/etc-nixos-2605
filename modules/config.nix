@@ -16,6 +16,7 @@
       ./dae.nix
       ./pipewire.nix
       ./fonts.nix
+      ./login.nix
       # =======================================================
       # ⭐️ 軟體安裝分層控制中心（在新電腦上裝機時由上往下解封）
       # =======================================================
@@ -24,19 +25,12 @@
       ./apps/apps-heavy.nix  # ⭐️ 第 2 步解封：裝上 Steam、VSCode 與 4K 桌布
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
+
   # ⭐️ 核心：彻底从 Linux 内核层干掉 IPv6，杜绝投毒和 UDP6 报错
   boot.kernelParams = [
     "ipv6.disable=1" # 物理级禁用 IPv6 模块
   ];
   networking.enableIPv6 = false;
-
-  # HYprland 
-  programs.hyprland = {
-    enable = true;
-    # xwayland.enable = true; # 如果你需要執行舊的 X11 軟體，請開啟此項
-  };
-  services.hypridle.enable = true;
-  programs.hyprlock.enable = true;
 
   xdg.portal = {
     enable = true;
@@ -207,18 +201,24 @@
   # oOPen FLack on my nixos
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # HYprland 
+  programs.hyprland.enable = true;
+  # 自动休眠
+  services.hypridle.enable = true;
+  # 休眠锁
+  programs.hyprlock.enable = true;
   # 如果你用了 UWSM
   programs.hyprland.withUWSM = true;
   # ⭐️ 強制關閉 Wi-Fi 晶片省電
   networking.networkmanager.wifi.powersave = false;
   # UEfi token install error
   boot.loader.systemd-boot.graceful = true;
-  # TAgs for start list
-  system.nixos.tags = [ "2605-DOne" ];
   # ⭐️ 為 Chromium 啟用 Widevine DRM 模組
   nixpkgs.config.chromium.enableWideVine = true;
   # ⭐️ 讓 NixOS 完美相容並執行通用二進位程式與遊戲
   programs.nix-ld.enable = true;
   # ⭐️ 開啟遊戲全速效能調度
   programs.gamemode.enable = true;
+  # TAgs for start list
+  system.nixos.tags = [ "LOgin" ];
 }
