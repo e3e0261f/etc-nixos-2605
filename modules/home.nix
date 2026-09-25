@@ -10,7 +10,8 @@
     ./hyprland.nix      # 🪟 Hyprland 核心設定 (平鋪規則、動畫、毛玻璃、Caelestia drawers 快捷鍵)
     #./waybar.nix       # 📊 [歷史備用] 原版 3D 水晶毛玻璃狀態列 (目前已由 Caelestia Shell 接管)
     ./wall-random.nix   # 🖼️ 桌布輪播引擎 (Wallhaven 隨機抽 2K/4K 桌布盲盒，60FPS 轉場特效)
-    ./mako.nix          # 🔔 輕量級桌面通知守護進程 (Mako Notification Daemon)
+    # ./mako.nix          # 🔔 輕量級桌面通知守護進程 (Mako Notification Daemon)
+    ./dunst.nix          # 🔔 桌面通知守護進程
     ./fuzzel.nix        # 🔍 輕量 Wayland 應用程式搜尋與啟動器 (Fuzzel dmenu/rofi 替代品)
 
     # -----------------------------------------------------------------------
