@@ -54,7 +54,7 @@
         }
         routing {
           request {
-            fallback: googledns
+            fallback: alidns
           }
         }
       }

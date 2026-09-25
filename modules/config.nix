@@ -28,6 +28,29 @@
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
 
+  # HYprland 
+  programs.hyprland = {
+    enable = true;
+    # xwayland.enable = true; # 如果你需要執行舊的 X11 軟體，請開啟此項
+  };
+  services.hypridle.enable = true;
+  programs.hyprlock.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ 
+      pkgs.xdg-desktop-portal-hyprland 
+      pkgs.xdg-desktop-portal-xapp
+    ];
+    config = {
+      common = {
+        "org.freedesktop.impl.portal.FileChooser" = [ "xapp" "gtk" ];
+      };
+    };
+    configPackages = [ pkgs.hyprland ];
+    config.common.default = "*"; 
+  };
+  
   # 睡眠唤醒解耦
   powerManagement = {
     enable = true;
