@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = [
-    # --- 1. nix-test: 測試、測試回滾並平滑刷新 Waybar ---
+    # --- 1. nix-test: 測試、熱回滾、離線測試、代理指定與 Waybar 刷新 ---
     (pkgs.writeShellScriptBin "nix-test" ''
       #!/bin/bash
       
@@ -11,7 +11,6 @@
           echo "⏪ 正在熱回滾測試狀態，恢復至健康世代..."
           if sudo /nix/var/nix/profiles/system/bin/switch-to-configuration test; then
               echo "✅ 已成功還原！所有臨時測試變更已撤銷。"
-              
               systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
               exit 0
           else
@@ -20,28 +19,58 @@
           fi
       fi
 
-      [ -n "$http_proxy" ] && echo "🌐 代理開啟: $http_proxy" || echo "🌿 直連模式"
+      # ⭐️ 解析代理參數 (-p 7890 或 --proxy 7890) 与 离线模式 (-o 或 --offline)
+      OFFLINE_FLAGS=""
+      CUSTOM_PROXY=""
+      
+      # 检查命令行参数中的代理设置
+      for ((i=1; i<=$#; i++)); do
+          arg="''${!i}"
+          if [[ "$arg" == "-p" || "$arg" == "--proxy" ]]; then
+              next_i=$((i+1))
+              port="''${!next_i}"
+              if [[ -n "$port" && "$port" =~ ^[0-9]+$ ]]; then
+                  CUSTOM_PROXY="http://127.0.0.1:$port"
+              fi
+          fi
+      done
+
+      # 环境变量优先级：命令行 -p > 终端原有 $http_proxy
+      PROXY_URL="''${CUSTOM_PROXY:-$http_proxy}"
+
+      if [[ "$*" =~ "--offline" ]] || [[ "$*" =~ "-o" ]]; then
+          echo "✈️ 已開啟離線/無網路編譯模式 (禁用 substitute)"
+          OFFLINE_FLAGS="--offline --option substitute false"
+      else
+          if [ -n "$PROXY_URL" ]; then
+              echo "🌐 代理模式已生效: $PROXY_URL"
+          else
+              echo "🌿 直連模式 (如需代理可使用 nix-test -p 7890)"
+          fi
+      fi
       echo "----------------------------------------"
 
-      # 🔍 Hyprland/Lua 檢查 logic (修复死循环：失败时允许强行突破)
+      # Hyprland 安全檢查 (失敗可強行突破)
       if [ -f ~/.config/hypr/hyprland.lua ] || [ -f ~/.config/hypr/hyprland.conf ]; then
           echo "🔍 正在進行 Hyprland 配置安全檢查..."
           if ! Hyprland --verify-config >/dev/null 2>&1; then
               echo "❌ 警告：Hyprland 配置文件存在語法或加載錯誤！"
-              read -p "⚠️ 是否忽略错误并强行继续测试构建？ [y/N] " emergency
+              read -p "⚠️ 是否忽略錯誤並強行繼續測試構建？ [y/N] " emergency
               if [[ ! "$emergency" =~ ^[Yy]$ ]]; then
-                  echo "💡 提示：你可以选择强行继续构建，以使用新的 Nix 配置覆盖并修复此错误。"
+                  echo "💡 提示：你可以選擇強行繼續構建，以使用新的 Nix 配置覆蓋並修復此錯誤。"
                   exit 1
               fi
           else
-              echo "✅ Hyprland 配置文件检查通过。"
+              echo "✅ Hyprland 配置文件檢查通過。"
           fi
       fi
 
       echo "🧪 正在執行安全測試 (nixos-rebuild test)..."
       cd /etc/nixos
       git add -A
-      if sudo nixos-rebuild test --flake .#nixos; then
+      
+      # 带着代理环境变量传递给 sudo
+      if sudo http_proxy="$PROXY_URL" https_proxy="$PROXY_URL" nixos-rebuild test --flake .#nixos $OFFLINE_FLAGS; then
           echo "✅ 測試成功！目前效果已臨時生效。"
           systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
       else
@@ -50,7 +79,7 @@
       fi
     '')
 
-    # --- 2. nix-save: 正式構建、精確回滾、歷史查詢與 GitHub 同步 ---
+    # --- 2. nix-save: 正式構建、二次確認精準回滾、歷史查詢、離線構建、代理指定与 GitHub 同步 ---
     (pkgs.writeShellScriptBin "nix-save" ''
       #!/bin/bash
 
@@ -62,10 +91,17 @@
           exit 0
       fi
 
-      # ⭐️ 支援正式回滾：nix-save --rollback [世代號碼]
+      # ⭐️ 支援正式回滾（含二次 Yes 确认）：nix-save --rollback [世代號碼] 或 nix-save -r [世代號碼]
       if [ "$1" = "--rollback" ] || [ "$1" = "-r" ]; then
           TARGET_GEN="$2"
-          if [ -n "$TARGET_GEN" ]; then
+          
+          if [[ -n "$TARGET_GEN" && "$TARGET_GEN" =~ ^[0-9]+$ ]]; then
+              read -p "⚠️ 確定要將系統回滾至第 $TARGET_GEN 世代嗎？ [y/N] " confirm_rb
+              if [[ ! "$confirm_rb" =~ ^[Yy]$ ]]; then
+                  echo "📦 已取消回滾操作。"
+                  exit 0
+              fi
+
               echo "⏪ 正在精準回滾至第 $TARGET_GEN 世代..."
               if sudo nix-env --profile /nix/var/nix/profiles/system --switch-generation "$TARGET_GEN" && \
                  sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch; then
@@ -75,6 +111,12 @@
                   exit 1
               fi
           else
+              read -p "⚠️ 未指定號碼，確定要回滾至上一個世代 (Generation N-1) 嗎？ [y/N] " confirm_rb
+              if [[ ! "$confirm_rb" =~ ^[Yy]$ ]]; then
+                  echo "📦 已取消回滾操作。"
+                  exit 0
+              fi
+
               echo "⏪ 正在回滾至上一個世代 (Generation N-1)..."
               if sudo nixos-rebuild switch --rollback; then
                   echo "✅ 成功回滾至上一代！"
@@ -88,19 +130,46 @@
           exit 0
       fi
 
-      # 常規存檔與構建邏輯
-      [ -n "$http_proxy" ] && echo "🌐 代理開啟: $http_proxy" || echo "🌿 直連模式"
+      # ⭐️ 解析代理參數 (-p 7890 或 --proxy 7890) 与 离线模式 (-o 或 --offline)
+      OFFLINE_MODE=false
+      OFFLINE_FLAGS=""
+      CUSTOM_PROXY=""
+
+      for ((i=1; i<=$#; i++)); do
+          arg="''${!i}"
+          if [[ "$arg" == "-p" || "$arg" == "--proxy" ]]; then
+              next_i=$((i+1))
+              port="''${!next_i}"
+              if [[ -n "$port" && "$port" =~ ^[0-9]+$ ]]; then
+                  CUSTOM_PROXY="http://127.0.0.1:$port"
+              fi
+          fi
+      done
+
+      PROXY_URL="''${CUSTOM_PROXY:-$http_proxy}"
+
+      if [[ "$*" =~ "--offline" ]] || [[ "$*" =~ "-o" ]]; then
+          echo "✈️ 已開啟離線/無網路編譯模式 (禁用 substitute)"
+          OFFLINE_MODE=true
+          OFFLINE_FLAGS="--offline --option substitute false"
+      else
+          if [ -n "$PROXY_URL" ]; then
+              echo "🌐 代理模式已生效: $PROXY_URL"
+          else
+              echo "🌿 直連模式 (如需代理可使用 nix-save -p 7890)"
+          fi
+      fi
       echo "----------------------------------------"
 
-      # 统一使用 Hyprland --verify-config 校验，并提供强行继续选项
+      # Hyprland 安全檢查 (失敗可強行突破)
       if [ -f ~/.config/hypr/hyprland.lua ] || [ -f ~/.config/hypr/hyprland.conf ]; then
           echo "🔍 正在進行 Hyprland 配置安全檢查..."
           if ! Hyprland --verify-config >/dev/null 2>&1; then
-              echo "❌ 警告：Hyprland 配置文件存在语法错误！"
-              read -p "⚠️ 是否強行繼續構建以覆蓋修复？ [y/N] " emergency
+              echo "❌ 警告：Hyprland 配置文件存在語法錯誤！"
+              read -p "⚠️ 是否強行繼續構建以覆蓋修復？ [y/N] " emergency
               [[ ! "$emergency" =~ ^[Yy]$ ]] && exit 1
           else
-              echo "✅ Hyprland 配置文件检查通过。"
+              echo "✅ Hyprland 配置文件檢查通過。"
           fi
       fi
 
@@ -108,10 +177,16 @@
       git add .
       echo "正在執行正式構建 (nixos-rebuild switch)..."
       
-      if sudo nixos-rebuild switch --flake .#nixos; then
+      # 带着代理环境变量传递给 sudo
+      if sudo http_proxy="$PROXY_URL" https_proxy="$PROXY_URL" nixos-rebuild switch --flake .#nixos $OFFLINE_FLAGS; then
         echo "✅ 構建並生成新世代成功！"
         
         systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
+
+        if [ "$OFFLINE_MODE" = true ]; then
+            echo "✈️ 當前為離線模式，已跳過 GitHub 同步。"
+            exit 0
+        fi
 
         read -p "🚀 是否同步至 GitHub? [Y/n] " confirm
         confirm=''${confirm:-Y}
@@ -121,7 +196,7 @@
             git commit -m "Save config: $current_date"
             
             echo "正在上傳..."
-            if git push; then
+            if http_proxy="$PROXY_URL" https_proxy="$PROXY_URL" git push; then
                 echo "🎉 全部完成！已同步至 GitHub。"
             else
                 echo "❌ Git 推送失敗！嘗試手動執行 'git push' 查看原因。"
