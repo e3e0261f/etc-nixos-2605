@@ -43,7 +43,8 @@
 
   home.sessionVariables = {
     # 這是所有 GTK 程式 (包含你彈出的通知、輸入法設定) 的字體大小總開關
-    GTK_FONT_NAME = "Noto Sans CJK TC 16";
+    # GTK_FONT_NAME = "Noto Sans CJK TC 16";
+    GTK_FONT_NAME = "SF Pro Text, PingFang TC 13";
   };
 
   # 1. 軟體包清單：引入 Caelestia Shell 與 CLI

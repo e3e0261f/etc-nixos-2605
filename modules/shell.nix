@@ -24,13 +24,13 @@
       less = "bat";
 
       # 🔍 3. fd 矩陣（取代傳統 find，極速搜索）
-      find = "fd";
-      fda  = "fd -I -H";
+      # find = "fd";
+      # fda  = "fd -I -H";
 
       # ⚡ 4. ripgrep 矩陣（取代傳統 grep，全世界最快正則檢索）
-      grep = "rg";
-      rgi  = "rg -i";
-      rgf  = "rg --files";
+      # grep = "rg";
+      # rgi  = "rg -i";
+      # rgf  = "rg --files";
 
       # 🛠️ 5. 其他極客日常縮寫
       top   = "btop";
