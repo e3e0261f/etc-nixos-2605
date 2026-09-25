@@ -21,7 +21,7 @@
         # --remember: 记住用户名
         # --asterisks: 输入密码时显示星号
         # 最标准的做法是使用 Hyprland 提供的启动入口
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --background matrix --time --remember --asterisks --cmd start-hyprland wrapper";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --background Matrix --time --remember --asterisks --cmd start-hyprland wrapper";
         # 注意这里改成了 uwsm start hyprland-session.target
         # command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd 'uwsm start hyprland-session.target'";
         user = "greeter";
