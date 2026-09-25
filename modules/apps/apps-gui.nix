@@ -34,15 +34,15 @@
     keepassxc
     crow-translate
     gimagereader
-    tesseract
-    waypaper
-    loupe
+    tesseract   #图片字符识别
+    waypaper    #背景工具
+    loupe       #图片检查器
     # spotify
     # ente-auth
     # hydrogen  #强大鼓机
     # supercollider
     # emacs-pgtk
     sl
-    crosspipe
+    clash-verge-rev
   ];
 }
