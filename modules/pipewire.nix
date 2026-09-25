@@ -22,10 +22,10 @@
         "default.clock.allowed-rates" = [ 44100 48000 88200 96000 176400 192000 ];
 
         # ⭐️ 錄音棚黃金緩衝區：256 幀（48k 下 5.3ms，物理級無感耳返！）
-        "default.clock.quantum" = 256;
+        "default.clock.quantum" = 512;
         "default.clock.min-quantum" = 256;
         # 上限給予 2048 彈性，保證遇到突發編譯時安全防爆
-        "default.clock.max-quantum" = 2048;
+        "default.clock.max-quantum" = 4096;
 
         # 頂級重採樣品質 10（信噪比 > 160dB）
         "resample.quality" = 10;
