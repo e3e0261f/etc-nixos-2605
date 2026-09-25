@@ -200,6 +200,22 @@
         "type": "github"
       }
     },
+    "my-rules": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788218216,
+        "narHash": "sha256-RLCjV6Plxvog54vAk6w4pZtIUGk59WoolMuJDeHQQSE=",
+        "owner": "e3e0261f",
+        "repo": "GEoIP-GEoSITE",
+        "rev": "87cbc0b4a32f97f65dd3bd71053093a35688474e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "e3e0261f",
+        "repo": "GEoIP-GEoSITE",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 315532800,
@@ -281,6 +297,7 @@
         "caelestia-cli": "caelestia-cli",
         "caelestia-shell": "caelestia-shell_2",
         "home-manager": "home-manager",
+        "my-rules": "my-rules",
         "nixpkgs": "nixpkgs",
         "quickshell": "quickshell_3"
       }

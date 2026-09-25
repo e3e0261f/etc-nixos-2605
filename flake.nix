@@ -6,9 +6,8 @@
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs.url = "tarball+https://mirrors.ustc.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz";
     # nixpkgs.url = "git+https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git?ref=nixos-26.05&shallow=1";
-    # my-rules.url = "github:e3e0261f/GEoIP-GEoSITE";
-    # emacs-overlay.url = "github:nix-community/emacs-overlay";
-    # my-rules.flake = false;
+    my-rules.url = "github:e3e0261f/GEoIP-GEoSITE";
+    my-rules.flake = false;
 
     a-cli = {
       url = "github:e3e0261f/a";
