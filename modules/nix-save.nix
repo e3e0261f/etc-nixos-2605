@@ -12,12 +12,7 @@
           if sudo /nix/var/nix/profiles/system/bin/switch-to-configuration test; then
               echo "✅ 已成功還原！所有臨時測試變更已撤銷。"
               
-              # 平滑重啟 Waybar
               systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
-              # echo "🔄 正在平滑重載 Waybar 狀態欄..."
-              # pkill -9 waybar 2>/dev/null
-              # sleep 0.5
-              # systemctl --user restart waybar.service 2>/dev/null || hyprctl dispatch exec waybar
               exit 0
           else
               echo "❌ 熱回滾失敗！建議直接重開機 (sudo reboot)。"
@@ -28,11 +23,18 @@
       [ -n "$http_proxy" ] && echo "🌐 代理開啟: $http_proxy" || echo "🌿 直連模式"
       echo "----------------------------------------"
 
-      if [ -f ~/.config/hypr/hyprland.lua ]; then
-          echo "🔍 正在進行 Lua 語法安全檢查..."
-          if ! Hyprland --verify-config; then
-              echo "❌ 警告：~/.config/hypr/hyprland.lua 存在語法錯誤！"
-              exit 1
+      # 🔍 Hyprland/Lua 檢查 logic (修复死循环：失败时允许强行突破)
+      if [ -f ~/.config/hypr/hyprland.lua ] || [ -f ~/.config/hypr/hyprland.conf ]; then
+          echo "🔍 正在進行 Hyprland 配置安全檢查..."
+          if ! Hyprland --verify-config >/dev/null 2>&1; then
+              echo "❌ 警告：Hyprland 配置文件存在語法或加載錯誤！"
+              read -p "⚠️ 是否忽略错误并强行继续测试构建？ [y/N] " emergency
+              if [[ ! "$emergency" =~ ^[Yy]$ ]]; then
+                  echo "💡 提示：你可以选择强行继续构建，以使用新的 Nix 配置覆盖并修复此错误。"
+                  exit 1
+              fi
+          else
+              echo "✅ Hyprland 配置文件检查通过。"
           fi
       fi
 
@@ -41,13 +43,7 @@
       git add -A
       if sudo nixos-rebuild test --flake .#nixos; then
           echo "✅ 測試成功！目前效果已臨時生效。"
-          
-          # 核心平滑邏輯：重啟單一 Waybar 實例
           systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
-          # echo "🔄 正在平滑重載 Waybar 狀態欄..."
-          # pkill -9 waybar 2>/dev/null
-          # sleep 0.5
-          # systemctl --user restart waybar.service 2>/dev/null || hyprctl dispatch exec waybar
       else
           echo "❌ 測試失敗，請檢查報錯。"
           exit 1
@@ -88,12 +84,7 @@
               fi
           fi
 
-          # 平滑重啟 Waybar
           systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
-          # echo "🔄 正在平滑重載 Waybar 狀態欄..."
-          # pkill -9 waybar 2>/dev/null
-          # sleep 0.5
-          # systemctl --user restart waybar.service 2>/dev/null || hyprctl dispatch exec waybar
           exit 0
       fi
 
@@ -101,12 +92,15 @@
       [ -n "$http_proxy" ] && echo "🌐 代理開啟: $http_proxy" || echo "🌿 直連模式"
       echo "----------------------------------------"
 
-      if [ -f ~/.config/hypr/hyprland.lua ]; then
-          echo "🔍 正在進行 Lua 語法安全檢查..."
-          if ! luajit -bl ~/.config/hypr/hyprland.lua >/dev/null; then
-              echo "❌ 警告：~/.config/hypr/hyprland.lua 存在語法錯誤！"
-              read -p "⚠️ 是否強行繼續？ [y/N] " emergency
+      # 统一使用 Hyprland --verify-config 校验，并提供强行继续选项
+      if [ -f ~/.config/hypr/hyprland.lua ] || [ -f ~/.config/hypr/hyprland.conf ]; then
+          echo "🔍 正在進行 Hyprland 配置安全檢查..."
+          if ! Hyprland --verify-config >/dev/null 2>&1; then
+              echo "❌ 警告：Hyprland 配置文件存在语法错误！"
+              read -p "⚠️ 是否強行繼續構建以覆蓋修复？ [y/N] " emergency
               [[ ! "$emergency" =~ ^[Yy]$ ]] && exit 1
+          else
+              echo "✅ Hyprland 配置文件检查通过。"
           fi
       fi
 
@@ -118,22 +112,15 @@
         echo "✅ 構建並生成新世代成功！"
         
         systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
-        # echo "🔄 正在平滑重載 Waybar 狀態欄..."
-        # pkill -9 waybar 2>/dev/null
-        # sleep 0.5
-        # systemctl --user restart waybar.service 2>/dev/null || hyprctl dispatch exec waybar
 
         read -p "🚀 是否同步至 GitHub? [Y/n] " confirm
         confirm=''${confirm:-Y}
 
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             current_date=$(date "+%Y-%m-%d %H:%M:%S")
-            # 這裡改用普通用戶權限進行 commit (如果目錄權限允許)
-            # 或者使用 sudo -u <你的使用者名稱> git commit
             git commit -m "Save config: $current_date"
             
             echo "正在上傳..."
-            # 關鍵點：不要加 sudo，並確保 SSH 代理正常
             if git push; then
                 echo "🎉 全部完成！已同步至 GitHub。"
             else
@@ -169,8 +156,6 @@
       echo "🚀 同步完成！準備執行系統構建..."
       if sudo nixos-rebuild switch --flake .#nixos; then
           systemctl --user import-environment HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 2>/dev/null
-          # pkill -9 waybar 2>/dev/null
-          # systemctl --user restart waybar.service 2>/dev/null || hyprctl dispatch exec waybar
           echo "✨ 系統已成功恢復為遠端最新版本。"
       else
           echo "❌ 構建失敗，備份保存在 $BACKUP_DIR。"
