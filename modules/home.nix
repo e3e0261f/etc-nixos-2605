@@ -17,7 +17,7 @@
     ./copyfile.nix
     ./yazi.nix
     ./alarm.nix
-    # ./awww.nix
+    ./wall-random.nix
     ./defaults.nix   # ⭐️ 預設軟體設定 (Chrome, Nemo, Helix)
     ./dev.nix        # ⭐️ Rust + JS 主力開發環境
     ./rhys.nix

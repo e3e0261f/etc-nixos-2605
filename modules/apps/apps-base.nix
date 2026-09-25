@@ -21,7 +21,7 @@
     mpv
     
     # 桌面與視窗管理器核心組件
-    hyprlauncher hyprshutdown
+    hyprlauncher hyprshutdown wlogout
     hypridle hyprlock hyprpaper hyprpicker
     pamixer ddcutil brightnessctl libcava lm_sensors aubio
     libqalculate power-profiles-daemon
