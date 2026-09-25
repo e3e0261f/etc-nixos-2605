@@ -108,8 +108,6 @@
       hl.dispatch(hl.dsp.window.bring_to_top())
     end)
 
-    
-
     -- ⭐️ 2. Ctrl + Super + W：隨機抽取一張 2K 高畫質桌布（8大轉場特效全隨機！）
     hl.bind(mainMod .. " + CTRL + R", hl.dsp.exec_cmd("wall-random"))
     -- ⭐️ 2. Ctrl + Super + W：隨機抽取一張 2K 高畫質桌布（8大轉場特效全隨機！）
@@ -123,7 +121,7 @@
     hl.bind(mainMod .. " + CTRL + SHIFT + R", hl.dsp.exec_cmd("record-screen fullscreen"))
     
     hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
-    hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+    --hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
     hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
     hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
     hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
@@ -139,6 +137,11 @@
     hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
     hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
     hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+    -- 窗口摆放
+    --hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.focus({ movewindow = "left" }))
+    --hl.bind(mainMod .. " + SHIFT + right", hl.dsp.focus({ movewindow = "right" }))
+    --hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.focus({ movewindow = "up" }))
+    --hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.focus({ movewindow = "down" }))
 
     -- =======================================================
     -- ⭐️ 專業截圖矩陣（截選單、全螢幕、區域拉框全搞定）

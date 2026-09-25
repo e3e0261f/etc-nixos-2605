@@ -43,5 +43,6 @@
     # supercollider
     # emacs-pgtk
     sl
+    crosspipe
   ];
 }
