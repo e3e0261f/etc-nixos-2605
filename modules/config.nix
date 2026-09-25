@@ -65,7 +65,8 @@
       /run/current-system/sw/bin/systemctl restart NetworkManager
       /run/current-system/sw/bin/sleep 1
       # ⭐️ 核心解藥：網卡重載完成後，立即命令 dae 重新掛載 eBPF 探針！
-      /run/current-system/sw/bin/systemctl restart dae || true
+      /run/current-system/sw/bin/systemctl stop dae
+      /run/current-system/sw/bin/systemctl start dae
     '';
   };
 

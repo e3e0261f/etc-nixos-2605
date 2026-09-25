@@ -1,0 +1,10 @@
+9月 26 02:14:09 nixos dae[107216]: level=info msg="[ALIVE --tcp4(DNS)-> NOT ALIVE]" dialer="[vless]I.TW.新北市新店區.HiNet:直連REALITY.23118" group=for146
+9月 26 02:14:09 nixos dae[107216]: level=info msg="Group has no dialer alive" group=for146 network="tcp4(DNS)"
+9月 26 02:14:51 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
+9月 26 02:14:53 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
+9月 26 02:14:54 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
+9月 26 02:14:56 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
+9月 26 02:14:58 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
+9月 26 02:15:01 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
+9月 26 02:15:06 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
+9月 26 02:15:14 nixos dae[107216]: level=warning msg="handlePkt: failed to GetOrCreate: failed to select dialer from group for1 (udp4, dns?:false,from: 0.0.0.0:68): no alive dialer"
