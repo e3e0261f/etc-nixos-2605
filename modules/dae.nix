@@ -100,6 +100,7 @@ in
           domain(suffix: albiononline.com) -> direct(must)
 
           # 內網 / 本機 IP 直連
+          dip(192.168.0.0/16, 127.0.0.0/8) && dport(22) -> direct
           dip(127.0.0.0/8, 192.168.0.0/16) -> direct
           pname(gix, aria2c, steam) -> direct(must)
 
@@ -138,6 +139,8 @@ in
           # 修正筆誤：google-chrome 是進程名 (pname)，不是 domain
           pname(google-chrome, chrome, discord) -> for1
           domain(suffix: mega.nz) -> for1
+          dport(22) -> for1
+
 
           # ⭐️【終極兜底】：國外未知流量走 1倍 for1 省錢池！
           fallback: for1
