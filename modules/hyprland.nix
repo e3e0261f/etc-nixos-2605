@@ -138,10 +138,10 @@
     hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
     hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
     -- 窗口摆放
-    --hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.focus({ movewindow = "left" }))
-    --hl.bind(mainMod .. " + SHIFT + right", hl.dsp.focus({ movewindow = "right" }))
-    --hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.focus({ movewindow = "up" }))
-    --hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.focus({ movewindow = "down" }))
+    --hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "left" }))
+    --hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
+    --hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "up" }))
+    --hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "down" }))
 
     -- =======================================================
     -- ⭐️ 專業截圖矩陣（截選單、全螢幕、區域拉框全搞定）
