@@ -1,9 +1,10 @@
+# /etc/nixos/modules/home.nix
 { pkgs, inputs, ... }:
 
 {
   # 🎯 這裡成了唯一的「插線板 / 總路由」
   imports = [
-        # -----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     # 🖥️ 1. 桌面環境、外觀與視窗管理 (Hyprland / Shell)
     # -----------------------------------------------------------------------
     ./hyprland.nix      # 🪟 Hyprland 核心設定 (平鋪規則、動畫、毛玻璃、Caelestia drawers 快捷鍵)
@@ -45,41 +46,37 @@
     GTK_FONT_NAME = "Noto Sans CJK TC 16";
   };
 
-  # 💡 確保 Waybar 由 Systemd 管理，並掛載在 Hyprland 會話上
-  # programs.waybar = {
-  #   enable = true;
-  #   systemd = {
-  #     enable = true;
-  #     targets = [ "hyprland-session.target" ];
-  #   };
-  # };
-  #
-    # 1. 在软件包列表中：使用 with-cli，并把命令行工具也加进终端
+  # 1. 軟體包清單：引入 Caelestia Shell 與 CLI
   home.packages = with pkgs; [
-    inputs.caelestia-shell.packages.${pkgs.system}.with-cli # ⭐️ 改为 with-cli
-    inputs.caelestia-cli.packages.${pkgs.system}.default    # ⭐️ 终端直接可用的 caelestia 命令
+    inputs.caelestia-shell.packages.${pkgs.system}.with-cli # ⭐️ 改為 with-cli
+    inputs.caelestia-cli.packages.${pkgs.system}.default    # ⭐️ 終端直接可用的 caelestia 命令
     inputs.quickshell.packages.${pkgs.system}.default
-    # ... 你原来的其他包
   ];
 
-  # 2. 在 Systemd 守护进程中：同样指向 with-cli
+  # =========================================================================
+  # ⭐️ 核心修正：讓 Caelestia Shell 專屬於 Hyprland，進 KDE 時絕不啟動！
+  # =========================================================================
   systemd.user.services.caelestia-shell = {
     Unit = {
       Description = "Caelestia Desktop Shell Daemon";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
+      # ⭐️ 1. 改為只跟隨 Hyprland 會話生命週期
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "hyprland-session.target" ];
     };
 
     Service = {
+      # ⭐️ 2. 雙重保險：只有桌面環境是 Hyprland 時才准運行，在 KDE 中直接靜默跳過！
+      ExecCondition = "${pkgs.bash}/bin/bash -c '[ \"$XDG_CURRENT_DESKTOP\" = \"Hyprland\" ]'";
+
       Environment = [ "QS_ICON_THEME=Papirus-Dark" ];
-      # ⭐️ 同样换成 with-cli
       ExecStart = "${inputs.caelestia-shell.packages.${pkgs.system}.with-cli}/bin/caelestia-shell";
       Restart = "on-failure";
       RestartSec = "1s";
     };
 
     Install = {
-      WantedBy = [ "graphical-session.target" ];
+      # ⭐️ 3. 只註冊給 Hyprland，不註冊給全局圖形會話
+      WantedBy = [ "hyprland-session.target" ];
     };
   };
 
