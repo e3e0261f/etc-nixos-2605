@@ -207,6 +207,8 @@
   # oOPen FLack on my nixos
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # 如果你用了 UWSM
+  programs.hyprland.withUWSM = true;
   # ⭐️ 強制關閉 Wi-Fi 晶片省電
   networking.networkmanager.wifi.powersave = false;
   # UEfi token install error

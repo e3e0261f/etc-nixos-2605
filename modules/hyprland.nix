@@ -31,7 +31,7 @@
     menu        = "caelestia shell drawers toggle launcher"    
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
-    hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("wlogout"))
+    hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("hyprshutdown"))
     hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
     require("AUTOSTART")
     require("bindings")
