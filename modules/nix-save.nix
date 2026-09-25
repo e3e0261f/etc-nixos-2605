@@ -128,13 +128,16 @@
 
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             current_date=$(date "+%Y-%m-%d %H:%M:%S")
+            # 這裡改用普通用戶權限進行 commit (如果目錄權限允許)
+            # 或者使用 sudo -u <你的使用者名稱> git commit
             git commit -m "Save config: $current_date"
             
             echo "正在上傳..."
+            # 關鍵點：不要加 sudo，並確保 SSH 代理正常
             if git push; then
                 echo "🎉 全部完成！已同步至 GitHub。"
             else
-                echo "❌ Git 推送失敗！"
+                echo "❌ Git 推送失敗！嘗試手動執行 'git push' 查看原因。"
                 exit 1
             fi
         else
