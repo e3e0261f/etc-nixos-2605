@@ -28,6 +28,19 @@
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
 
+  # 睡眠唤醒解耦
+  powerManagement = {
+    enable = true;
+    powerDownCommands = ''
+      /run/current-system/sw/bin/modprobe -r mt7925e || true
+    '';
+    resumeCommands = ''
+      /run/current-system/sw/bin/sleep 2
+      /run/current-system/sw/bin/modprobe mt7925e || true
+      /run/current-system/sw/bin/systemctl restart NetworkManager
+    '';
+  };
+
   # --- 1. 核心與驅動 ---
   # boot.kernelPackages = pkgs.linuxPackages_zen;
   services.xserver.videoDrivers = [ "amdgpu" ];
@@ -144,8 +157,15 @@
     enableSSHSupport = true;
     pinentryPackage = pkgs.pinentry-gnome3;
   };
+
+  services.udisks2.enable = true;
+  security.polkit.enable = true;
+  services.printing.enable = true;
+  # services.flatpak.enable = true;
+  services.gnome.gnome-keyring.enable = true;
+  services.gvfs.enable = true; 
   
-  # --- 4. 網路與系統服務 ---
+  # --- 網路與系統服務 ---
   networking.hostName = "nixos";
   networking.networkmanager = {
     enable = true;
@@ -155,16 +175,13 @@
     };
   };
 
-  services.udisks2.enable = true;
-  security.polkit.enable = true;
-  services.printing.enable = true;
-  # services.flatpak.enable = true;
-  services.gnome.gnome-keyring.enable = true;
-  services.gvfs.enable = true; 
-    
   # oOPen FLack on my nixos
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
-   
+
+  # ⭐️ 強制關閉 Wi-Fi 晶片省電
+  networking.networkmanager.wifi.powersave = false;
+  # 禁止 擅自改动DNS
+  # networking.networkmanager.dns = "none";
   # UEfi token install error
   boot.loader.systemd-boot.graceful = true;
   # TAgs for start list

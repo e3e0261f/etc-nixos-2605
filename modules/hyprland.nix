@@ -23,8 +23,12 @@
 
   # 2. default.lua 入口
   xdg.configFile."MYHYprLUa/default.lua".text = ''
+    -- 基礎操作
     -- 定義全域核心變數（供所有子模組共用）
     mainMod     = "SUPER"
+    terminal    = "kitty"
+    fileManager = "nemo"
+    menu        = "caelestia shell drawers toggle launcher"    
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("wlogout"))
@@ -88,11 +92,6 @@
   # 2. 快捷鍵模組
   # =======================================================
   xdg.configFile."MYHYprLUa/bindings.lua".text = ''
-    -- 定義全域核心變數（供所有子模組共用）
-    mainMod     = "SUPER"
-    terminal    = "kitty"
-    fileManager = "nemo"
-    menu        = "caelestia shell drawers toggle launcher"    
     -- =======================================================
     -- ⭐️ 官方原生：Alt + Tab 切換視窗並置頂層級 (誰在前誰在後)
     -- =======================================================
@@ -122,12 +121,6 @@
     -- 錄影快捷鍵
     hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("record-screen area"))
     hl.bind(mainMod .. " + CTRL + SHIFT + R", hl.dsp.exec_cmd("record-screen fullscreen"))
-
-    -- 基礎操作
-    hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
-    hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
-    hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("wlogout"))
-    hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
     
     hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
     hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
