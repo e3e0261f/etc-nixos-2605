@@ -202,13 +202,14 @@
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # HYprland 
-  programs.hyprland.enable = true;
+  programs = {
+  hyprland.enable = true;
+  hyprlock.enable = true;
+  hyprland.withUWSM = true;
+  hyprland.xwayland.enable = true;
+  };
   # 自动休眠
   services.hypridle.enable = true;
-  # 休眠锁
-  programs.hyprlock.enable = true;
-  # 如果你用了 UWSM
-  programs.hyprland.withUWSM = true;
   # ⭐️ 強制關閉 Wi-Fi 晶片省電
   networking.networkmanager.wifi.powersave = false;
   # UEfi token install error
