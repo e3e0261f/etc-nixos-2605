@@ -132,6 +132,7 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
+          ip(geoip(ipv6)) -> direct
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
