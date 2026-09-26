@@ -149,58 +149,47 @@ let
   '';
 
   # ───────────────────────────────────────────────────
-  # 3. tcc: 劃詞簡轉繁 (使用 OpenCC 台灣本土化引擎，含通知系統)
+  # 3. tcc: 高亮選中文字即時轉繁 (純剪貼簿操作，零模擬按鍵干擾)
   # ───────────────────────────────────────────────────
   tcc-bin = pkgs.writeScriptBin "tcc" ''
     #!${pkgs.bash}/bin/bash
 
-    # 1. 備份剪貼簿原本內容并清空
-    OLD_CLIP=$(${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null)
-    ${pkgs.wl-clipboard}/bin/wl-copy -c
+    # 1. 優先獲取滑鼠高亮選中的文字 (Primary Selection)
+    selected_text=$(${pkgs.wl-clipboard}/bin/wl-paste -p 2>/dev/null)
 
-    # 2. 模擬 Ctrl+C 複製選中文字
-    ${pkgs.wtype}/bin/wtype -M ctrl -k c -m ctrl
-    sleep 0.1
-
-    # 3. 獲取選中的文字
-    selected_text=$(${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null)
-
-    # 4. 判斷抓取结果
+    # 2. 若高亮選區為空，退而求其次讀取主剪貼簿 (Clipboard)
     if [ -z "$selected_text" ]; then
-        # 抓取失敗：還原舊剪貼簿並發送警告通知
-        if [ -n "$OLD_CLIP" ]; then
-            echo -n "$OLD_CLIP" | ${pkgs.wl-clipboard}/bin/wl-copy
-        fi
+        selected_text=$(${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null)
+    fi
+
+    # 3. 未檢測到文字时提醒
+    if [ -z "$selected_text" ]; then
         ${pkgs.libnotify}/bin/notify-send \
             -u warning \
             -t 2500 \
             -i dialog-warning \
             "⚠️ 文本轉換失敗" \
-            "未檢測到選中的文本！請先高亮選中要轉換的簡體字。"
+            "未檢測到高亮選中的文字或剪貼簿內容！"
         exit 1
     fi
 
-    # 5. 使用 OpenCC 進行台灣本土化簡轉繁
+    # 4. 使用 OpenCC 進行台灣本土化簡轉繁
     result=$(echo -n "$selected_text" | ${pkgs.opencc}/bin/opencc -c s2twp.json 2>/dev/null)
 
     if [ -n "$result" ]; then
-        # 6. 寫入剪貼簿，並 Ctrl+V 貼回
+        # 5. 直接將轉換好的繁體文字寫入剪貼簿 (完全不使用 wtype 避免鍵盤布局彈窗)
         echo -n "$result" | ${pkgs.wl-clipboard}/bin/wl-copy
-        sleep 0.05
-        ${pkgs.wtype}/bin/wtype -M ctrl -k v -m ctrl
 
-        # 7. 轉換成功通知
-        # 截取前 30 個字符用於通知預覽，防止文本過長
-        preview_src=$(echo "$selected_text" | head -c 60)
-        preview_res=$(echo "$result" | head -c 60)
+        # 6. 轉換成功桌面通知
+        preview_src=$(echo "$selected_text" | head -c 40)
+        preview_res=$(echo "$result" | head -c 40)
 
         ${pkgs.libnotify}/bin/notify-send \
             -t 3000 \
             -i edit-copy \
             "✨ 簡轉繁成功 (tcc)" \
-            "原字: $preview_src\n轉繁: $preview_res"
+            "原字: $preview_src\n轉繁: $preview_res\n已放入剪貼簿，直接 Ctrl+V 貼上！"
     else
-        # 引擎轉換失敗通知
         ${pkgs.libnotify}/bin/notify-send \
             -u critical \
             -t 3000 \
@@ -217,7 +206,6 @@ in {
     scc-bin            # 字幕自動轉繁 (scc)
     mega-srt-bin       # MEGA 字幕下載轉繁 (mega-srt)
     tcc-bin            # 劃詞簡轉繁本土化 (tcc)
-    wtype              # 按鍵模擬工具
     opencc             # OpenCC 繁簡轉換引擎
     megacmd
     delta

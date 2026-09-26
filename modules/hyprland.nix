@@ -115,7 +115,7 @@
 
     -- 綁定 Ctrl + Shift + Super + A 執行繁簡轉換並複製檔案
     hl.bind(mainMod .. " + SHIFT + CTRL + A", hl.dsp.exec_cmd("fish -c scc"))
-    hl.bind(mainMod .. " + ALT + CTRL + A", hl.dsp.exec_cmd("fish -c tcc"))
+    hl.bind(mainMod .. " + SHIFT + CTRL + Z", hl.dsp.exec_cmd("fish -c tcc"))
 
     -- 錄影快捷鍵
     hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("record-screen area"))
