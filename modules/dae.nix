@@ -64,39 +64,63 @@ in
       # =======================================================
       # ⭐️ 穩定極速 DNS 解析
       # =======================================================
+      #
+
       dns {
         upstream {
-          ali_h3: 'h3://223.5.5.5:443/dns-query'
-          alidns: 'udp://223.5.5.5:53'
-          googledns: 'tcp+udp://8.8.8.8:53'
-          cf_doh3: 'https://cloudflare-dns.com/dns-query'
-          cfdns: 'tcp+udp://1.1.1.1:53'
-          # alih3: 'h3://dns.alidns.com:443'
-          # alih3_path: 'h3://dns.alidns.com:443/dns-query'
-          # alihttp3: 'http3://dns.alidns.com:443'
-          # alihttp3_path: 'http3://dns.alidns.com:443/dns-query'
-          # ali_quic: 'quic://dns.alidns.com:853'
-
-          # h3_custom_path: 'h3://dns.example.com:443/custom-path'
-          # http3_custom_path: 'http3://dns.example.com:443/custom-path'
-
-          # ali_doh: 'https://dns.alidns.com:443'
-          # ali_dot: 'tls://dns.alidns.com:853'
-
-          # doh_custom_path: 'https://dns.example.com:443/custom-path'
+          googledns: 'tcp+udp://dns.google:53'
+          alidns: 'udp://dns.alidns.com:53'
         }
         routing {
           request {
-            !qname(geosite:cn) -> cfdns
-
-            fallback: ali_h3
+            ipversion(6) -> block
+            qtype(https) -> reject
+            fallback: alidns
           }
           response {
-            upstream(cfdns) -> accept
+            upstream(googledns) -> accept
+            ip(geoip:private) && !qname(geosite:cn) -> googledns
             fallback: accept
           }
         }
       }
+
+      # dns {
+      #   upstream {
+      #     ali_h3: 'h3://223.5.5.5:443/dns-query'
+      #     alidns: 'udp://223.5.5.5:53'
+      #     googledns: 'tcp+udp://8.8.8.8:53'
+      #     cf_doh3: 'https://cloudflare-dns.com/dns-query'
+      #     cfdns: 'tcp+udp://1.1.1.1:53'
+      #     # alih3: 'h3://dns.alidns.com:443'
+      #     # alih3_path: 'h3://dns.alidns.com:443/dns-query'
+      #     # alihttp3: 'http3://dns.alidns.com:443'
+      #     # alihttp3_path: 'http3://dns.alidns.com:443/dns-query'
+      #     # ali_quic: 'quic://dns.alidns.com:853'
+
+      #     # h3_custom_path: 'h3://dns.example.com:443/custom-path'
+      #     # http3_custom_path: 'http3://dns.example.com:443/custom-path'
+
+      #     # ali_doh: 'https://dns.alidns.com:443'
+      #     # ali_dot: 'tls://dns.alidns.com:853'
+
+      #     # doh_custom_path: 'https://dns.example.com:443/custom-path'
+      #     # udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
+      #     # check_interval: 30s
+      #     # 
+      #   }
+      #   routing {
+      #     request {
+      #       !qname(geosite:cn) -> cfdns
+
+      #       fallback: ali_h3
+      #     }
+      #     response {
+      #       upstream(cfdns) -> accept
+      #       fallback: accept
+      #     }
+      #   }
+      # }
 
       # =======================================================
       # ⭐️ 核心節點池
