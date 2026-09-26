@@ -58,7 +58,7 @@ in
         }
         routing {
           request {
-            # qname(geosite:cn) -> ali_h3
+            upstream(cfdns) -> accept
             !qname(geosite:cn) -> cfdns
 
             fallback: ali_h3
