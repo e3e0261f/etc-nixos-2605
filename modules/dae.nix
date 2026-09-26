@@ -59,7 +59,9 @@ in
         routing {
           request {
             # qname(geosite:cn) -> ali_h3
-            fallback: cfdns
+            !qname(geosite:cn) -> cfdns
+
+            fallback: ali_h3
           }
         }
       }
@@ -144,7 +146,6 @@ in
           domain(suffix: mega.nz) -> for1
           dport(22) -> for1
           domain(suffix:discord) -> for146
-
 
           # ⭐️【終極兜底】：國外未知流量走 1倍 for1 省錢池！
           fallback: for1
