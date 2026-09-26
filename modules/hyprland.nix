@@ -27,7 +27,7 @@
     -- 定義全域核心變數（供所有子模組共用）
     mainMod     = "SUPER"
     terminal    = "kitty"
-    fileManager = "nemo"
+    fileManager = "thunar"
     menu        = "caelestia shell drawers toggle launcher"    
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
