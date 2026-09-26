@@ -68,7 +68,7 @@
       echo "🧪 正在執行安全測試 (nixos-rebuild test)..."
       cd /etc/nixos
       git add -A
-      
+      git commit -m "update config $(date +%Y-%m-%d)"
       # 带着代理环境变量传递给 sudo
       if sudo http_proxy="$PROXY_URL" https_proxy="$PROXY_URL" nixos-rebuild test --flake .#nixos $OFFLINE_FLAGS; then
           echo "✅ 測試成功！目前效果已臨時生效。"
@@ -174,7 +174,8 @@
       fi
 
       cd /etc/nixos
-      git add .
+      git add -A
+      git commit -m "update config $(date +%Y-%m-%d)"
       echo "正在執行正式構建 (nixos-rebuild switch)..."
       
       # 带着代理环境变量传递给 sudo

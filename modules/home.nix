@@ -1,5 +1,5 @@
 # /etc/nixos/modules/home.nix
-{ pkgs, inputs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   # 🎯 這裡成了唯一的「插線板 / 總路由」
@@ -134,6 +134,22 @@
     };
   };
 
+  # 强制将 XDG 用户默认目录重定向为英文
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true; # 自动创建英文目录
+
+    desktop = "${config.home.homeDirectory}/Desktop";
+    download = "${config.home.homeDirectory}/Downloads";
+    documents = "${config.home.homeDirectory}/Documents";
+    pictures = "${config.home.homeDirectory}/Pictures";
+    videos = "${config.home.homeDirectory}/Videos";
+    music = "${config.home.homeDirectory}/Music";
+    templates = "${config.home.homeDirectory}/Templates";
+    publicShare = "${config.home.homeDirectory}/Public";
+  };
+
+  xdg.userDirs.setSessionVariables = true;
   # 只有版本號留在此處
   home.stateVersion = "24.11";
 }

@@ -6,7 +6,7 @@
 {
   environment.systemPackages = with pkgs; [
     # a command install
-    # inputs.a-cli.packages.${pkgs.system}.default
+    inputs.a-cli.packages.${pkgs.system}.default
     helix git dae fish kitty
   ];
   imports =
