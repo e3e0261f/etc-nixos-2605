@@ -117,7 +117,9 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
-      ip(v6) -> block
+      ParsePrefix("v6/32") -> block
+      ParseAddr("v6") -> block
+      ip(v6/32) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, Albion-Online.bin, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
