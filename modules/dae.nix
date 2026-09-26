@@ -77,6 +77,13 @@ in
             fallback: ali_h3
           }
           response {
+            # 强制将所有 IPv6 流量直连，即：禁止 IPv6 流量进入代理池
+            # dip(geoip(ipv6)) -> direct
+    
+            # 或者如果你想更彻底，直接拒绝掉所有 IPv6 的 DNS 解析请求
+            # 这会阻止 chrome 等程序尝试发起 IPv6 连接
+            qtype(AAAA) -> block
+
             upstream(cfdns) -> accept
             fallback: accept
           }
@@ -117,12 +124,6 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
-          # 强制将所有 IPv6 流量直连，即：禁止 IPv6 流量进入代理池
-          # dip(geoip(ipv6)) -> direct
-    
-          # 或者如果你想更彻底，直接拒绝掉所有 IPv6 的 DNS 解析请求
-          # 这会阻止 chrome 等程序尝试发起 IPv6 连接
-          qtype(AAAA) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
