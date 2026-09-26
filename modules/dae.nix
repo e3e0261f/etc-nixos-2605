@@ -45,6 +45,7 @@ in
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
+          disable_ipv6: true
       }
 
       subscription {
@@ -57,6 +58,7 @@ in
       # ⭐️ 穩定極速 DNS 解析
       # =======================================================
       dns {
+      disable_ipv6: true
         upstream {
           ali_h3: 'h3://223.5.5.5:443/dns-query'
           alidns: 'udp://223.5.5.5:53'
@@ -65,6 +67,7 @@ in
           cfdns: 'tcp+udp://1.1.1.1:53'
         }
         routing {
+        ip(v6) -> block
           request {
             !qname(geosite:cn) -> cfdns
 
@@ -111,6 +114,7 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
+      ip(v6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, Albion-Online.bin, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
