@@ -56,7 +56,7 @@ in
         }
         routing {
           request {
-            qname(geosite:gfw) -> gogoledns
+            # qname(geosite:cn) -> gogoledns
             # 兜底走 alidns，絕不死鎖等待代理
             fallback: ali_h3
           }
