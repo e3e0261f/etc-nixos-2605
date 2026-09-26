@@ -149,28 +149,65 @@ let
   '';
 
   # ───────────────────────────────────────────────────
-  # 3. trans-replace: 劃詞簡轉繁 (使用 OpenCC 台灣本土化引擎)
+  # 3. tcc: 劃詞簡轉繁 (使用 OpenCC 台灣本土化引擎，含通知系統)
   # ───────────────────────────────────────────────────
-  trans-replace-bin = pkgs.writeScriptBin "trans-replace" ''
+  tcc-bin = pkgs.writeScriptBin "tcc" ''
     #!${pkgs.bash}/bin/bash
 
-    # 1. 模擬按鍵 Ctrl+C 複製選中的簡體文字
+    # 1. 備份剪貼簿原本內容并清空
+    OLD_CLIP=$(${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null)
+    ${pkgs.wl-clipboard}/bin/wl-copy -c
+
+    # 2. 模擬 Ctrl+C 複製選中文字
     ${pkgs.wtype}/bin/wtype -M ctrl -k c -m ctrl
     sleep 0.1
 
-    # 2. 獲取選中的文字
+    # 3. 獲取選中的文字
     selected_text=$(${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null)
 
-    # 3. 如果成功抓到文字，使用 OpenCC (s2twp.json) 進行簡體转台灣繁體本土化
-    if [ -n "$selected_text" ]; then
-        result=$(echo -n "$selected_text" | ${pkgs.opencc}/bin/opencc -c s2twp.json 2>/dev/null)
-        
-        if [ -n "$result" ]; then
-            # 4. 將轉好的繁體寫入剪貼簿，並模擬 Ctrl+V 貼回編輯框
-            echo -n "$result" | ${pkgs.wl-clipboard}/bin/wl-copy
-            sleep 0.05
-            ${pkgs.wtype}/bin/wtype -M ctrl -k v -m ctrl
+    # 4. 判斷抓取结果
+    if [ -z "$selected_text" ]; then
+        # 抓取失敗：還原舊剪貼簿並發送警告通知
+        if [ -n "$OLD_CLIP" ]; then
+            echo -n "$OLD_CLIP" | ${pkgs.wl-clipboard}/bin/wl-copy
         fi
+        ${pkgs.libnotify}/bin/notify-send \
+            -u warning \
+            -t 2500 \
+            -i dialog-warning \
+            "⚠️ 文本轉換失敗" \
+            "未檢測到選中的文本！請先高亮選中要轉換的簡體字。"
+        exit 1
+    fi
+
+    # 5. 使用 OpenCC 進行台灣本土化簡轉繁
+    result=$(echo -n "$selected_text" | ${pkgs.opencc}/bin/opencc -c s2twp.json 2>/dev/null)
+
+    if [ -n "$result" ]; then
+        # 6. 寫入剪貼簿，並 Ctrl+V 貼回
+        echo -n "$result" | ${pkgs.wl-clipboard}/bin/wl-copy
+        sleep 0.05
+        ${pkgs.wtype}/bin/wtype -M ctrl -k v -m ctrl
+
+        # 7. 轉換成功通知
+        # 截取前 30 個字符用於通知預覽，防止文本過長
+        preview_src=$(echo "$selected_text" | head -c 60)
+        preview_res=$(echo "$result" | head -c 60)
+
+        ${pkgs.libnotify}/bin/notify-send \
+            -t 3000 \
+            -i edit-copy \
+            "✨ 簡轉繁成功 (tcc)" \
+            "原字: $preview_src\n轉繁: $preview_res"
+    else
+        # 引擎轉換失敗通知
+        ${pkgs.libnotify}/bin/notify-send \
+            -u critical \
+            -t 3000 \
+            -i dialog-error \
+            "❌ 轉繁失敗" \
+            "OpenCC 引擎處理文本時發生錯誤。"
+        exit 1
     fi
   '';
 
@@ -179,7 +216,7 @@ in {
   home.packages = with pkgs; [
     scc-bin            # 字幕自動轉繁 (scc)
     mega-srt-bin       # MEGA 字幕下載轉繁 (mega-srt)
-    trans-replace-bin  # 劃詞簡轉繁本土化 (trans-replace)
+    tcc-bin            # 劃詞簡轉繁本土化 (tcc)
     wtype              # 按鍵模擬工具
     opencc             # OpenCC 繁簡轉換引擎
     megacmd
