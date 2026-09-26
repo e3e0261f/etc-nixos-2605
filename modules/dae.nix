@@ -71,7 +71,6 @@ in
           cfdns: 'tcp+udp://1.1.1.1:53'
         }
         routing {
-        ip(v6) -> block
           request {
             !qname(geosite:cn) -> cfdns
 

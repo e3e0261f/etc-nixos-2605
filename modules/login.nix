@@ -5,7 +5,7 @@
   # --- 核心软件包 ---
   # 这里的包是给登录管理器使用的，tuigreet 必须安装在这里
   environment.systemPackages = with pkgs; [
-    greetd.tuigreet
+    tuigreet
     # 如果你想尝试 wlgreet，也可以加在这里
     # greetd.wlgreet 
   ];
