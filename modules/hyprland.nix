@@ -115,6 +115,7 @@
 
     -- 綁定 Ctrl + Shift + Super + A 執行繁簡轉換並複製檔案
     hl.bind(mainMod .. " + SHIFT + CTRL + A", hl.dsp.exec_cmd("fish -c scc"))
+    hl.bind(mainMod .. " + ALT + CTRL + A", hl.dsp.exec_cmd("fish -c tcc"))
 
     -- 錄影快捷鍵
     hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("record-screen area"))
@@ -198,8 +199,9 @@
     hl.on("hyprland.start", function ()
       hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
       hl.exec_cmd("fcitx5 -d")
+      hl.exec_once("wall-random")
       hl.exec_cmd("google-chrome")
-      hl.exec_cmd("qpwgraph")
+      --hl.exec_cmd("qpwgraph")
       hl.exec_cmd("discord")
       
       -- ⭐️ 核心保險：等背景程式就位後，把視角強制拉回 1 號工作區！

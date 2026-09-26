@@ -148,13 +148,41 @@ let
     end
   '';
 
+  # ───────────────────────────────────────────────────
+  # 3. trans-replace: 劃詞簡轉繁 (使用 OpenCC 台灣本土化引擎)
+  # ───────────────────────────────────────────────────
+  trans-replace-bin = pkgs.writeScriptBin "trans-replace" ''
+    #!${pkgs.bash}/bin/bash
+
+    # 1. 模擬按鍵 Ctrl+C 複製選中的簡體文字
+    ${pkgs.wtype}/bin/wtype -M ctrl -k c -m ctrl
+    sleep 0.1
+
+    # 2. 獲取選中的文字
+    selected_text=$(${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null)
+
+    # 3. 如果成功抓到文字，使用 OpenCC (s2twp.json) 進行簡體转台灣繁體本土化
+    if [ -n "$selected_text" ]; then
+        result=$(echo -n "$selected_text" | ${pkgs.opencc}/bin/opencc -c s2twp.json 2>/dev/null)
+        
+        if [ -n "$result" ]; then
+            # 4. 將轉好的繁體寫入剪貼簿，並模擬 Ctrl+V 貼回編輯框
+            echo -n "$result" | ${pkgs.wl-clipboard}/bin/wl-copy
+            sleep 0.05
+            ${pkgs.wtype}/bin/wtype -M ctrl -k v -m ctrl
+        fi
+    fi
+  '';
+
 in {
   # 裝載所有相依工具 + 我們封裝的全域指令
   home.packages = with pkgs; [
-    scc-bin       # ⭐️ 全域可用 scc
-    mega-srt-bin  # ⭐️ 全域可用 mega-srt
+    scc-bin            # 字幕自動轉繁 (scc)
+    mega-srt-bin       # MEGA 字幕下載轉繁 (mega-srt)
+    trans-replace-bin  # 劃詞簡轉繁本土化 (trans-replace)
+    wtype              # 按鍵模擬工具
+    opencc             # OpenCC 繁簡轉換引擎
     megacmd
-    opencc
     delta
     aria2
     axel
