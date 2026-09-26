@@ -62,6 +62,10 @@ in
 
             fallback: ali_h3
           }
+          response {
+            upstream(cfdns) -> accept
+            fallback: accept
+          }
         }
       }
 
