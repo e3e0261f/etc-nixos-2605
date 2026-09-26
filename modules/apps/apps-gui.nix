@@ -44,5 +44,6 @@
     # emacs-pgtk
     sl
     clash-verge-rev
+    gimp
   ];
 }
