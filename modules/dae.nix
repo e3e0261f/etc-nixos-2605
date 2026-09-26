@@ -1,4 +1,6 @@
 # /etc/nixos/modules/dae-h3.nix (或 dae.nix)
+# echo '1' > /proc/sys/net/ipv6/conf/<ifname|all|default>/disable_ipv6
+# sysctl net.ipv6.conf.<ifname|all|default>.disable_ipv6=1
 { pkgs, inputs, ... }:
 
 let
@@ -69,6 +71,19 @@ in
           googledns: 'tcp+udp://8.8.8.8:53'
           cf_doh3: 'https://cloudflare-dns.com/dns-query'
           cfdns: 'tcp+udp://1.1.1.1:53'
+          # alih3: 'h3://dns.alidns.com:443'
+          # alih3_path: 'h3://dns.alidns.com:443/dns-query'
+          # alihttp3: 'http3://dns.alidns.com:443'
+          # alihttp3_path: 'http3://dns.alidns.com:443/dns-query'
+          # ali_quic: 'quic://dns.alidns.com:853'
+
+          # h3_custom_path: 'h3://dns.example.com:443/custom-path'
+          # http3_custom_path: 'http3://dns.example.com:443/custom-path'
+
+          # ali_doh: 'https://dns.alidns.com:443'
+          # ali_dot: 'tls://dns.alidns.com:853'
+
+          # doh_custom_path: 'https://dns.example.com:443/custom-path'
         }
         routing {
           request {
@@ -77,13 +92,6 @@ in
             fallback: ali_h3
           }
           response {
-            # 强制将所有 IPv6 流量直连，即：禁止 IPv6 流量进入代理池
-            # dip(geoip(ipv6)) -> direct
-    
-            # 或者如果你想更彻底，直接拒绝掉所有 IPv6 的 DNS 解析请求
-            # 这会阻止 chrome 等程序尝试发起 IPv6 连接
-            qtype(AAAA) -> block
-
             upstream(cfdns) -> accept
             fallback: accept
           }
