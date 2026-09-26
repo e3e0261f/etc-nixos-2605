@@ -40,7 +40,8 @@ in
       }
 
       subscription {
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
+          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
       }
 
       # =======================================================
@@ -57,7 +58,7 @@ in
           request {
             qname(geosite:cn) -> alidns
             # 兜底走 alidns，絕不死鎖等待代理
-            fallback: alidns
+            fallback: googledns
           }
         }
       }
