@@ -26,7 +26,7 @@
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
 
-  networking.sysctl = {
+  boot.kernel.sysctl = {
     # 禁用 IPv6 的自动配置（Router Advertisement）
     "net.ipv6.conf.all.disable_ipv6" = 1;
     "net.ipv6.conf.default.disable_ipv6" = 1;
