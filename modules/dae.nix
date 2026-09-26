@@ -26,6 +26,12 @@ in
     # "net.ipv6.conf.all.autoconf" = 0;
     # "net.ipv6.conf.all.accept_ra" = 0;
   };
+  # 强制 NetworkManager 忽略 IPv6 设置
+  # （防止连接 Wi-Fi/有线网时依然从路由器获取 IPv6 SLAAC/DHCPv6 地址）
+  environment.etc."NetworkManager/conf.d/00-disable-ipv6.conf".text = ''
+    [connection]
+    ipv6.method=ignore
+  '';
 
 
   services.dae = {
@@ -45,7 +51,6 @@ in
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
-          disable_ipv6: true
       }
 
       subscription {
