@@ -149,12 +149,17 @@ let
   '';
 
   # ───────────────────────────────────────────────────
-  # 3. tcc: 高亮選中文字即時轉繁 (純剪貼簿操作，零模擬按鍵干擾)
+  # 3. tcc: 高亮選中文字即時轉繁 (100% Pure Bash 实现，零 Python 依赖)
   # ───────────────────────────────────────────────────
   tcc-bin = pkgs.writeScriptBin "tcc" ''
     #!${pkgs.bash}/bin/bash
 
-    # 1. 優先獲取滑鼠高亮選中的文字 (Primary Selection)
+    # 声明 UTF-8 语言环境，确保 Bash 字符串操作按字符而非字节计算
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    export DBUS_SESSION_BUS_ADDRESS=''${DBUS_SESSION_BUS_ADDRESS:-"unix:path=/run/user/$(id -u)/bus"}
+
+    # 1. 優先獲取高亮選中的文字 (Wayland Primary Selection)
     selected_text=$(${pkgs.wl-clipboard}/bin/wl-paste -p 2>/dev/null)
 
     # 2. 若高亮選區為空，退而求其次讀取主剪貼簿 (Clipboard)
@@ -162,7 +167,7 @@ let
         selected_text=$(${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null)
     fi
 
-    # 3. 未檢測到文字时提醒
+    # 3. 未檢測到文字時提醒
     if [ -z "$selected_text" ]; then
         ${pkgs.libnotify}/bin/notify-send \
             -u warning \
@@ -176,20 +181,7 @@ let
     # 4. 使用 OpenCC 進行台灣本土化簡轉繁
     result=$(echo -n "$selected_text" | ${pkgs.opencc}/bin/opencc -c s2twp.json 2>/dev/null)
 
-    if [ -n "$result" ]; then
-        # 5. 直接將轉換好的繁體文字寫入剪貼簿 (完全不使用 wtype 避免鍵盤布局彈窗)
-        echo -n "$result" | ${pkgs.wl-clipboard}/bin/wl-copy
-
-        # 6. 轉換成功桌面通知
-        preview_src=$(echo "$selected_text" | head -c 40)
-        preview_res=$(echo "$result" | head -c 40)
-
-        ${pkgs.libnotify}/bin/notify-send \
-            -t 3000 \
-            -i edit-copy \
-            "✨ 簡轉繁成功 (tcc)" \
-            "原字: $preview_src\n轉繁: $preview_res\n已放入剪貼簿，直接 Ctrl+V 貼上！"
-    else
+    if [ -z "$result" ]; then
         ${pkgs.libnotify}/bin/notify-send \
             -u critical \
             -t 3000 \
@@ -198,6 +190,24 @@ let
             "OpenCC 引擎處理文本時發生錯誤。"
         exit 1
     fi
+
+    # 5. 零 Python 依赖：直接将完整转换好的结果写入剪贴簿
+    echo -n "$result" | ${pkgs.wl-clipboard}/bin/wl-copy
+
+    # 6. 使用 Bash 4+ 原生字符切片（${var:0:30}）生成安全预览，不损坏 Icon 编码
+    # 替换掉换行符以防止通知展示错乱
+    clean_src="''${selected_text//$'\n'/ }"
+    clean_res="''${result//$'\n'/ }"
+
+    preview_src="''${clean_src:0:30}"
+    preview_res="''${clean_res:0:30}"
+
+    # 7. 桌面通知
+    ${pkgs.libnotify}/bin/notify-send \
+        -t 3000 \
+        -i edit-copy \
+        "✨ 簡轉繁成功 (tcc)" \
+        "原字: $preview_src\n轉繁: $preview_res\n已放入剪貼簿，直接 Ctrl+V 貼上！"
   '';
 
 in {
