@@ -57,8 +57,8 @@ in
         }
         routing {
           request {
-            qname(geosite:cn) -> ali_h3
-            fallback: googledns
+            qname(geosite:!cn) -> googledns
+            fallback: ali_h3
           }
         }
       }
