@@ -26,6 +26,17 @@
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
 
+  networking.sysctl = {
+    # 禁用 IPv6 的自动配置（Router Advertisement）
+    "net.ipv6.conf.all.disable_ipv6" = 1;
+    "net.ipv6.conf.default.disable_ipv6" = 1;
+    "net.ipv6.conf.lo.disable_ipv6" = 1;
+    
+    # 确保 dae 绑定的接口能够识别 IPv6 地址结构，但系统不会主动使用
+    # 如果 dae 依然报错，你可以尝试只禁用 autoconf
+    # "net.ipv6.conf.all.autoconf" = 0;
+    # "net.ipv6.conf.all.accept_ra" = 0;
+  };
   xdg.portal = {
     enable = true;
     extraPortals = [ 
