@@ -54,11 +54,12 @@ in
           alidns: 'udp://223.5.5.5:53'
           googledns: 'tcp+udp://8.8.8.8:53'
           cf_doh3: 'https://cloudflare-dns.com/dns-query'
+          cfdns: 'tcp+udp://1.1.1.1:53'
         }
         routing {
           request {
-            qname(geosite:!cn) -> googledns
-            fallback: ali_h3
+            # qname(geosite:cn) -> ali_h3
+            fallback: cfdns
           }
         }
       }
