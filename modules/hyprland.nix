@@ -96,6 +96,29 @@
     -- ⭐️ 官方原生：Alt + Tab 切換視窗並置頂層級 (誰在前誰在後)
     -- =======================================================
 
+    -- ⭐️ 3. 視窗分組與分頁（Tabbed / Groups）
+    -- Super + G：將當前視窗切換 / 加入分組
+    hl.bind(mainMod .. " + G", function()
+      hl.dispatch("togglegroup")
+    end)
+
+    -- Super + ]：順向切換同一分組內的分頁
+    hl.bind(mainMod .. " + bracketright", function()
+      hl.dispatch("changegroupactive", "f")
+    end)
+
+    -- Super + [：反向切換同一分組內的分頁
+    hl.bind(mainMod .. " + bracketleft", function()
+      hl.dispatch("changegroupactive", "b")
+    end)
+
+    -- ⭐️ 1. Warpd：純鍵盤模擬滑鼠
+    -- Super + X：Vimium 提示模式（全螢幕標出字母，按對應字母瞬間左鍵點擊目標！）
+    hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("warpd --hint"))
+
+    -- Super + C：網格逼近模式（全螢幕二分網格，可用 HJKL 像素級移動光標）
+    hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("warpd --normal"))
+
     -- 1. Alt + Tab：順向切換視窗，並將該視窗翻到最頂層
     hl.bind("ALT + Tab", function()
       hl.dispatch(hl.dsp.window.cycle_next())
