@@ -58,18 +58,6 @@
     '';
   };
   
-  services.cloudflared = {
-    enable = true;
-    tunnels = {
-      "my-bot-tunnel" = {
-        # 👇 将刚才在网页上复制的长 Token 粘贴到这里
-        token = "eyJhIjoiMGQxM2FkMWIyMDNhMWY4M2MyMjllMzRkZjhmYzY4NjkiLCJ0IjoiNjFmNTc3NmUtODZmYy00NmQwLWI0MmMtN2ExN2EzMmY1NmFjIiwicyI6IlpXRXdaRE5tTW1RdE0yTm1NaTAwTUdWaUxXRXlNR1V0TlRRMVpXSXhaRE01WlRObCJ9";
-        # 👇 映射你内网机器人的本地端口（例如 8080）
-        default = "http://localhost:8080"; 
-      };
-    };
-  };
-
   # --- 1. 核心與驅動 ---
   # boot.kernelPackages = pkgs.linuxPackages_zen;
   services.xserver.videoDrivers = [ "amdgpu" ];
