@@ -8,7 +8,7 @@ let
   # 0.10 ≈ -20dB（微弱空氣感，極度清澈通透）
   # 0.18 ≈ -15dB（黃金聽歌聲場，相當於 EasyEffects 的推薦默認值）
   # 0.30 ≈ -10dB（濃郁大廳空靈感）
-  wetLevel = 0.18;
+  wetLevel = 0.50;
 in
 {
   # 前面的 security 與 services.pipewire 基礎設置保持不變 ...
