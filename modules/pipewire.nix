@@ -293,6 +293,43 @@ in
           };
         }
 
+        # =======================================================
+        # ⭐️ 模組：PipeWire 原生 SOFA 雙耳空間聲場（空間音訊）
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "PipeWire Spatial Audio (SOFA)";
+            "media.name" = "Spatial_SOFA_Sink";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "builtin";
+                  label = "spatializer";
+                  name = "spat";
+                  config = {
+                    blocksize = 256;
+                    # ⭐️ 指向你下載的 SOFA 聲學檔案
+                    filename = "/home/rhys/DOwn/EAsyeffects-main/dtf_nh2.sofa";
+                  };
+                }
+              ];
+              inputs = [ "spat:In" ];
+              outputs = [ "spat:Out L" "spat:Out R" ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = {
+              "node.name" = "Spatial_Audio_In";
+              "media.class" = "Audio/Sink";
+            };
+            "playback.props" = {
+              "node.name" = "Spatial_Audio_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
         # ⭐️ 模組 3：純大廳混響（你的 05Hall5，滑塊獨立調濕音）
         {
           name = "libpipewire-module-filter-chain";
