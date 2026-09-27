@@ -112,12 +112,12 @@
       hl.dispatch("changegroupactive", "b")
     end)
 
-    -- ⭐️ 1. Warpd：純鍵盤模擬滑鼠
-    -- Super + X：Vimium 提示模式（全螢幕標出字母，按對應字母瞬間左鍵點擊目標！）
-    hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("warpd --hint"))
+    -- ⭐️ 1. wl-kbptr：全螢幕鍵盤模擬滑鼠（完美相容 Hyprland，告別 warpd 協議崩潰）
+    -- Super + X：呼出網格/字母標籤定位，打字即可瞬間點擊目標
+    hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("wl-kbptr"))
 
-    -- Super + C：網格逼近模式（全螢幕二分網格，可用 HJKL 像素級移動光標）
-    hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("warpd --normal"))
+    -- Super + C：二分精確逼近模式（逐級縮小區域精確漫遊）
+    hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("wl-kbptr --mode bisect"))
 
     -- 1. Alt + Tab：順向切換視窗，並將該視窗翻到最頂層
     hl.bind("ALT + Tab", function()
