@@ -46,11 +46,10 @@ in
 
       open = {
         prepend_rules = [
-          # 🌟【新增】圖片關聯規則（按 Enter 直接用中意的程序打開）
+          # ⭐️ 只要这一行即可！自动匹配所有类型的图片，调用自订的 image opener
           { mime = "image/*"; use = "image"; }
-          { name = "*.{png,jpg,jpeg,webp,gif,svg,bmp,avif,ico}"; use = "image"; }
 
-          # 原有的代碼/文本關聯規則
+          # 原有的代碼/文本關聯規則（保持使用 url）
           { mime = "text/*"; use = "edit"; }
           { url = "*.nix"; use = "edit"; }
           { url = "*.lua"; use = "edit"; }
