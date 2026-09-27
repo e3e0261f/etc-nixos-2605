@@ -128,5 +128,6 @@
   environment.systemPackages = with pkgs; [
     qpwgraph      # 專業視覺化音訊跳線盤
     pavucontrol   # 專業音訊模式控制台
+    pipewire
   ];
 }

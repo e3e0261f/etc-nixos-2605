@@ -33,7 +33,7 @@
     wl-clipboard grim slurp translate-shell
     kdePackages.ark kdePackages.dolphin kdePackages.kservice
     easyeffects pavucontrol qpwgraph crosspipe
-    appimage-run pipewire
+    appimage-run 
 
     # 解压缩
     ouch      # 主力 Rust 万能解压
