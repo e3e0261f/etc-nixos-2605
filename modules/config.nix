@@ -57,8 +57,8 @@
       /run/current-system/sw/bin/systemctl start dae
     '';
   };
-
-  services.cloudflare-tunnel = {
+  
+  services.cloudflared = {
     enable = true;
     tunnels = {
       "my-bot-tunnel" = {
