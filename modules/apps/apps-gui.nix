@@ -46,5 +46,6 @@
     clash-verge-rev
     gimp
     wl-kbptr
+    reaper
   ];
 }
