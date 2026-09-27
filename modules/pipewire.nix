@@ -17,11 +17,6 @@ in
   users.users.rhys.extraGroups = [ "audio" ];
   services.pulseaudio.enable = false;
 
-  # ⭐️ 核心修正 1：將 ladspaPlugins 算法路徑精確注入 PipeWire 的後台服務環境！
-  systemd.user.services.pipewire.environment = {
-    LADSPA_PATH = "${pkgs.ladspaPlugins}/lib/ladspa";
-  };
-
   # 2. PipeWire 核心服務
   services.pipewire = {
     enable = true;
@@ -30,6 +25,9 @@ in
     pulse.enable = true;
     jack.enable = true;
     wireplumber.enable = true;
+
+    # ⭐️ 官方正統宣告：自動合成 pipewire-ladspa-plugins 並注入後台服務！
+    extraLadspaPackages = [ pkgs.ladspaPlugins ];
 
     extraConfig.pipewire."99-pro-studio" = {
       "context.properties" = {
@@ -155,7 +153,7 @@ in
           };
         }
 
-        # 3. 雙聲道噪聲門限器（LADSPA 立體聲升級）
+        # 3. 雙聲道噪聲門限器（LADSPA 立體聲）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -188,7 +186,7 @@ in
           };
         }
 
-        # 4. 雙聲道電子管溫暖飽和器（LADSPA 立體聲升級）
+        # 4. 雙聲道電子管溫暖飽和器（LADSPA 立體聲）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -221,7 +219,7 @@ in
           };
         }
 
-        # 5. 磚牆防爆限制器（LADSPA，修正插件文件名）
+        # 5. 磚牆防爆限制器（LADSPA）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -319,11 +317,11 @@ in
     };
   };
 
-  # ⭐️ 核心修正 2：只保留正確的 pkgs.ladspaPlugins 包
+  # 3. 系統工具
   environment.systemPackages = with pkgs; [
     pipewire
     qpwgraph
     pavucontrol
-    ladspaPlugins # 包含 sc4, gate, valve, fastLookaheadLimiter 核心算法
+    ladspaPlugins
   ];
 }
