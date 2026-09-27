@@ -159,6 +159,7 @@ in
           ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
+          pname(cloudflared) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
 
           # 內網 / 本機 IP 直連
