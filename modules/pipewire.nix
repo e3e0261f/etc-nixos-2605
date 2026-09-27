@@ -102,33 +102,56 @@ in
     extraConfig.pipewire."99-studio-modules" = {
       "context.modules" = [
         # ⭐️ 模組 1：人聲 EQ（切低頻雜音 + 提亮中高頻）
-        {
+                {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Vocal EQ";
+            "node.description" = "Studio Vocal EQ (Stereo)";
             "media.name" = "Studio_Vocal_EQ";
             "filter.graph" = {
               nodes = [
-                # 80Hz 以下切除（防噴麥）
+                # --- 左聲道濾波鏈 ---
                 {
                   type = "builtin";
                   label = "bq_highpass";
-                  name = "hp_filter";
-                  control = { "Freq" = 80.0; "Q" = 0.707; };
+                  name = "hp_l";
+                  control = { "Freq" = 80.0; "Q" = 0.707; }; # 80Hz 防噴麥切除
                 }
-                # 3000Hz 人聲清晰度
                 {
                   type = "builtin";
                   label = "bq_peaking";
-                  name = "presence";
-                  control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.0; };
+                  name = "presence_l";
+                  control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.5; }; # 3kHz 人聲清晰度
+                }
+
+                # --- 右聲道濾波鏈 ---
+                {
+                  type = "builtin";
+                  label = "bq_highpass";
+                  name = "hp_r";
+                  control = { "Freq" = 80.0; "Q" = 0.707; };
+                }
+                {
+                  type = "builtin";
+                  label = "bq_peaking";
+                  name = "presence_r";
+                  control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.5; };
                 }
               ];
-              links = [ { output = "hp_filter:Out"; input = "presence:In"; } ];
-              inputs = [ "hp_filter:In" ];
-              outputs = [ "presence:Out" ];
+
+              # 內部左右聲道各自串聯
+              links = [
+                { output = "hp_l:Out"; input = "presence_l:In"; }
+                { output = "hp_r:Out"; input = "presence_r:In"; }
+              ];
+
+              # ⭐️ 核心：導出標準立體聲左右接口！
+              inputs = [ "hp_l:In" "hp_r:In" ];
+              outputs = [ "presence_l:Out" "presence_r:Out" ];
             };
+
+            # 聲明為立體聲（FL / FR）
+            "audio.position" = [ "FL" "FR" ];
             "capture.props" = {
               "node.name" = "Studio_EQ_In";
               "media.class" = "Audio/Sink";
