@@ -48,8 +48,8 @@ in
           lan_interface: auto
           # ⭐️ 核心修復 2：鎖定你的 Wi-Fi 網卡，加入快速重連自愈 (5s)，杜絕登出斷網！
           wan_interface: wlp8s0, auto
-          #dial_mode: domain
-          dial_mode: ip
+          dial_mode: domain
+          # dial_mode: ip
           log_level: info
           auto_config_kernel_parameter: true
           tproxy_port: 7890
@@ -161,7 +161,7 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
-          ipversion(6) -> direct
+          ipversion(6) -> black
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
