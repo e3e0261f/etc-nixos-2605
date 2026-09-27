@@ -2,30 +2,30 @@
 { pkgs, ... }:
 
 {
-  # ⭐️ SSH 模組：遇到 github.com 自動走 443 埠（穿透防火牆）
+  # ⭐️ 1. SSH 模組：將所有 SSH 流量引導至 GitHub 的 443 穿透埠（dae 代理必備）
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
 
     settings = {
-    "github.com" = {
-      hostname = "github.com";
-      # ... 其他属性保持不变
+      "github.com" = {
+        hostname = "ssh.github.com";
+        port = 443;
+        user = "git";
+        serverAliveInterval = 60;
+      };
     };
   };
-};
 
-  # ⭐️ Git 模組：配置簽名、預設分支，以及全自動把 HTTPS 轉向 SSH (GPG)
+  # ⭐️ 2. Git 模組：配置讀寫分離加速
   programs.git = {
     enable = true;
 
-    # 1. 签名配置（保留在顶层，或移动到 settings）
     signing = {
       key = "31C81A9DE1AB870A8EDC3486D7C2DF9FA0283056";
       signByDefault = true;
     };
 
-    # 2. 所有原本的 userName, userEmail 和 extraConfig 统统塞进 settings 里
     settings = {
       user = {
         name = "Rhys";
@@ -33,11 +33,19 @@
       };
 
       init.defaultBranch = "main";
-      commit.gpgsign = false;
+      commit.gpgsign = true;
 
-      # ⭐️ 核心宣告式規則：全域將所有 https://github.com/ 自動替換為 SSH 協議（走 GPG 密鑰握手）
-      # git clone https://v4.gh-proxy.org/https://github.com/ye3e0261f/etc-nixos-2605.git
+      # 🚀【讀加速】：只要你 clone 或 fetch "https://github.com/"，自動換成 gh-proxy 加速節點
       url."https://v4.gh-proxy.org/https://github.com/".insteadOf = "https://github.com/";
+
+      # 🔐【寫安全】：一旦觸發 git push，自動攔截並轉換為 SSH 協議推送
+      # 無論本地 Remote 記錄的是原版 URL 還是被替換後的加速站 URL，均轉回 SSH 走 443 埠
+      url."git@github.com:" = {
+        pushInsteadOf = [
+          "https://github.com/"
+          "https://v4.gh-proxy.org/https://github.com/"
+        ];
+      };
     };
   };
 }
