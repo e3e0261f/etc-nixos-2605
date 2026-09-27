@@ -89,7 +89,7 @@
   };
 
   # 載入 BBR 核心模組
-  boot.kernelModules = [ "tcp_bbr" ];
+  boot.kernelModules = [ "tcp_bbr" "uinput" ];
 
   # --- 3. 系統核心與 Nix 設定 ---
   nix.settings = {
@@ -164,7 +164,7 @@
   users.users."rhys" = {
     isNormalUser = true;
     description = "Rhys";
-    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" ];
+    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" "input" ];
     shell = pkgs.fish;
   };
   programs.fish.enable = true;
@@ -202,7 +202,7 @@
   hyprland.withUWSM = true;
   hyprland.xwayland.enable = true;
   };
-
+  
   #允许所有非自由软件
   nixpkgs.config.allowUnfree = true;
   # 自动休眠
