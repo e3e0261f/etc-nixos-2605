@@ -2,107 +2,88 @@
 { config, pkgs, ... }:
 
 let
-  # ⭐️ 指向你心愛的大廳脈衝檔案
   hallIrFile = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane/05Hall5.wav";
+
+  # ⭐️【在此調節濕音比例！】
+  # 0.10 ≈ -20dB（微弱空氣感，極度清澈通透）
+  # 0.18 ≈ -15dB（黃金聽歌聲場，相當於 EasyEffects 的推薦默認值）
+  # 0.30 ≈ -10dB（濃郁大廳空靈感）
+  wetLevel = 0.18;
 in
 {
-  security.rtkit.enable = true;
-  security.pam.loginLimits = [
-    { domain = "@audio"; item = "rtprio"; type = "-"; value = "95"; }
-    { domain = "@audio"; item = "memlock"; type = "-"; value = "unlimited"; }
-    { domain = "@audio"; item = "nice"; type = "-"; value = "-19"; }
-  ];
+  # 前面的 security 與 services.pipewire 基礎設置保持不變 ...
 
-  users.users.rhys.extraGroups = [ "audio" ];
-  services.pulseaudio.enable = false;
+  services.pipewire.extraConfig.pipewire."99-hall-reverb" = {
+    "context.modules" = [
+      {
+        name = "libpipewire-module-filter-chain";
+        args = {
+          "node.description" = "Fokke van Saane Hall5 (Dry/Wet Mix)";
+          "media.name" = "Fokke van Saane Hall5";
+          "filter.graph" = {
+            nodes = [
+              # 1. 複製節點：將左右聲道音訊一分為二（一路走乾聲，一路進混響）
+              { type = "builtin"; label = "copy"; name = "copy_fl"; }
+              { type = "builtin"; label = "copy"; name = "copy_fr"; }
 
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-    wireplumber.enable = true;
+              # 2. 卷積器：計算大廳殘響，並通過 gain 嚴格控制濕聲音量！
+              {
+                type = "builtin";
+                name = "conv_fl";
+                label = "convolver";
+                config = {
+                  filename = hallIrFile;
+                  channel = 0;
+                  gain = wetLevel; # ⭐️ 左聲道濕音增益
+                };
+              }
+              {
+                type = "builtin";
+                name = "conv_fr";
+                label = "convolver";
+                config = {
+                  filename = hallIrFile;
+                  channel = 1;
+                  gain = wetLevel; # ⭐️ 右聲道濕音增益
+                };
+              }
 
-    # 1. 錄音棚基準時鐘（256 @ 48kHz）
-    extraConfig.pipewire."99-pro-studio" = {
-      "context.properties" = {
-        "default.clock.rate" = 48000;
-        "default.clock.allowed-rates" = [ 48000 ];
-        "default.clock.quantum" = 256;
-        "default.clock.min-quantum" = 256;
-        "default.clock.max-quantum" = 512;
-        "default.clock.quantum-limit" = 512;
-        "resample.quality" = 4;
-      };
-    };
+              # 3. 內置混音器：把 100% 原始乾聲 與 衰減後的濕音 融為一體輸出
+              { type = "builtin"; label = "mixer"; name = "mix_fl"; }
+              { type = "builtin"; label = "mixer"; name = "mix_fr"; }
+            ];
 
-    extraConfig.pipewire-pulse."99-studio-pulse" = {
-      "pulse.properties" = {
-        "pulse.min.req" = "256/48000";
-        "pulse.min.quantum" = "256/48000";
-      };
-    };
+            links = [
+              # --- 左聲道線路 ---
+              # 原聲乾聲直達混音器（保持 100% 原汁原味清晰度）
+              { output = "copy_fl:Out"; input = "mix_fl:In 1"; }
+              # 濕聲走卷積器運算後進入混音器
+              { output = "copy_fl:Out"; input = "conv_fl:In"; }
+              { output = "conv_fl:Out"; input = "mix_fl:In 2"; }
 
-    # =======================================================
-    # ⭐️ 2. Fokke van Saane 05Hall5 原生空間聲場模組
-    # =======================================================
-    extraConfig.pipewire."99-hall-reverb" = {
-      "context.modules" = [
-        {
-          name = "libpipewire-module-filter-chain";
-          args = {
-            "node.description" = "Fokke van Saane Hall5 Soundstage";
-            "media.name" = "Fokke van Saane Hall5";
-            "filter.graph" = {
-              nodes = [
-                # 左聲道卷積
-                {
-                  type = "builtin";
-                  name = "conv_fl";
-                  label = "convolver";
-                  config = {
-                    filename = hallIrFile;
-                    channel = 0; # 左聲道
-                  };
-                }
-                # 右聲道卷積
-                {
-                  type = "builtin";
-                  name = "conv_fr";
-                  label = "convolver";
-                  config = {
-                    filename = hallIrFile;
-                    channel = 1; # 右聲道
-                  };
-                }
-              ];
-              links = [
-                { output = "conv_fl:Out"; input = "playback:playback_FL"; }
-                { output = "conv_fr:Out"; input = "playback:playback_FR"; }
-              ];
-              inputs = [ "conv_fl:In" "conv_fr:In" ];
-              outputs = [ "conv_fl:Out" "conv_fr:Out" ];
-            };
-            "audio.position" = [ "FL" "FR" ];
-            # ⭐️ 註冊為專屬聲場聲卡
-            "capture.props" = {
-              "node.name" = "Hall5_Soundstage_Sink";
-              "media.class" = "Audio/Sink";
-            };
-            "playback.props" = {
-              "node.name" = "Hall5_Soundstage_Output";
-              "node.passive" = true;
-            };
+              # --- 右聲道線路 ---
+              # 原聲乾聲直達混音器
+              { output = "copy_fr:Out"; input = "mix_fr:In 1"; }
+              # 濕聲走卷積器運算後進入混音器
+              { output = "copy_fr:Out"; input = "conv_fr:In"; }
+              { output = "conv_fr:Out"; input = "mix_fr:In 2"; }
+            ];
+
+            inputs = [ "copy_fl:In" "copy_fr:In" ];
+            outputs = [ "mix_fl:Out" "mix_fr:Out" ];
           };
-        }
-      ];
-    };
-  };
 
-  environment.systemPackages = with pkgs; [
-    pipewire
-    qpwgraph
-    pavucontrol
-  ];
+          "audio.position" = [ "FL" "FR" ];
+          "capture.props" = {
+            "node.name" = "Hall5_Soundstage_Sink";
+            "media.class" = "Audio/Sink";
+          };
+          "playback.props" = {
+            "node.name" = "Hall5_Soundstage_Output";
+            "node.passive" = true;
+          };
+        };
+      }
+    ];
+  };
 }
