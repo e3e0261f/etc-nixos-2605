@@ -184,6 +184,14 @@ in
           domain(suffix: z.luxury, suffix: rockey-repo.org) -> direct(must)
           domain(suffix: edu.cn) -> direct(must)
 
+          # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
+          domain(suffix: discord.gg) -> for146
+          domain(suffix: discord.com) -> for146
+          domain(suffix: discordapp.com) -> for146
+          domain(suffix: discordapp.net) -> for146
+          domain(suffix: discord.media) -> for146
+          domain(suffix: gateway.discord.gg) -> for146
+
           # ⭐️【第 2 級】：Google AI 專屬池
           domain(suffix: aistudio.google.com) -> google_ai
           domain(suffix: google.dev, suffix: ai.google.dev) -> google_ai
