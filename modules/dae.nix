@@ -48,7 +48,8 @@ in
           lan_interface: auto
           # ⭐️ 核心修復 2：鎖定你的 Wi-Fi 網卡，加入快速重連自愈 (5s)，杜絕登出斷網！
           wan_interface: wlp8s0, auto
-          dial_mode: domain
+          #dial_mode: domain
+          dial_mode: ip
           log_level: info
           auto_config_kernel_parameter: true
           tproxy_port: 7890
@@ -101,11 +102,16 @@ in
       #     # http3_custom_path: 'http3://dns.example.com:443/custom-path'
 
       #     # ali_doh: 'https://dns.alidns.com:443'
-      #     # ali_dot: 'tls://dns.alidns.com:853'
+             # ali_dot: 'tls://dns.alidns.com:853'
+        ial_mode: ip
 
-      #     # doh_custom_path: 'https://dns.example.com:443/custom-path'
-      #     # udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
-      #     # check_interval: 30s
+      dial_mode: ip
+             # doh_custom_path: 'https://dns.example.com:443/custom-path'
+      # dial_mode: ip
+             # udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
+      # dial_mode: ip
+             # check_interval: 30s
+      # dial_mode: ip
       #     # 
       #   }
       #   routing {
