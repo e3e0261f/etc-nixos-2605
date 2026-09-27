@@ -201,6 +201,98 @@ in
           };
         }
 
+        # =======================================================
+        # ⭐️ 模組 A：專業人聲噪聲門限（Noise Gate）
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Noise Gate";
+            "media.name" = "Studio_Noise_Gate";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  plugin = "gate_1410";
+                  label = "gate";
+                  control = {
+                    "Threshold (dB)" = -40.0; # 低於 -40dB 視為環境雜音直接靜音
+                    "Attack (ms)" = 2.0;       # 說話時 2 毫秒極速開門放行
+                    "Hold (ms)" = 50.0;        # 說完話保持 50 毫秒防吃字
+                    "Decay (ms)" = 100.0;      # 平滑關閉
+                    "Range (dB)" = -90.0;      # 關閉時衰減到極致死寂
+                  };
+                }
+              ];
+              inputs = [ "gate:Input" ];
+              outputs = [ "gate:Output" ];
+            };
+            "capture.props" = { "node.name" = "Studio_Gate_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Gate_Out"; "node.passive" = true; };
+          };
+        }
+
+        # =======================================================
+        # ⭐️ 模組 B：電子管溫暖飽和器（Tube / Valve Saturation）
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Tube Warmth";
+            "media.name" = "Studio_Tube_Warmth";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  plugin = "valve_1209";
+                  label = "valve";
+                  control = {
+                    "Warmth level" = 0.4;     # 0.0 ~ 1.0，適度溫暖染色
+                    "Distortion level" = 0.0; # 保持純淨，不產生破音失真
+                  };
+                }
+              ];
+              inputs = [ "valve:Input" ];
+              outputs = [ "valve:Output" ];
+            };
+            "capture.props" = { "node.name" = "Studio_Tube_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Tube_Out"; "node.passive" = true; };
+          };
+        }
+
+        # =======================================================
+        # ⭐️ 模組 C：磚牆防爆限制器（Brickwall Limiter）
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Brickwall Limiter";
+            "media.name" = "Studio_Brickwall_Limiter";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  plugin = "fastLookaheadLimiter_1913";
+                  label = "fastLookaheadLimiter";
+                  control = {
+                    "Input gain (dB)" = 0.0;
+                    "Limit (dB)" = -0.5;      # 死守 -0.5dB 物理防爆天花板
+                    "Release time (s)" = 0.05;
+                  };
+                }
+              ];
+              inputs = [ "fastLookaheadLimiter:Input 1" "fastLookaheadLimiter:Input 2" ];
+              outputs = [ "fastLookaheadLimiter:Output 1" "fastLookaheadLimiter:Output 2" ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
+          };
+        }
+
         # ⭐️ 模組 3：純大廳混響（你的 05Hall5，滑塊獨立調濕音）
         {
           name = "libpipewire-module-filter-chain";
