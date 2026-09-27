@@ -46,5 +46,6 @@
     clash-verge-rev
     gimp
     warpd
+    wl-kbptr
   ];
 }
