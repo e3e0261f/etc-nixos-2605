@@ -70,96 +70,165 @@ in
     # -------------------------------------------------------
     # 🎛️ WirePlumber：專業音訊鎖定與精準物理通道黑名單
     # -------------------------------------------------------
-    wireplumber.extraConfig."10-pro-audio-profile" = {
-      "monitor.alsa.rules" = [
-        # A. 聲卡設備級別：默認全面應用「專業音訊 (pro-audio)」Profile
-        {
-          matches = [ { "device.name" = "~alsa_card.*"; } ];
-          actions = {
-            update-props = {
-              "device.profile" = "pro-audio";
+  wireplumber.extraConfig."10-pro-audio-profile" = {
+        "monitor.alsa.rules" = [
+          # A. 聲卡設備級別：默認全面應用「專業音訊 (pro-audio)」Profile
+          {
+            matches = [ { "device.name" = "~alsa_card.*"; } ];
+            actions = {
+              update-props = {
+                "device.profile" = "pro-audio";
+              };
             };
-          };
-        }
+          }
 
-        # B. 聲卡節點防休眠與 256 物理週期對齊
-        {
-          matches = [ { "node.name" = "~alsa_.*"; } ];
-          actions = {
-            update-props = {
-              "session.suspend-timeout-seconds" = 0;
-              "api.alsa.period-size" = 256;
-              "api.alsa.headroom" = 64;
+          # B. 聲卡節點防休眠與 256 物理週期對齊
+          {
+            matches = [ { "node.name" = "~alsa_.*"; } ];
+            actions = {
+              update-props = {
+                "session.suspend-timeout-seconds" = 0;
+                "api.alsa.period-size" = 256;
+                "api.alsa.headroom" = 64;
+              };
             };
-          };
-        }
+          }
 
-        # C. ⭐️ 精準黑名單：徹底隱藏所有未接線的幽靈通道！
-        {
-          matches = [
-            # 屏蔽主板未接線的副聲卡 (內部音效 Pro 1)
-            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-2"; }
+          # C. ⭐️ 精準黑名單：徹底隱藏所有未接線的幽靈通道！
+          {
+            matches = [
+              # 屏蔽主板未接線的副聲卡 (內部音效 Pro 1)
+              { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-2"; }
 
-            # 屏蔽顯卡未插線的 5 個 DisplayPort/HDMI 輸出
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-3"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-7"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-8"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-10"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-11"; }
-          ];
-          actions = {
-            update-props = {
-              "node.disabled" = true; # 徹底在系統中註銷並隱藏
+              # 屏蔽顯卡未插線的 5 個 DisplayPort/HDMI 輸出
+              { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-3"; }
+              { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-7"; }
+              { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-8"; }
+              { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-10"; }
+              { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-11"; }
+            ];
+            actions = {
+              update-props = {
+                "node.disabled" = true; # 徹底在系統中註銷並隱藏
+              };
             };
-          };
-        }
-      ];
-    };
+          }
+        ];
+      };
 
-    # =======================================================
-    # 🏛️ Fokke van Saane 05Hall5 錄音棚純濕聲總線（Pure Wet Reverb）
-    # =======================================================
-    extraConfig.pipewire."99-hall-reverb" = {
+        services.pipewire.extraConfig.pipewire."99-studio-modules" = {
       "context.modules" = [
+        # =======================================================
+        # ⭐️ 模組 1：原生人聲 EQ（切低頻 + 提亮高頻）
+        # =======================================================
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            # ⭐️ 標記為純濕聲推子
-            "node.description" = "Fokke van Saane Hall5 (Wet Reverb Fader)";
+            "node.description" = "Studio Vocal EQ";
+            "media.name" = "Studio_Vocal_EQ";
+            "filter.graph" = {
+              nodes = [
+                # 高通濾波（80Hz 以下切除，去除噴麥、桌子震動低頻雜音）
+                {
+                  type = "builtin";
+                  label = "bq_highpass";
+                  name = "hp_filter";
+                  control = { "Freq" = 80.0; "Q" = 0.707; };
+                }
+                # 3000Hz 人聲清晰度微調
+                {
+                  type = "builtin";
+                  label = "bq_peaking";
+                  name = "presence";
+                  control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.0; };
+                }
+              ];
+              links = [
+                { output = "hp_filter:Out"; input = "presence:In"; }
+              ];
+              inputs = [ "hp_filter:In" ];
+              outputs = [ "presence:Out" ];
+            };
+            "capture.props" = {
+              "node.name" = "Studio_EQ_In";
+              "media.class" = "Audio/Sink";
+            };
+            "playback.props" = {
+              "node.name" = "Studio_EQ_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+        # =======================================================
+        # ⭐️ 模組 2：經典人聲壓縮器（壓制爆音、使聲音飽滿）
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Vocal Compressor";
+            "media.name" = "Studio_Vocal_Compressor";
+            "filter.graph" = {
+              nodes = [
+                {
+                  # 調用經典 SC4 LADSPA 專業硬件級壓縮器
+                  type = "ladspa";
+                  plugin = "sc4_1882";
+                  label = "sc4";
+                  control = {
+                    "RMS/peak" = 0.5;          # 兼顧峰值與平均響度
+                    "Attack time (ms)" = 20.0;  # 起控時間
+                    "Release time (ms)" = 150.0;# 釋放時間
+                    "Threshold level (dB)" = -18.0; # 閾值（超過 -18dB 開始壓縮）
+                    "Ratio (1:n)" = 3.5;       # 壓縮比 3.5:1
+                    "Knee radius (dB)" = 3.0;   # 軟拐點
+                    "Makeup gain (dB)" = 3.0;   # 補償增益
+                  };
+                }
+              ];
+              inputs = [ "sc4:Left input" "sc4:Right input" ];
+              outputs = [ "sc4:Left output" "sc4:Right output" ];
+            };
+            "capture.props" = {
+              "node.name" = "Studio_Compressor_In";
+              "media.class" = "Audio/Sink";
+            };
+            "playback.props" = {
+              "node.name" = "Studio_Compressor_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+        # =======================================================
+        # ⭐️ 模組 3：純大廳混響（你的 05Hall5）
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Fokke van Saane Hall5";
             "media.name" = "Hall5 Wet Reverb";
             "filter.graph" = {
               nodes = [
-                # 只有卷積器，無任何乾聲干擾！
                 {
                   type = "builtin";
                   label = "convolver";
                   name = "convFL";
-                  config = {
-                    filename = hallIrFile;
-                    channel = 0;
-                    # 增益設為 1.0，完全交由 pavucontrol 滑塊動態控制濕音大小
-                    gain = 1.0;
-                  };
+                  config = { filename = hallIrFile; channel = 0; gain = 1.0; };
                 }
                 {
                   type = "builtin";
                   label = "convolver";
                   name = "convFR";
-                  config = {
-                    filename = hallIrFile;
-                    channel = 1;
-                    gain = 1.0;
-                  };
+                  config = { filename = hallIrFile; channel = 1; gain = 1.0; };
                 }
               ];
-
-              # 音訊直接穿過卷積器，輸出 100% 純大廳殘響
               inputs = [ "convFL:In" "convFR:In" ];
               outputs = [ "convFL:Out" "convFR:Out" ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
             "capture.props" = {
               "node.name" = "Hall5_Soundstage_Sink";
               "media.class" = "Audio/Sink";
@@ -167,14 +236,13 @@ in
             "playback.props" = {
               "node.name" = "Hall5_Soundstage_Output";
               "node.passive" = true;
-              # ⭐️ 混響計算完畢後，自動發送給你的主板耳機聲卡！
-              "target.object" = "alsa_output.pci-0000_00_1b.0.pro-output-0";
             };
           };
         }
       ];
     };
   };
+
 
   # =======================================================
   # 3. 專業音訊工具鏈
@@ -183,5 +251,7 @@ in
     pipewire      # pw-top, pw-jack, pw-cli, pw-mon 核心診斷工具
     qpwgraph      # 專業視覺化跳線盤
     pavucontrol   # 音訊控制面板
+    ladspaPlugins # 提供 sc4 等工業級壓縮器
+    swh_lv2
   ];
 }
