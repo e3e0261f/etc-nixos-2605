@@ -45,5 +45,6 @@
     sl
     clash-verge-rev
     gimp
+    warpd
   ];
 }
