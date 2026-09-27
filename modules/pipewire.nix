@@ -75,6 +75,41 @@
     };
   };
 
+  extraConfig.pipewire."99-convolver-filter" = {
+      "context.modules" = [
+        {
+          name = "libpipewire-module-filter-chain";
+          args = {
+            "node.description" = "Studio Calibration Convolver";
+            "media.name" = "Studio Calibration Sink";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "builtin";
+                  name = "convolver";
+                  label = "convolver";
+                  config = {
+                    # 指向你的双声道脉冲 IR 文件
+                    filename = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane/05Hall5.wav";
+                    channel = 0;
+                  };
+                }
+              ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = {
+              "node.name" = "effect_input.convolver";
+              "media.class" = "Audio/Sink"; # 将自己暴露为一个普通的声卡，设为默认输出即可
+            };
+            "playback.props" = {
+              "node.name" = "effect_output.convolver";
+              "node.passive" = true;
+            };
+          };
+        }
+      ];
+    };
+
   # ⭐️ 錄音棚必備專業音訊調音台（可視覺化連線，看清每一條音軌）
   environment.systemPackages = with pkgs; [
     qpwgraph      # 視覺化音訊跳線盤（錄音必備神器）
