@@ -116,25 +116,21 @@ in
       ];
     };
 
-    # -------------------------------------------------------
-    # 🏛️ Fokke van Saane 05Hall5 原生內核卷積混響（乾濕混合）
-    # -------------------------------------------------------
+    # =======================================================
+    # 🏛️ Fokke van Saane 05Hall5 錄音棚純濕聲總線（Pure Wet Reverb）
+    # =======================================================
     extraConfig.pipewire."99-hall-reverb" = {
       "context.modules" = [
         {
           name = "libpipewire-module-filter-chain";
-          # ⭐️ 熔斷保護：即使路徑有微瑕，也絕不影響全局聲音！
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Fokke van Saane Hall5 Soundstage";
-            "media.name" = "Fokke van Saane Hall5";
+            # ⭐️ 標記為純濕聲推子
+            "node.description" = "Fokke van Saane Hall5 (Wet Reverb Fader)";
+            "media.name" = "Hall5 Wet Reverb";
             "filter.graph" = {
               nodes = [
-                # 複製節點：左右聲道分流
-                { type = "builtin"; label = "copy"; name = "copyFL"; }
-                { type = "builtin"; label = "copy"; name = "copyFR"; }
-
-                # 卷積器：計算大廳濕音殘響
+                # 只有卷積器，無任何乾聲干擾！
                 {
                   type = "builtin";
                   label = "convolver";
@@ -142,7 +138,8 @@ in
                   config = {
                     filename = hallIrFile;
                     channel = 0;
-                    gain = wetLevel;
+                    # 增益設為 1.0，完全交由 pavucontrol 滑塊動態控制濕音大小
+                    gain = 1.0;
                   };
                 }
                 {
@@ -152,29 +149,14 @@ in
                   config = {
                     filename = hallIrFile;
                     channel = 1;
-                    gain = wetLevel;
+                    gain = 1.0;
                   };
                 }
-
-                # 混音器：把 100% 原始乾聲 與 衰減後的濕音 融合
-                { type = "builtin"; label = "mixer"; name = "mixFL"; }
-                { type = "builtin"; label = "mixer"; name = "mixFR"; }
               ];
 
-              links = [
-                # 左聲道：乾聲直通混音器 In 1；濕聲進卷積器後入 In 2
-                { output = "copyFL:Out"; input = "mixFL:In 1"; }
-                { output = "copyFL:Out"; input = "convFL:In"; }
-                { output = "convFL:Out"; input = "mixFL:In 2"; }
-
-                # 右聲道：乾聲直通混音器 In 1；濕聲進卷積器後入 In 2
-                { output = "copyFR:Out"; input = "mixFR:In 1"; }
-                { output = "copyFR:Out"; input = "convFR:In"; }
-                { output = "convFR:Out"; input = "mixFR:In 2"; }
-              ];
-
-              inputs = [ "copyFL:In" "copyFR:In" ];
-              outputs = [ "mixFL:Out" "mixFR:Out" ];
+              # 音訊直接穿過卷積器，輸出 100% 純大廳殘響
+              inputs = [ "convFL:In" "convFR:In" ];
+              outputs = [ "convFL:Out" "convFR:Out" ];
             };
 
             "audio.position" = [ "FL" "FR" ];
@@ -185,6 +167,8 @@ in
             "playback.props" = {
               "node.name" = "Hall5_Soundstage_Output";
               "node.passive" = true;
+              # ⭐️ 混響計算完畢後，自動發送給你的主板耳機聲卡！
+              "target.object" = "alsa_output.pci-0000_00_1b.0.pro-output-0";
             };
           };
         }
