@@ -12,6 +12,7 @@
     };
 
     settings = {
+      confirm_os_window_close = 0;
       background_opacity = "0.65";
       window_padding_width = 10;
       # ⭐️ 滑鼠反白選取文字時自動進剪貼簿，終端機日常完全不需要按鍵複製
