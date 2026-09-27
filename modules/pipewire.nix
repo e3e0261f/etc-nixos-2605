@@ -98,7 +98,7 @@ in
         {
           matches = [
             # 屏蔽主板未接線的副聲卡 (內部音效 Pro 1)
-            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-1"; }
+            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-2"; }
 
             # 屏蔽顯卡未插線的 5 個 DisplayPort/HDMI 輸出
             { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-3"; }
