@@ -11,7 +11,7 @@
     polkit_gnome networkmanagerapplet
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc
-    mpv
+    mpv cloudflared
     
     # 桌面與視窗管理器核心組件
     hyprlauncher hyprshutdown wlogout
