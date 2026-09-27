@@ -95,24 +95,7 @@
     -- =======================================================
     -- ⭐️ 官方原生：Alt + Tab 切換視窗並置頂層級 (誰在前誰在後)
     -- =======================================================
-
-    -- ⭐️ 3. 視窗分組與分頁（Tabbed / Groups）
-    -- Super + G：將當前視窗切換 / 加入分組
-    hl.bind(mainMod .. " + G", function()
-      hl.dispatch("togglegroup")
-    end)
-
-    -- Super + ]：順向切換同一分組內的分頁
-    hl.bind(mainMod .. " + bracketright", function()
-      hl.dispatch("changegroupactive", "f")
-    end)
-
-    -- Super + [：反向切換同一分組內的分頁
-    hl.bind(mainMod .. " + bracketleft", function()
-      hl.dispatch("changegroupactive", "b")
-    end)
-
-    -- ⭐️ 1. wl-kbptr：全螢幕鍵盤模擬滑鼠（完美相容 Hyprland，告別 warpd 協議崩潰）
+    
     -- Super + X：呼出網格/字母標籤定位，打字即可瞬間點擊目標
     hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("wl-kbptr"))
 
