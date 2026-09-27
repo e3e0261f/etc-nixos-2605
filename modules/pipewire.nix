@@ -3,11 +3,10 @@
 
 let
   hallIrFile = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane/05Hall5.wav";
+  sofaFile   = "/home/rhys/DOwn/EAsyeffects-main/dtf_nh2.sofa";
 in
 {
-  # =======================================================
   # 1. 內核硬實時權限
-  # =======================================================
   security.rtkit.enable = true;
   security.pam.loginLimits = [
     { domain = "@audio"; item = "rtprio";  type = "-"; value = "95"; }
@@ -18,9 +17,12 @@ in
   users.users.rhys.extraGroups = [ "audio" ];
   services.pulseaudio.enable = false;
 
-  # =======================================================
-  # 2. PipeWire 核心服務（注意內部不再寫 services.pipewire）
-  # =======================================================
+  # ⭐️ 核心修正 1：直接把 LADSPA 算法庫路徑注入 PipeWire 的 systemd 守護進程環境！
+  systemd.user.services.pipewire.environment = {
+    LADSPA_PATH = "${pkgs.swh_plugins}/lib/ladspa:${pkgs.ladspaPlugins}/lib/ladspa";
+  };
+
+  # 2. PipeWire 核心服務
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -29,9 +31,6 @@ in
     jack.enable = true;
     wireplumber.enable = true;
 
-    # -------------------------------------------------------
-    # 🎙️ 主時鐘（256 @ 48kHz）
-    # -------------------------------------------------------
     extraConfig.pipewire."99-pro-studio" = {
       "context.properties" = {
         "default.clock.rate" = 48000;
@@ -51,9 +50,6 @@ in
       };
     };
 
-    # -------------------------------------------------------
-    # 🎛️ WirePlumber：專業音訊與通道黑名單
-    # -------------------------------------------------------
     wireplumber.extraConfig."10-pro-audio-profile" = {
       "monitor.alsa.rules" = [
         {
@@ -70,7 +66,6 @@ in
             };
           };
         }
-        # 鎖定真實麥克風為最高優先級
         {
           matches = [ { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; } ];
           actions = {
@@ -80,7 +75,6 @@ in
             };
           };
         }
-        # 屏蔽多餘無用通道
         {
           matches = [
             { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-1"; }
@@ -96,13 +90,13 @@ in
       ];
     };
 
-    # -------------------------------------------------------
-    # 🎚️ 3 塊原生錄音棚效果器模組（EQ + 壓縮器 + 大廳混響）
-    # -------------------------------------------------------
+    # =======================================================
+    # 🎚️ 錄音棚全家桶效果器機架
+    # =======================================================
     extraConfig.pipewire."99-studio-modules" = {
       "context.modules" = [
-        # ⭐️ 模組 1：人聲 EQ（切低頻雜音 + 提亮中高頻）
-                {
+        # 1. 立體聲 EQ（內置）
+        {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
@@ -110,21 +104,18 @@ in
             "media.name" = "Studio_Vocal_EQ";
             "filter.graph" = {
               nodes = [
-                # --- 左聲道濾波鏈 ---
                 {
                   type = "builtin";
                   label = "bq_highpass";
                   name = "hp_l";
-                  control = { "Freq" = 80.0; "Q" = 0.707; }; # 80Hz 防噴麥切除
+                  control = { "Freq" = 80.0; "Q" = 0.707; };
                 }
                 {
                   type = "builtin";
                   label = "bq_peaking";
                   name = "presence_l";
-                  control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.5; }; # 3kHz 人聲清晰度
+                  control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.5; };
                 }
-
-                # --- 右聲道濾波鏈 ---
                 {
                   type = "builtin";
                   label = "bq_highpass";
@@ -138,19 +129,13 @@ in
                   control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.5; };
                 }
               ];
-
-              # 內部左右聲道各自串聯
               links = [
                 { output = "hp_l:Out"; input = "presence_l:In"; }
                 { output = "hp_r:Out"; input = "presence_r:In"; }
               ];
-
-              # ⭐️ 核心：導出標準立體聲左右接口！
               inputs = [ "hp_l:In" "hp_r:In" ];
               outputs = [ "presence_l:Out" "presence_r:Out" ];
             };
-
-            # 聲明為立體聲（FL / FR）
             "audio.position" = [ "FL" "FR" ];
             "capture.props" = {
               "node.name" = "Studio_EQ_In";
@@ -163,7 +148,7 @@ in
           };
         }
 
-        # ⭐️ 模組 2：經典 SC4 硬件級人聲壓縮器
+        # 2. 經典 SC4 立體聲壓縮器（LADSPA）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -190,6 +175,7 @@ in
               inputs = [ "sc4:Left input" "sc4:Right input" ];
               outputs = [ "sc4:Left output" "sc4:Right output" ];
             };
+            "audio.position" = [ "FL" "FR" ];
             "capture.props" = {
               "node.name" = "Studio_Compressor_In";
               "media.class" = "Audio/Sink";
@@ -201,9 +187,7 @@ in
           };
         }
 
-        # =======================================================
-        # ⭐️ 模組 A：專業人聲噪聲門限（Noise Gate）
-        # =======================================================
+        # 3. 噪聲門限器（LADSPA）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -217,25 +201,29 @@ in
                   plugin = "gate_1410";
                   label = "gate";
                   control = {
-                    "Threshold (dB)" = -40.0; # 低於 -40dB 視為環境雜音直接靜音
-                    "Attack (ms)" = 2.0;       # 說話時 2 毫秒極速開門放行
-                    "Hold (ms)" = 50.0;        # 說完話保持 50 毫秒防吃字
-                    "Decay (ms)" = 100.0;      # 平滑關閉
-                    "Range (dB)" = -90.0;      # 關閉時衰減到極致死寂
+                    "Threshold (dB)" = -40.0;
+                    "Attack (ms)" = 2.0;
+                    "Hold (ms)" = 50.0;
+                    "Decay (ms)" = 100.0;
+                    "Range (dB)" = -90.0;
                   };
                 }
               ];
               inputs = [ "gate:Input" ];
               outputs = [ "gate:Output" ];
             };
-            "capture.props" = { "node.name" = "Studio_Gate_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Gate_Out"; "node.passive" = true; };
+            "capture.props" = {
+              "node.name" = "Studio_Gate_In";
+              "media.class" = "Audio/Sink";
+            };
+            "playback.props" = {
+              "node.name" = "Studio_Gate_Out";
+              "node.passive" = true;
+            };
           };
         }
 
-        # =======================================================
-        # ⭐️ 模組 B：電子管溫暖飽和器（Tube / Valve Saturation）
-        # =======================================================
+        # 4. 電子管溫暖飽和器（LADSPA）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -249,22 +237,26 @@ in
                   plugin = "valve_1209";
                   label = "valve";
                   control = {
-                    "Warmth level" = 0.4;     # 0.0 ~ 1.0，適度溫暖染色
-                    "Distortion level" = 0.0; # 保持純淨，不產生破音失真
+                    "Warmth level" = 0.4;
+                    "Distortion level" = 0.0;
                   };
                 }
               ];
               inputs = [ "valve:Input" ];
               outputs = [ "valve:Output" ];
             };
-            "capture.props" = { "node.name" = "Studio_Tube_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Tube_Out"; "node.passive" = true; };
+            "capture.props" = {
+              "node.name" = "Studio_Tube_In";
+              "media.class" = "Audio/Sink";
+            };
+            "playback.props" = {
+              "node.name" = "Studio_Tube_Out";
+              "node.passive" = true;
+            };
           };
         }
 
-        # =======================================================
-        # ⭐️ 模組 C：磚牆防爆限制器（Brickwall Limiter）
-        # =======================================================
+        # 5. 磚牆防爆限制器（LADSPA）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -279,7 +271,7 @@ in
                   label = "fastLookaheadLimiter";
                   control = {
                     "Input gain (dB)" = 0.0;
-                    "Limit (dB)" = -0.5;      # 死守 -0.5dB 物理防爆天花板
+                    "Limit (dB)" = -0.5;
                     "Release time (s)" = 0.05;
                   };
                 }
@@ -288,49 +280,65 @@ in
               outputs = [ "fastLookaheadLimiter:Output 1" "fastLookaheadLimiter:Output 2" ];
             };
             "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
-          };
-        }
-
-        # =======================================================
-        # ⭐️ 模組：PipeWire 原生 SOFA 雙耳空間聲場（空間音訊）
-        # =======================================================
-        {
-          name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
-          args = {
-            "node.description" = "PipeWire Spatial Audio (SOFA)";
-            "media.name" = "Spatial_SOFA_Sink";
-            "filter.graph" = {
-              nodes = [
-                {
-                  type = "builtin";
-                  label = "spatializer";
-                  name = "spat";
-                  config = {
-                    blocksize = 256;
-                    # ⭐️ 指向你下載的 SOFA 聲學檔案
-                    filename = "/home/rhys/DOwn/EAsyeffects-main/dtf_nh2.sofa";
-                  };
-                }
-              ];
-              inputs = [ "spat:In" ];
-              outputs = [ "spat:Out L" "spat:Out R" ];
-            };
-            "audio.position" = [ "FL" "FR" ];
             "capture.props" = {
-              "node.name" = "Spatial_Audio_In";
+              "node.name" = "Studio_Limiter_In";
               "media.class" = "Audio/Sink";
             };
             "playback.props" = {
-              "node.name" = "Spatial_Audio_Out";
+              "node.name" = "Studio_Limiter_Out";
               "node.passive" = true;
             };
           };
         }
 
-        # ⭐️ 模組 3：純大廳混響（你的 05Hall5，滑塊獨立調濕音）
+        # ⭐️ 6. 修正後的 SOFA 虛擬雙耳監聽音箱（type 必須為 sofa）
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio SOFA Virtual Monitors";
+            "media.name" = "Studio_SOFA_Monitors";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "sofa";
+                  label = "spatializer";
+                  name = "spFL";
+                  config = { filename = sofaFile; };
+                  control = { "Azimuth" = 30.0; "Elevation" = 0.0; "Radius" = 1.2; };
+                }
+                {
+                  type = "sofa";
+                  label = "spatializer";
+                  name = "spFR";
+                  config = { filename = sofaFile; };
+                  control = { "Azimuth" = 330.0; "Elevation" = 0.0; "Radius" = 1.2; };
+                }
+                { type = "builtin"; label = "mixer"; name = "mixL"; }
+                { type = "builtin"; label = "mixer"; name = "mixR"; }
+              ];
+              links = [
+                { output = "spFL:Out L"; input = "mixL:In 1"; }
+                { output = "spFL:Out R"; input = "mixR:In 1"; }
+                { output = "spFR:Out L"; input = "mixL:In 2"; }
+                { output = "spFR:Out R"; input = "mixR:In 2"; }
+              ];
+              inputs = [ "spFL:In" "spFR:In" ];
+              outputs = [ "mixL:Out" "mixR:Out" ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = {
+              "node.name" = "Studio_SOFA_In";
+              "media.class" = "Audio/Sink";
+            };
+            "playback.props" = {
+              "node.name" = "Studio_SOFA_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+        # 7. 純大廳混響（內置）
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -355,6 +363,7 @@ in
               inputs = [ "convFL:In" "convFR:In" ];
               outputs = [ "convFL:Out" "convFR:Out" ];
             };
+            "audio.position" = [ "FL" "FR" ];
             "capture.props" = {
               "node.name" = "Hall5_Soundstage_Sink";
               "media.class" = "Audio/Sink";
@@ -362,26 +371,20 @@ in
             "playback.props" = {
               "node.name" = "Hall5_Soundstage_Output";
               "node.passive" = true;
+              "target.object" = "alsa_output.pci-0000_00_1b.0.pro-output-0";
             };
           };
         }
       ];
     };
-  }; # 👈 services.pipewire 在這裡閉合
+  };
 
-  # =======================================================
-  # 3. 系統工具與 LADSPA 效果器演算法庫
-  # =======================================================
+  # ⭐️ 核心修正 2：確保安裝了 swh_plugins（提供 sc4, gate, valve, limiter）
   environment.systemPackages = with pkgs; [
     pipewire
     qpwgraph
     pavucontrol
-    ladspaPlugins # 提供 sc4 硬件壓縮器算法
-    swh_lv2
+    swh_plugins
+    ladspaPlugins
   ];
-
-  # 確保 PipeWire 服務能索引到 LADSPA 效果器路徑
-  environment.sessionVariables = {
-    LADSPA_PATH = "/run/current-system/sw/lib/ladspa";
-  };
 }
