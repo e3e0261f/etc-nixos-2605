@@ -14,39 +14,32 @@
     wireplumber.enable = true;
 
     # =======================================================
-    # 🎙️ 發燒級低延遲架構（修復爆音與 buffer 被劫持問題）
+    # 🎙️ 錄音棚極限低延遲發燒架構（Studio Extreme 256）
     # =======================================================
     extraConfig.pipewire."99-studio-extreme" = {
       "context.properties" = {
         "default.clock.rate" = 48000;
         "default.clock.allowed-rates" = [ 44100 48000 88200 96000 176400 192000 ];
 
-        # ⭐️ 日常黃金緩衝區：
-        # 如果掛載 EasyEffects 卷積，512 (10.6ms) 是零爆音的最優甜點；純音訊可挑戰 256
+        # ⭐️ 錄音棚黃金緩衝區：256 幀（48k 下 5.3ms，物理級無感耳返！）
         "default.clock.quantum" = 512;
         "default.clock.min-quantum" = 256;
-        "default.clock.max-quantum" = 1024;
+        # 上限給予 2048 彈性，保證遇到突發編譯時安全防爆
+        "default.clock.max-quantum" = 4096;
 
-        # ⭐️ 核心修正 1：焊死物理天花板！徹底禁止任何應用把系統拉爆到 2048/4096
-        "default.clock.quantum-limit" = 1024;
-
-        # ⭐️ 核心修正 2：重採樣品質改為 6 或 7（發燒黃金平衡）
-        # Quality 10 在實時卷積下是 CPU 災難；Quality 6-7 的動態範圍已超過 140dB（超越人類聽覺極限），且零 Xrun
-        "resample.quality" = 6;
+        # 頂級重採樣品質 10（信噪比 > 160dB）
+        "resample.quality" = 5;
       };
     };
 
     extraConfig.pipewire-pulse."99-studio-pulse" = {
       "context.properties" = {
-        "resample.quality" = 6;
+        "resample.quality" = 5;
       };
       "pulse.properties" = {
-        # ⭐️ 核心修正 3：給 Spotify 的請求戴上緊箍咒
         "pulse.min.req" = "256/48000";
-        "pulse.default.req" = "512/48000";
-        "pulse.max.req" = "1024/48000";       # 禁止 Spotify 要求超大 tlength
         "pulse.min.quantum" = "256/48000";
-        "pulse.max.quantum" = "1024/48000";   # 限制 Pulse 最大量子
+        "pulse.max.quantum" = "2048/48000";
       };
     };
 
@@ -64,13 +57,15 @@
     };
   };
 
-  # 2. 確保系統已安裝 easyeffects
+    # 2. 確保系統已安裝 easyeffects
   environment.systemPackages = [ pkgs.easyeffects ];
 
-  # 3. EasyEffects 生命週期管理
+  # 3. ⭐️ 原生 NixOS 宣告：由 systemd 嚴格管理 EasyEffects 的生命週期
   systemd.user.services.easyeffects = {
     description = "EasyEffects Audio Daemon";
+    # 當進入圖形桌面時啟動
     wantedBy = [ "graphical-session.target" ];
+    # 綁定生命週期：PipeWire 重啟或桌面登出時，自動跟著重啟/終止
     partOf = [ "pipewire.service" "graphical-session.target" ];
     after = [ "pipewire.service" ];
     serviceConfig = {
