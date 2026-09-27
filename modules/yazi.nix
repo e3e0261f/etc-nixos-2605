@@ -1,6 +1,11 @@
 # /etc/nixos/modules/yazi.nix
 { pkgs, ... }:
 
+let
+  # ⭐️ 在此自訂你中意的圖片查看器（切換非常方便）：
+  # 推薦 imv（極速、原生支援 Wayland/X11），或換成 pkgs.loupe, pkgs.swayimg, pkgs.feh
+  imageViewer = pkgs.imv;
+in
 {
   programs.yazi = {
     enable = true;
@@ -19,6 +24,7 @@
       };
 
       opener = {
+        # 原有的編輯器設定
         edit = [
           {
             run = ''hx "$@"'';
@@ -26,10 +32,25 @@
             desc = "Helix";
           }
         ];
+
+        # 🌟【新增】圖片查看器設定
+        image = [
+          {
+            # 呼叫你指定的查看器，以獨立進程 (orphan = true) 執行，不佔用終端
+            run = ''${imageViewer}/bin/${imageViewer.meta.mainProgram or imageViewer.pname} "$@"'';
+            orphan = true;
+            desc = "View Image";
+          }
+        ];
       };
 
       open = {
         prepend_rules = [
+          # 🌟【新增】圖片關聯規則（按 Enter 直接用中意的程序打開）
+          { mime = "image/*"; use = "image"; }
+          { name = "*.{png,jpg,jpeg,webp,gif,svg,bmp,avif,ico}"; use = "image"; }
+
+          # 原有的代碼/文本關聯規則
           { mime = "text/*"; use = "edit"; }
           { url = "*.nix"; use = "edit"; }
           { url = "*.lua"; use = "edit"; }
@@ -46,7 +67,7 @@
     };
 
     # =======================================================
-    # ⭐️ 2. keymap 區塊 (必須在 programs.yazi 裡面！)
+    # ⭐️ 2. keymap 區塊 (原配置完整保留)
     # =======================================================
     keymap = {
       manager = {
@@ -81,20 +102,25 @@
         ];
       };
     };
-  }; # 👈 programs.yazi 在這裡閉合
+  };
 
   # =======================================================
-  # ⭐️ 3. 多媒體高清預覽支援
+  # ⭐️ 3. 多媒體高清預覽與外部工具支援
   # =======================================================
   home.packages = with pkgs; [
-    ffmpegthumbnailer
-    unar
-    poppler-utils
-    jq
-    chafa
+    imageViewer        # 確保指定的圖片查看器被安裝
+    file               # 核心依賴：Yazi 靠它精準判斷檔案真實 MIME 類型
+    imagemagick        # 圖片終端內預覽、裁切、縮放
+    ffmpegthumbnailer  # 影片縮圖
+    unar               # 壓縮包預覽
+    poppler-utils      # PDF 預覽
+    jq                 # JSON 格式化高亮
+    chafa              # 字符模式圖形降級相容
   ];
 
+  # =======================================================
   # ⭐️ 4. 全域編輯器鎖定為 hx
+  # =======================================================
   home.sessionVariables = {
     EDITOR = "hx";
     VISUAL = "hx";
