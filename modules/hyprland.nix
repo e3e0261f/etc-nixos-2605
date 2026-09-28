@@ -69,7 +69,7 @@
     -- 📁 4. 【主力檔案與終端】：全域優雅置中懸浮
     hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = SIzeNUm })
     hl.window_rule({ name = "float_kitty", match = { class = "^(kitty)$" }, float = true, center = true, size = SizeNum })
-    hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = SIzeNUm )
+    hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = SIzeNUm })
 
     -- 🎯 5. 【小工具、認證、選擇器與進度條】
     hl.window_rule({ name = "auth_keys",    match = { class = "^(fido2-manage|pinentry-.*|gcr-prompter|.*polkit.*|yad|zenity)$" }, float = true, center = true, size = "440 300" })
