@@ -202,6 +202,7 @@
   # 5. 自啟動模組 (開機視角牢牢鎖定 Workspace 1)
   # =======================================================
   xdg.configFile."MYHYprLUa/AUTOSTART.lua".text = ''
+   hl.on("hyprland.start", function ()
       hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
       hl.exec_cmd("fcitx5 -d")
       hl.exec_once("wall-random")
