@@ -133,26 +133,26 @@
     -- =========================================================================
     -- 🧠 4. 智能記憶引擎：全自動讀取用戶隨手標記的「永久浮動黑名單」
     -- =========================================================================
-    local memory_file = os.getenv("HOME") .. "/.config/hypr/learned_floats.txt"
-    local f = io.open(memory_file, "r")
-    if f then
-      local mem_idx = 100
-      for line in f:lines() do
-        -- 去除首尾空格
-        line = line:match("^%s*(.-)%s*$")
-        if line ~= "" and not line:match("^#") then
-          hl.window_rule({
-            name = "user_remembered_" .. mem_idx,
-            match = { class = "^(" .. line .. ")$" },
-            float = true,
-            center = true,
-            size = "65% 70%" -- 預設給優雅黃金比例
-          })
-          mem_idx = mem_idx + 1
-        end
-      end
-      f:close()
-    end
+    --local memory_file = os.getenv("HOME") .. "/.config/hypr/learned_floats.txt"
+    --local f = io.open(memory_file, "r")
+    --if f then
+    --  local mem_idx = 100
+    --  for line in f:lines() do
+    --    -- 去除首尾空格
+    --    line = line:match("^%s*(.-)%s*$")
+    --    if line ~= "" and not line:match("^#") then
+    --      hl.window_rule({
+    --        name = "user_remembered_" .. mem_idx,
+    --        match = { class = "^(" .. line .. ")$" },
+    --        float = true,
+    --        center = true,
+    --        size = "65% 70%" -- 預設給優雅黃金比例
+    --      })
+    --      mem_idx = mem_idx + 1
+    --    end
+    --  end
+    --  f:close()
+    --end
 
   '';
 
