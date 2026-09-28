@@ -154,6 +154,7 @@ in
                   type = "ladspa";
                   plugin = "sc4_1882";
                   label = "sc4";
+                  name = "sc4";
                   control = {
                     "RMS/peak" = 0.5;
                     "Attack time (ms)" = 20.0;
@@ -221,14 +222,14 @@ in
                   plugin = "valve_1209";
                   label = "valve";
                   name = "valve_l";
-                  control = { "Warmth level" = 0.4; "Distortion level" = 0.0; };
+                  control = { "Distortion character" = 0.4; "Distortion level" = 0.0; };
                 }
                 {
                   type = "ladspa";
                   plugin = "valve_1209";
                   label = "valve";
                   name = "valve_r";
-                  control = { "Warmth level" = 0.4; "Distortion level" = 0.0; };
+                  control = { "Distortion character" = 0.4; "Distortion level" = 0.0; };
                 }
               ];
               inputs = [ "valve_l:Input" "valve_r:Input" ];
@@ -253,6 +254,7 @@ in
                   type = "ladspa";
                   plugin = "fast_lookahead_limiter_1913";
                   label = "fastLookaheadLimiter";
+                  name = "fastLookaheadLimiter";
                   control = {
                     "Input gain (dB)" = 0.0;
                     "Limit (dB)" = -0.5;
