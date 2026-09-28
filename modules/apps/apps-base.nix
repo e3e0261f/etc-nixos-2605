@@ -28,6 +28,7 @@
     playerctl
     wireplumber
     networkmanager
+    mimeo  #打开程序菜单支持
     
     # 圖形與音訊管理
     wl-clipboard grim slurp translate-shell
