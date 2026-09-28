@@ -48,8 +48,6 @@
   # 1. 視窗規則模組 (精準排版與置中懸浮)
   # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
-    windowrulev2 = float, title:^(Open File|Save File|Confirm|Dialog)$
-    windowrulev2 = float, class:^(.*)$ title:^(.*Settings.*)$
     -- 0. 防全屏核心防御 & XWayland 修复
     hl.window_rule({ name = "suppress_maximize", match = { class = ".*" }, suppress_event = "maximize" })
     hl.window_rule({ name = "fix_xwayland_drags", match = { class = "^$", title = "^$", xwayland = true, float = true, fullscreen = false, pin = false }, no_focus = true })
@@ -88,6 +86,8 @@
     hl.window_rule({ name = "easyeffects_ws4_right", match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", float = true, size = "50% 100%", move = "50% 0" })
     hl.window_rule({ name = "yazi_float_center", match = { class = "yazi-float" }, float = true, center = true, size = "75% 75%" })
     hl.window_rule({ name = "google-chrome", match = { class = "^(google-chrome|chromium-browser)$", title = "^.*(偵測到|Account and password|Pico Key|USB).*$" }, float = true, size = "360 140", move = "100%-380 40" })
+    windowrulev2 = float, title:^(Open File|Save File|Confirm|Dialog)$
+    windowrulev2 = float, class:^(.*)$ title:^(.*Settings.*)$
   '';
 
   # =======================================================
