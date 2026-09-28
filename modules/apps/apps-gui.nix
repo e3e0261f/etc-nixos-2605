@@ -30,7 +30,7 @@
   environment.systemPackages = with pkgs; [
     google-chrome
     # spotify
-    unstable.discord # 确保你已经添加了 unstable channel
+    discord # 确保你已经添加了 unstable channel
     keepassxc
     crow-translate
     gimagereader
