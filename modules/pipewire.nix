@@ -400,6 +400,395 @@ in
           };
         }
 
+        
+        # =======================================================
+        # FX · DELAY · STUDIO
+        # Stereo Studio Delay
+        # L = 280ms / R = 420ms
+        # Dry 70% / Wet 30%
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "FX · DELAY · STUDIO";
+            "media.name" = "FX_DELAY_STUDIO";
+
+            "filter.graph" = {
+              nodes = [
+                # -------------------------
+                # LEFT
+                # -------------------------
+                {
+                  type = "builtin";
+                  label = "copy";
+                  name = "delay_dry_l";
+                }
+
+                {
+                  type = "builtin";
+                  label = "delay";
+                  name = "delay_l";
+                  config = {
+                    "max-delay" = 2.0;
+                  };
+                  control = {
+                    "Delay (s)" = 0.280;
+                    "Feedback" = 0.30;
+                    "Feedforward" = 0.0;
+                  };
+                }
+
+                {
+                  type = "builtin";
+                  label = "mixer";
+                  name = "delay_mix_l";
+                  control = {
+                    "Gain 1" = 0.70;
+                    "Gain 2" = 0.30;
+                  };
+                }
+
+                # -------------------------
+                # RIGHT
+                # -------------------------
+                {
+                  type = "builtin";
+                  label = "copy";
+                  name = "delay_dry_r";
+                }
+
+                {
+                  type = "builtin";
+                  label = "delay";
+                  name = "delay_r";
+                  config = {
+                    "max-delay" = 2.0;
+                  };
+                  control = {
+                    "Delay (s)" = 0.420;
+                    "Feedback" = 0.30;
+                    "Feedforward" = 0.0;
+                  };
+                }
+
+                {
+                  type = "builtin";
+                  label = "mixer";
+                  name = "delay_mix_r";
+                  control = {
+                    "Gain 1" = 0.70;
+                    "Gain 2" = 0.30;
+                  };
+                }
+              ];
+
+              links = [
+                # LEFT
+                { output = "delay_dry_l:Out"; input = "delay_mix_l:In 1"; }
+                { output = "delay_l:Out";     input = "delay_mix_l:In 2"; }
+
+                # RIGHT
+                { output = "delay_dry_r:Out"; input = "delay_mix_r:In 1"; }
+                { output = "delay_r:Out";     input = "delay_mix_r:In 2"; }
+              ];
+
+              inputs = [
+                "delay_dry_l:In"
+                "delay_l:In"
+                "delay_dry_r:In"
+                "delay_r:In"
+              ];
+
+              outputs = [
+                "delay_mix_l:Out"
+                "delay_mix_r:Out"
+              ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+
+            "capture.props" = {
+              "node.name" = "FX_DELAY_STUDIO_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "FX_DELAY_STUDIO_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+        # =======================================================
+        # FX · CHORUS · STUDIO
+        # SWH Multivoice Chorus
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "FX · CHORUS · STUDIO";
+            "media.name" = "FX_CHORUS_STUDIO";
+
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  name = "chorus_l";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/multivoice_chorus_1201.so";
+                  label = "multivoiceChorus";
+
+                  control = {
+                    "Number of voices" = 3.0;
+                    "Delay base (ms)" = 20.0;
+                    "Voice separation (ms)" = 0.5;
+                    "Detune (%)" = 1.0;
+                    "LFO frequency (Hz)" = 5.0;
+                    "Output attenuation (dB)" = -3.0;
+                  };
+                }
+
+                {
+                  type = "ladspa";
+                  name = "chorus_r";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/multivoice_chorus_1201.so";
+                  label = "multivoiceChorus";
+
+                  control = {
+                    "Number of voices" = 3.0;
+                    "Delay base (ms)" = 20.0;
+                    "Voice separation (ms)" = 0.5;
+                    "Detune (%)" = 1.0;
+                    "LFO frequency (Hz)" = 5.0;
+                    "Output attenuation (dB)" = -3.0;
+                  };
+                }
+              ];
+
+              inputs = [
+                "chorus_l:Input"
+                "chorus_r:Input"
+              ];
+
+              outputs = [
+                "chorus_l:Output"
+                "chorus_r:Output"
+              ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+
+            "capture.props" = {
+              "node.name" = "FX_CHORUS_STUDIO_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "FX_CHORUS_STUDIO_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+        # =======================================================
+        # FX · FLANGER · STUDIO
+        # SWH Flanger
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "FX · FLANGER · STUDIO";
+            "media.name" = "FX_FLANGER_STUDIO";
+
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  name = "flanger_l";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/flanger_1191.so";
+                  label = "flanger";
+
+                  control = {
+                    "Delay base (ms)" = 8.0;
+                    "Max slowdown (ms)" = 3.0;
+                    "LFO frequency (Hz)" = 0.25;
+                    "Feedback" = 0.25;
+                  };
+                }
+
+                {
+                  type = "ladspa";
+                  name = "flanger_r";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/flanger_1191.so";
+                  label = "flanger";
+
+                  control = {
+                    "Delay base (ms)" = 8.0;
+                    "Max slowdown (ms)" = 3.0;
+                    "LFO frequency (Hz)" = 0.25;
+                    "Feedback" = 0.25;
+                  };
+                }
+              ];
+
+              inputs = [
+                "flanger_l:Input"
+                "flanger_r:Input"
+              ];
+
+              outputs = [
+                "flanger_l:Output"
+                "flanger_r:Output"
+              ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+
+            "capture.props" = {
+              "node.name" = "FX_FLANGER_STUDIO_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "FX_FLANGER_STUDIO_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+        # =======================================================
+        # FX · PHASER · STUDIO
+        # SWH LFO Phaser
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "FX · PHASER · STUDIO";
+            "media.name" = "FX_PHASER_STUDIO";
+
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  name = "phaser_l";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/phasers_1217.so";
+                  label = "lfoPhaser";
+
+                  control = {
+                    "Frequency 1" = 700.0;
+                    "Feedback 1" = 0.30;
+
+                    "Frequency 2" = 1400.0;
+                    "Feedback 2" = 0.30;
+
+                    "Frequency 3" = 2800.0;
+                    "Feedback 3" = 0.30;
+
+                    "Frequency 4" = 5600.0;
+                    "Feedback 4" = 0.30;
+                  };
+                }
+
+                {
+                  type = "ladspa";
+                  name = "phaser_r";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/phasers_1217.so";
+                  label = "lfoPhaser";
+
+                  control = {
+                    "Frequency 1" = 700.0;
+                    "Feedback 1" = 0.30;
+
+                    "Frequency 2" = 1400.0;
+                    "Feedback 2" = 0.30;
+
+                    "Frequency 3" = 2800.0;
+                    "Feedback 3" = 0.30;
+
+                    "Frequency 4" = 5600.0;
+                    "Feedback 4" = 0.30;
+                  };
+                }
+              ];
+
+              inputs = [
+                "phaser_l:Input"
+                "phaser_r:Input"
+              ];
+
+              outputs = [
+                "phaser_l:Output"
+                "phaser_r:Output"
+              ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+
+            "capture.props" = {
+              "node.name" = "FX_PHASER_STUDIO_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "FX_PHASER_STUDIO_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+        # =======================================================
+        # FX · DE-ESSER · VOCAL
+        # Calf LV2 Deesser
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "FX · DE-ESSER · VOCAL";
+            "media.name" = "FX_DE_ESSER_VOCAL";
+
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "lv2";
+                  name = "deesser";
+                  plugin = "http://calf.sourceforge.net/plugins/Deesser";
+
+                  control = {
+                    "threshold" = 0.009375;
+                  };
+                }
+              ];
+
+              inputs = [
+                "deesser:In L"
+                "deesser:In R"
+              ];
+
+              outputs = [
+                "deesser:Out L"
+                "deesser:Out R"
+              ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+
+            "capture.props" = {
+              "node.name" = "FX_DE_ESSER_VOCAL_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "FX_DE_ESSER_VOCAL_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+
         # =======================================================
         # 🎸 破音模組 1：硬裁剪失真（Hard Clipper 立體聲版）
         # 效果：直接把波形強制削頂，產生極其粗暴、帶磁性的喇叭撕裂破音
