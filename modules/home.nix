@@ -32,6 +32,7 @@
     ./tools.nix         # 🧰 系統常用 CLI 瑞士軍刀小工具 (ripgrep, fd, bat, eza, fzf 等)
     ./shell.nix         # 🐟 Fish Shell 設定 (命令別名 alias、自訂環境變數、終端行為優化)
     # ./emacs.nix       # 🦄 [已停用備份] Emacs 編輯器設定
+    ./fish.nix
 
     # -----------------------------------------------------------------------
     # 🚀 4. 自製極客腳本、生活智慧與系統百科 (Custom Hacks & Tools)
