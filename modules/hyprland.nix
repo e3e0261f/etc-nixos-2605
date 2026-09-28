@@ -97,10 +97,10 @@
     -- =======================================================
     
     -- Super + X：呼出網格/字母標籤定位，打字即可瞬間點擊目標
-    hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("wl-kbptr"))
+    -- hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("wl-kbptr"))
 
     -- Super + C：二分精確逼近模式（逐級縮小區域精確漫遊）
-    hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("wl-kbptr --mode bisect"))
+    -- hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("wl-kbptr --mode bisect"))
 
     -- 1. Alt + Tab：順向切換視窗，並將該視窗翻到最頂層
     hl.bind("ALT + Tab", function()
