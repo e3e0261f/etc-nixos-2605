@@ -398,6 +398,94 @@ in
           };
         }
 
+        # =======================================================
+        # 🎸 破音/過載模組 1：硬裁剪失真（Hard Clipper）
+        # 效果：直接把波形削顶，产生极其粗暴、带磁性的“喇叭撕裂破音”
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Hard Clipper (Distortion)";
+            "media.name" = "Studio_Hard_Clipper";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  plugin = "hard_clipper_1433";
+                  label = "hardClipper";
+                  control = {
+                    "Clipping level (dB)" = -6.0; # 閥值越低，破音越慘烈（可調至 -15dB 體驗極度失真）
+                  };
+                }
+              ];
+              inputs = [ "hardClipper:Input" ];
+              outputs = [ "hardClipper:Output" ];
+            };
+            "capture.props" = { "node.name" = "Studio_Clipper_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Clipper_Out"; "node.passive" = true; };
+          };
+        }
+
+        # =======================================================
+        # 🎸 破音/過載模組 2：數碼降採樣破音（Decimator / Bitcrusher）
+        # 效果：制造 8-bit 复古游戏机、对讲机、机械人、数码断流的电子碎裂感
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Bitcrusher / Decimator";
+            "media.name" = "Studio_Decimator";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  plugin = "decimator_1202";
+                  label = "decimator";
+                  control = {
+                    "Bit depth" = 6.0;          # 壓低位深（4bit ~ 8bit 產生強烈數碼破音）
+                    "Sample rate (Hz)" = 8000.0; # 降低採樣率（產生粗糙的電話/對講機質感）
+                  };
+                }
+              ];
+              inputs = [ "decimator:Input" ];
+              outputs = [ "decimator:Output" ];
+            };
+            "capture.props" = { "node.name" = "Studio_Decimator_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Decimator_Out"; "node.passive" = true; };
+          };
+        }
+
+        # =======================================================
+        # 🎸 破音/過載模組 3：二極管過載器（Diode Overdrive / 模擬吉他失真）
+        # 效果：模擬真實吉他過載踏板，產生温暖但颗粒感十足的模拟失真
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Diode Overdrive";
+            "media.name" = "Studio_Diode_Overdrive";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  plugin = "diodes_1409";
+                  label = "diodes";
+                  control = {
+                    "Drive" = 5.0; # 推力越大，过载失真越猛
+                  };
+                }
+              ];
+              inputs = [ "diodes:Input" ];
+              outputs = [ "diodes:Output" ];
+            };
+            "capture.props" = { "node.name" = "Studio_Overdrive_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Overdrive_Out"; "node.passive" = true; };
+          };
+        }
+
         # 7. 純大廳混響（你的 05Hall5）
         {
           name = "libpipewire-module-filter-chain";
