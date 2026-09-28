@@ -3,27 +3,27 @@
 let
   # 📁 指向你的寶庫基礎路徑：
   irDir = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane";
+  # hallIrFile = "/home/rhys/DOwn/EAsyeffects-main/6Spaces13Hillside48K.wav";
 
   # ⭐️【大場地菜單】：把你想聽的那個取消註釋，其他加上 # 即可！
   
   # 🏛️ 1. 歐洲宏偉古大教堂（最空靈、聲場最大）：
-  # hallIrFile = "${irDir}/Schellingwoude.wav";
-  # hallIrFile = "/home/rhys/DOwn/EAsyeffects-main/6Spaces13Hillside48K.wav";
+  Schellingwoude = "${irDir}/Schellingwoude.wav";
 
   # 🏛️ 2. 大教堂後排聽音位（超強縱深包圍感）：
-  # hallIrFile = "${irDir}/Buiksloot Rear.wav";
+  # buikslootRear = "${irDir}/Buiksloot Rear.wav";
 
   # 🏭 3. 巨型挑高展廳（橫向聲場極度開闊，現代感）：
-  hallIrFile = "${irDir}/Transformatorhuis wide.wav";
+  # Transformatorhuis = "${irDir}/Transformatorhuis wide.wav";
 
   # 🏭 4. 巨型工業廠房（聽流行/搖滾，力量感）：
-  # hallIrFile = "${irDir}/Factory Hall.wav";
+  # factoryhall = "${irDir}/Factory Hall.wav";
 
   # 🌲 5. 森林自然聲場（完全無牆壁壓迫感，極致通透）：
-  # hallIrFile = "${irDir}/Forest 2.wav";
+  # Forest2 = "${irDir}/Forest 2.wav";
 
   # 🎙️ 6. 機皇金色大廳（你最愛的原汁原味）：
-  # hallIrFile = "${irDir}/05Hall5.wav";
+  hallIrFile = "${irDir}/05Hall5.wav";
   sofaFile   = "/home/rhys/DOwn/EAsyeffects-main/dtf_nh2.sofa";
 in
 {
@@ -102,7 +102,7 @@ in
             { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-8"; }
             { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-10"; }
             { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-11"; }
-            { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-2"; }
+            # { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-2"; }
           ];
           actions = { update-props = { "node.disabled" = true; }; };
         }
@@ -320,8 +320,8 @@ in
             "filter.graph" = {
               nodes = [
                 # 加载你的虚拟音箱空间脉冲 WAV 文件（例如 HeSuVi 或监听室双耳脉冲）
-                { type = "builtin"; label = "convolver"; name = "spatFL"; config = { filename = "/path/to/monitor_crossfeed.wav"; channel = 0; gain = 1.0; }; }
-                { type = "builtin"; label = "convolver"; name = "spatFR"; config = { filename = "/path/to/monitor_crossfeed.wav"; channel = 1; gain = 1.0; }; }
+                { type = "builtin"; label = "convolver"; name = "spatFL"; config = { filename = Schellingwoude; channel = 0; gain = 1.0; }; }
+                { type = "builtin"; label = "convolver"; name = "spatFR"; config = { filename = Schellingwoude; channel = 1; gain = 1.0; }; }
               ];
               inputs = [ "spatFL:In" "spatFR:In" ];
               outputs = [ "spatFL:Out" "spatFR:Out" ];
