@@ -61,9 +61,9 @@
     hl.window_rule({ name = "tile_reaper",  match = { class = "^(REAPER)$", title = "^REAPER v.*$" }, tile = true })
 
     -- 🎛️ 3. 【音訊專用調控】：PAV 控制台中間偏右 (1080x760)，4號工作區避讓左側 80px 任務欄左右對開
-    hl.window_rule({ name = "audio_pavu",   match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol|pwvucontrol)$" }, float = true, size = "1080 760", move = "1100 260" })
-    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, workspace = "4 silent", float = true, size = "1200 100%", move = "80 0" })
-    hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", float = true, size = "1280 100%", move = "1280 0" })
+    hl.window_rule({ name = "audio_pavu",   match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol|pwvucontrol)$" }, float = true, size = "1920 1080", move = "1100 260" })
+    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, workspace = "4 silent", float = true, size = "1200 100%", move = "80 60" })
+    hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", float = true, size = "1280 100%", move = "1280 70" })
 
     -- 📁 4. 【主力檔案與終端】：全域優雅置中懸浮
     hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = "65% 70%" })
