@@ -83,7 +83,7 @@
     
     -- 🛡️ 0. 底層硬體防禦
     hl.window_rule({ name = "suppress_max", match = { class = ".*" }, suppress_event = "maximize" })
-    hl.window_rule({ name = "fix_drags",    match = { class = "^$", title = "^$", xwayland = true }, no_focus = true })
+    hl.window_rule({ name = "fix_drags",    match = { class = "^$", title = "^$", xwayland = true },float = true, no_focus = true })
 
     -- 👑 1. 【核心基石】：全系統所有視窗預設全部浮動居中 (大氣的 65% 70% 黃金比例)
     --hl.window_rule({ name = "default_float", match = { class = ".*" }, float = true, center = true, size = "65% 70%" })
