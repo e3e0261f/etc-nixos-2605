@@ -1,6 +1,47 @@
 # /etc/nixos/modules/scripts.nix
 { pkgs, ... }:
 
+
+let
+  rememberFloatScript = pkgs.writeShellScriptBin "hypr-remember-float" ''
+    #!/usr/bin/env bash
+    MEM_FILE="$HOME/.config/hypr/learned_floats.txt"
+    mkdir -p "$(dirname "$MEM_FILE")"
+    touch "$MEM_FILE"
+
+    # 1. 抓取當前聚焦視窗的 Class
+    WIN_JSON=$(hyprctl activewindow -j)
+    CLASS=$(echo "$WIN_JSON" | ${pkgs.jq}/bin/jq -r '.class // empty')
+
+    # 2. 如果沒有 Class，嘗試抓取 Title
+    if [ -z "$CLASS" ]; then
+      CLASS=$(echo "$WIN_JSON" | ${pkgs.jq}/bin/jq -r '.title // empty')
+    fi
+
+    # 3. 如果依然為空（如完全無名的幽靈彈窗）
+    if [ -z "$CLASS" ]; then
+      ${pkgs.libnotify}/bin/notify-send -u low "無法持久化" "當前視窗沒有任何 Class 或 Title" -i dialog-warning
+      hyprctl dispatch togglefloating
+      exit 0
+    fi
+
+    # 4. 檢查是否已經記憶過 (記憶開關 Toggle)
+    if grep -Fxq "$CLASS" "$MEM_FILE" 2>/dev/null; then
+      # 已經在清單中 -> 移除記憶
+      grep -Fxv "$CLASS" "$MEM_FILE" > "$MEM_FILE.tmp" && mv "$MEM_FILE.tmp" "$MEM_FILE"
+      ${pkgs.libnotify}/bin/notify-send "已取消浮動記憶" "應用 [ $CLASS ] 下次啟動將恢復預設行為" -i window-new
+    else
+      # 不在清單中 -> 追加記憶
+      echo "$CLASS" >> "$MEM_FILE"
+      ${pkgs.libnotify}/bin/notify-send "已永久記住浮動！" "應用 [ $CLASS ] 以後打開將全自動保持居中浮動" -i window-pin
+    fi
+
+    # 5. 當場切換當前視窗的浮動狀態，並熱重載 Hyprland 規則
+    hyprctl dispatch togglefloating
+    hyprctl reload
+  '';
+in
+
 let
   # ⭐️ 真正的瞬時定格 + 自動存檔截圖神器
   shot = pkgs.writeShellScriptBin "shot" ''
@@ -65,6 +106,8 @@ in
     pkgs.libnotify
     pkgs.wl-clipboard
     pkgs.wf-recorder
+    pkgs.rememberFloatScript
+
 
     # 螢幕錄影工具
     (pkgs.writeScriptBin "record-screen" ''
@@ -110,4 +153,5 @@ in
         --button="關閉":0
     '')
   ];
+  
 }
