@@ -19,21 +19,21 @@ in
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 1;
     # 禁用 IPv6 的自动配置（Router Advertisement）
-    "net.ipv6.conf.all.disable_ipv6" = 1;
-    "net.ipv6.conf.default.disable_ipv6" = 1;
-    "net.ipv6.conf.lo.disable_ipv6" = 1;
+    # "net.ipv6.conf.all.disable_ipv6" = 1;
+    # "net.ipv6.conf.default.disable_ipv6" = 1;
+    # "net.ipv6.conf.lo.disable_ipv6" = 1;
     
     # 确保 dae 绑定的接口能够识别 IPv6 地址结构，但系统不会主动使用
     # 如果 dae 依然报错，你可以尝试只禁用 autoconf
-    "net.ipv6.conf.all.autoconf" = 0;
-    "net.ipv6.conf.all.accept_ra" = 0;
+    # "net.ipv6.conf.all.autoconf" = 0;
+    # "net.ipv6.conf.all.accept_ra" = 0;
   };
   # 强制 NetworkManager 忽略 IPv6 设置
   # （防止连接 Wi-Fi/有线网时依然从路由器获取 IPv6 SLAAC/DHCPv6 地址）
-  environment.etc."NetworkManager/conf.d/00-disable-ipv6.conf".text = ''
-    [connection]
-    ipv6.method=ignore
-  '';
+  # environment.etc."NetworkManager/conf.d/00-disable-ipv6.conf".text = ''
+  #   [connection]
+  #   ipv6.method=ignore
+  # '';
 
 
   services.dae = {
