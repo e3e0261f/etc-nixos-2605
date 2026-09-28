@@ -168,7 +168,7 @@ in
           # 內網 / 本機 IP 直連
           dip(192.168.0.0/16, 127.0.0.0/8) && dport(22) -> direct
           dip(127.0.0.0/8, 192.168.0.0/16) -> direct
-          pname(gix, aria2c, steam) -> direct(must)
+          pname(gix, steam) -> direct(must)
 
           # 國內 DNS (阿里) 直連防回環
           dip(223.5.5.5, 223.6.6.6) -> direct(must)
