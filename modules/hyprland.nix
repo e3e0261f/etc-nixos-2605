@@ -44,11 +44,45 @@
     require("window_rules")
   '';
 
-# =======================================================
+  # =======================================================
   # 1. 視窗規則模組 (⭐️ 緊湊單行美化 · 浮動優先避讓架構)
   # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
-    local SizeNum = "1438 866"
+    -- 1. 定义基准风格
+    local BASE_TOOL = { float = true, center = true, size = "1438 866" }
+
+    -- 2. 定义特殊覆盖规则
+    local cfg = {
+      tool = {
+        audio   = { workspace = "4 silent", move = "80 80" },
+        term    = { workspace = "2 silent" },
+        chat    = { workspace = "3 silent" },
+        browser = { float = false, tile = true, workspace = "1 silent" }
+      }
+    }
+
+    local function rule(name, match, path)
+      -- 浅拷贝基础配置
+      local final = {}
+      for k, v in pairs(BASE_TOOL) do final[k] = v end
+  
+      -- 解析 path，如 "tool.audio"
+      local category, sub = path:match("([^%.]+)%.?([^%.]*)")
+  
+      -- 如果有子项 (如 .audio)，合并子项的配置
+      if sub ~= "" and cfg[category] and cfg[category][sub] then
+        for k, v in pairs(cfg[category][sub]) do
+          final[k] = v
+        end
+      end
+  
+      -- 填充 ID
+      final.name = name
+      final.match = match
+  
+      hl.window_rule(final)
+    end
+    
     -- 🛡️ 0. 底層硬體防禦
     hl.window_rule({ name = "suppress_max", match = { class = ".*" }, suppress_event = "maximize" })
     hl.window_rule({ name = "fix_drags",    match = { class = "^$", title = "^$", xwayland = true }, no_focus = true })
@@ -67,9 +101,9 @@
     hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" },float = true, center = true, size = "2423 1329", move = "80 80" })
 
     -- 📁 4. 【主力檔案與終端】：全域優雅置中懸浮
-    hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = SIzeNUm })
-    hl.window_rule({ name = "float_kitty", match = { class = "^(kitty)$" }, float = true, center = true, size = SizeNum })
-    hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = SIzeNUm })
+    hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = cfg.tool.size })
+    hl.window_rule({ name = "float_kitty", match = { class = "^(kitty)$" }, float = true, center = true, size = cfg.tool.size })
+    hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = cfg.tool.size })
 
     -- 🎯 5. 【小工具、認證、選擇器與進度條】
     hl.window_rule({ name = "auth_keys",    match = { class = "^(fido2-manage|pinentry-.*|gcr-prompter|.*polkit.*|yad|zenity)$" }, float = true, center = true, size = "440 300" })
