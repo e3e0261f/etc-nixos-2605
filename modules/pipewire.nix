@@ -441,38 +441,59 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "SWH Diode Distortion";
-            "media.name" = "SWH_Diode";
+            "node.description" = "LADSPA Diode Distortion (Stereo)";
+            "media.name" = "LADSPA_Diode";
 
             "filter.graph" = {
               nodes = [
                 {
                   type = "ladspa";
-                  name = "diode";
+                  name = "diode_l";
                   plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/diode_1185.so";
                   label = "diode";
+                  control = {
+                    "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
+                  };
+                }
+                {
+                  type = "ladspa";
+                  name = "diode_r";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/diode_1185.so";
+                  label = "diode";
+                  control = {
+                    "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
+                  };
                 }
               ];
 
-              inputs = [ "diode:In" ];
-              outputs = [ "diode:Out" ];
+              links = [
+                { output = "diode_l:Output"; input = "diode_r:Input"; }
+              ];
+
+              inputs = [
+                "diode_l:Input"
+              ];
+
+              outputs = [
+                "diode_r:Output"
+              ];
             };
 
             "audio.position" = [ "FL" "FR" ];
 
             "capture.props" = {
-              "node.name" = "SWH_Diode_In";
+              "node.name" = "LADSPA_Diode_In";
               "media.class" = "Audio/Sink";
             };
 
             "playback.props" = {
-              "node.name" = "SWH_Diode_Out";
+              "node.name" = "LADSPA_Diode_Out";
               "node.passive" = true;
             };
           };
         }
 
-                # =======================================================
+        # =======================================================
         # 🎸 破音模組 3：SWH FOverdrive
         # 傳統 Overdrive / 軟性過載
         # =======================================================
