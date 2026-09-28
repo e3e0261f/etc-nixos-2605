@@ -31,7 +31,7 @@
     menu        = "caelestia shell drawers toggle launcher"    
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
-    hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("hyprshutdown"))
+    hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
     hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
     require("AUTOSTART")
     require("bindings")
@@ -207,7 +207,7 @@
       hl.exec_cmd("fcitx5 -d")
       hl.exec_cmd("wall-random")
       hl.exec_cmd("google-chrome")
-      --hl.exec_cmd("qpwgraph")
+      hl.exec_cmd("qpwgraph")
       hl.exec_cmd("discord")
       
       -- ⭐️ 核心保險：等背景程式就位後，把視角強制拉回 1 號工作區！
