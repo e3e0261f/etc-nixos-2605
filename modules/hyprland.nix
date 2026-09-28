@@ -29,7 +29,6 @@
     terminal    = "kitty"
     fileManager = "nemo"
     menu        = "caelestia shell drawers toggle launcher"
-    SIzeNUm     = "1438 866"
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
@@ -49,6 +48,7 @@
   # 1. 視窗規則模組 (⭐️ 緊湊單行美化 · 浮動優先避讓架構)
   # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
+    local SIzeNUm = "1438 866"
     -- 🛡️ 0. 底層硬體防禦
     hl.window_rule({ name = "suppress_max", match = { class = ".*" }, suppress_event = "maximize" })
     hl.window_rule({ name = "fix_drags",    match = { class = "^$", title = "^$", xwayland = true }, no_focus = true })

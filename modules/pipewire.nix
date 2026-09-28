@@ -337,6 +337,67 @@ in
           };
         }
 
+        # =======================================================
+        # 🚀 模組：聽不清救星！500%~1000% 超級音頻放大器（帶防爆保護）
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Super Audio Booster (500% - 1000%)";
+            "media.name" = "Audio_Booster";
+            "filter.graph" = {
+              nodes = [
+                # ⭐️ 1. 純線性硬件級放大（Mult = 5.0 代表基礎放大 500%，可改為 10.0 即 1000%）
+                {
+                  type = "builtin";
+                  label = "linear";
+                  name = "amp_l";
+                  control = { "Mult" = 5.0; };
+                }
+                {
+                  type = "builtin";
+                  label = "linear";
+                  name = "amp_r";
+                  control = { "Mult" = 5.0; };
+                }
+
+                # ⭐️ 2. 串聯磚牆限制器：把小聲拉大，但死守 -0.5dB 物理防爆天花板！
+                {
+                  type = "ladspa";
+                  plugin = "fast_lookahead_limiter_1913";
+                  label = "fastLookaheadLimiter";
+                  name = "limiter";
+                  control = {
+                    "Input gain (dB)" = 0.0;
+                    "Limit (dB)" = -0.5;
+                    "Release time (s)" = 0.05;
+                  };
+                }
+              ];
+
+              # 放大後自動進限制器過濾
+              links = [
+                { output = "amp_l:Out"; input = "limiter:Input 1"; }
+                { output = "amp_r:Out"; input = "limiter:Input 2"; }
+              ];
+
+              inputs = [ "amp_l:In" "amp_r:In" ];
+              outputs = [ "limiter:Output 1" "limiter:Output 2" ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = {
+              "node.name" = "Audio_Booster_In";
+              "media.class" = "Audio/Sink";
+            };
+            "playback.props" = {
+              "node.name" = "Audio_Booster_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
         # 7. 純大廳混響（你的 05Hall5）
         {
           name = "libpipewire-module-filter-chain";
