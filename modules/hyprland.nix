@@ -44,114 +44,44 @@
     require("window_rules")
   '';
 
-  # =======================================================
-  # 1. 視窗規則模組 (⭐️ 浮動優先 · 白名單平鋪架構)
+# =======================================================
+  # 1. 視窗規則模組 (⭐️ 緊湊單行美化 · 浮動優先避讓架構)
   # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
-    -- 0. 底層防禦
-    hl.window_rule({ name = "suppress_maximize", match = { class = ".*" }, suppress_event = "maximize" })
-    hl.window_rule({ name = "fix_xwayland_drags", match = { class = "^$", title = "^$", xwayland = true }, no_focus = true })
+    -- 🛡️ 0. 底層硬體防禦
+    hl.window_rule({ name = "suppress_max", match = { class = ".*" }, suppress_event = "maximize" })
+    hl.window_rule({ name = "fix_drags",    match = { class = "^$", title = "^$", xwayland = true }, no_focus = true })
 
-    -- =========================================================================
-    -- 👑 【核心基石】：全系統所有視窗，預設全部浮動！居中！
-    -- （任何流氓彈窗、PicoKey、無名窗口一律被壓制在浮動層，絕不破壞螢幕！）
-    -- =========================================================================
-    hl.window_rule({ 
-      name = "default_float_all", 
-      match = { class = ".*" }, 
-      float = true, 
-      center = true,
-      size = "50% 100%" -- 預設給一個舒適的黃金比例尺寸
-    })
+    -- 👑 1. 【核心基石】：全系統所有視窗預設全部浮動居中 (大氣的 65% 70% 黃金比例)
+    hl.window_rule({ name = "default_float", match = { class = ".*" }, float = true, center = true, size = "65% 70%" })
 
-    -- =========================================================================
-    -- ⭐️ 【平鋪白名單 (Tile Whitelist)】：只有這些正經生產力工具，才准平鋪分屏！
-    -- =========================================================================
-    
-    -- 1. 主瀏覽器：只有「真正的主頁面」才准平鋪，所有外掛/帳密/USB彈窗自然享受預設浮動！
-    hl.window_rule({ 
-      name = "tile_browser_main", 
-      match = { 
-        class = "^(google-chrome|com\\.google\\.Chrome|chromium-browser|firefox)$",
-        -- 核心過濾：標題必須有網頁標籤（防止把無名彈窗也一起平鋪了）
-        title = "^(.* - Google Chrome|.* - Chromium|.* — Mozilla Firefox)$" 
-      }, 
-      tile = true,
-      workspace = "1"
-    })
+    -- ⭐️ 2. 【平鋪白名單】：僅主力生產力工作視窗允許分屏平鋪
+    hl.window_rule({ name = "tile_browser", match = { class = "^(google-chrome|com\\.google\\.Chrome|chromium-browser|firefox)$", title = "^(.* - Google Chrome|.* - Chromium|.* — Mozilla Firefox)$" }, tile = true, workspace = "1" })
+    hl.window_rule({ name = "tile_code",    match = { class = "^(codium|vscodium|VSCodium|code)$" }, tile = true })
+    hl.window_rule({ name = "tile_reaper",  match = { class = "^(REAPER)$", title = "^REAPER v.*$" }, tile = true })
 
-    -- 2. 程式碼編輯器 (VSCode / Codium) 必須平鋪
-    hl.window_rule({ 
-      name = "tile_code_editors", 
-      match = { class = "^(codium|vscodium|VSCodium|code)$" }, 
-      tile = true 
-    })
+    -- 🎛️ 3. 【音訊專用調控】：PAV 控制台中間偏右 (1080x760)，4號工作區避讓左側 80px 任務欄左右對開
+    hl.window_rule({ name = "audio_pavu",   match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol|pwvucontrol)$" }, float = true, size = "1080 760", move = "1100 260" })
+    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, workspace = "4 silent", float = true, size = "1200 100%", move = "80 0" })
+    hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", float = true, size = "1280 100%", move = "1280 0" })
 
-    -- 3. REAPER 音訊宿主的主工程視窗（主軌道平鋪，但它的 VST 外掛享受預設浮動！）
-    hl.window_rule({ 
-      name = "tile_reaper_main", 
-      match = { class = "^(REAPER)$", title = "^REAPER v.*$" }, 
-      tile = true 
-    })
+    -- 📁 4. 【主力檔案與終端】：全域優雅置中懸浮
+    hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = "65% 70%" })
+    hl.window_rule({ name = "float_kitty",  match = { class = "^(kitty)$" }, float = true, center = true, size = "72% 76%" })
+    hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = "75% 75%" })
 
-    -- 4. 終端機：如果你希望某個主力終端平鋪，可以在這裡放行（如果不寫，Kitty 就預設浮動）
-    -- hl.window_rule({ name = "tile_kitty", match = { class = "^(kitty)$" }, tile = true })
+    -- 🎯 5. 【小工具、認證、選擇器與進度條】
+    hl.window_rule({ name = "auth_keys",    match = { class = "^(fido2-manage|pinentry-.*|gcr-prompter|.*polkit.*|yad|zenity)$" }, float = true, center = true, size = "440 300" })
+    hl.window_rule({ name = "file_dialogs", match = { title = "^(Open File|Open Folder|Save As|Save File|另存為|另存新檔|開啟檔案|開啟資料夾|Choose Files|File Upload.*)$" }, float = true, center = true, size = "65% 70%" })
+    hl.window_rule({ name = "file_progress",match = { title = "^(檔案操作進度|File Operation Progress|Confirm.*|屬性|Properties.*)$" }, float = true, center = true, size = "480 340" })
+    hl.window_rule({ name = "archivers",    match = { class = "^(org\\.kde\\.ark|peazip.*)$" }, float = true, center = true, size = "55% 60%" })
+    hl.window_rule({ name = "net_bluetooth",match = { class = "^(nm-connection-editor|blueman-manager)$" }, float = true, center = true, size = "520 560" })
+    hl.window_rule({ name = "image_viewer", match = { class = "^(org\\.gnome\\.Loupe|imv|viewnior)$" }, float = true, center = true, size = "70% 75%" })
+    hl.window_rule({ name = "browser_pip",  match = { title = "^(Picture-in-Picture|畫中畫|子母畫面)$" }, float = true, pin = true, keep_aspect_ratio = true, size = "26% 26%", move = "73% 72%" })
 
-    -- =========================================================================
-    -- 🎯 【微調修正】：針對特定浮動視窗的尺寸/位置自訂
-    -- =========================================================================
-    
-    -- 認證/密碼/硬體 Key (精巧小卡片，貼右上角或置中)
-    hl.window_rule({ 
-      name = "auth_and_keys", 
-      match = { class = "^(fido2-manage|pinentry-.*|gcr-prompter|.*polkit.*|yad|zenity)$" }, 
-      size = "420 280", 
-      center = true 
-    })
-
-    -- 瀏覽器畫中畫 (右下角釘子戶)
-    hl.window_rule({ 
-      name = "browser_pip", 
-      match = { title = "^(Picture-in-Picture|畫中畫|子母畫面)$" }, 
-      pin = true, 
-      keep_aspect_ratio = true, 
-      size = "26% 26%", 
-      move = "73% 72%" 
-    })
-
-    -- 4 號發燒音訊工作區：左右 50% 對開
-    hl.window_rule({ name = "音量控制", match = { class = "org.pulseaudio.pavucontrol" }, size = "99% 99%", center = true , move = "0 0" })
-    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, workspace = "4 silent", size = "50% 100%", move = "0 0" })
-    hl.window_rule({ name = "easyeffects_ws4", match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", size = "50% 100%", move = "50% 0" })
-
-    -- 社交軟體靜音分流
-    hl.window_rule({ name = "discord_ws3", match = { class = "discord" }, workspace = "3 silent" })
-    hl.window_rule({ name = "spotify_ws3", match = { class = "^(spotify|Spotify)$" }, workspace = "3 silent" })
-
-    -- =========================================================================
-    -- 🧠 4. 智能記憶引擎：全自動讀取用戶隨手標記的「永久浮動黑名單」
-    -- =========================================================================
-    --local memory_file = os.getenv("HOME") .. "/.config/hypr/learned_floats.txt"
-    --local f = io.open(memory_file, "r")
-    --if f then
-    --  local mem_idx = 100
-    --  for line in f:lines() do
-    --    -- 去除首尾空格
-    --    line = line:match("^%s*(.-)%s*$")
-    --    if line ~= "" and not line:match("^#") then
-    --      hl.window_rule({
-    --        name = "user_remembered_" .. mem_idx,
-    --        match = { class = "^(" .. line .. ")$" },
-    --        float = true,
-    --        center = true,
-    --        size = "65% 70%" -- 預設給優雅黃金比例
-    --      })
-    --      mem_idx = mem_idx + 1
-    --    end
-    --  end
-    --  f:close()
-    --end
-
+    -- 🗂️ 6. 【常駐社交軟體靜音分流】
+    hl.window_rule({ name = "discord_ws3",  match = { class = "discord" }, workspace = "3 silent" })
+    hl.window_rule({ name = "spotify_ws3",  match = { class = "^(spotify|Spotify)$" }, workspace = "3 silent" })
   '';
 
   # =======================================================
