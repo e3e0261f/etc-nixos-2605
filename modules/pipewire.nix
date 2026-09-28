@@ -3,12 +3,12 @@
 let
   # 📁 指向你的寶庫基礎路徑：
   # irDir = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane";
-  irDir = "/home/rhys/DOwn/EAsyeffects-main/6Spaces13Hillside48K.wav";
 
   # ⭐️【大場地菜單】：把你想聽的那個取消註釋，其他加上 # 即可！
   
   # 🏛️ 1. 歐洲宏偉古大教堂（最空靈、聲場最大）：
-  hallIrFile = "${irDir}/Schellingwoude.wav";
+  # hallIrFile = "${irDir}/Schellingwoude.wav";
+  hallIrFile = "/home/rhys/DOwn/EAsyeffects-main/6Spaces13Hillside48K.wav";
 
   # 🏛️ 2. 大教堂後排聽音位（超強縱深包圍感）：
   # hallIrFile = "${irDir}/Buiksloot Rear.wav";
