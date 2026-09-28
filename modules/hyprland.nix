@@ -86,9 +86,6 @@
     hl.window_rule({ name = "easyeffects_ws4_right", match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", float = true, size = "50% 100%", move = "50% 0" })
     hl.window_rule({ name = "yazi_float_center", match = { class = "yazi-float" }, float = true, center = true, size = "75% 75%" })
     hl.window_rule({ name = "google-chrome", match = { class = "^(google-chrome|chromium-browser)$", title = "^.*(偵測到|Account and password|Pico Key|USB).*$" }, float = true, size = "360 140", move = "100%-380 40" })
-    -- 使用你前面那 15 行通用的 hl.window_rule 风格
-    hl.window_rule({ name = "float_dialogs", match = { title = "^(Open File|Save File|Confirm|Dialog)$" }, float = true })
-    hl.window_rule({ name = "float_settings", match = { class = ".*", title = ".*Settings.*" }, float = true })
 '';
 
   # =======================================================
