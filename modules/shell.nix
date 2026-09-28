@@ -5,6 +5,17 @@
   # =========================================================================
   # 🐟 1. 現代純血 Fish 核心配置
   # =========================================================================
+  programs.starship = {
+    enable = true;
+    settings = {
+      directory = {
+        # 设为 0 表示不截断，显示完整路径
+        truncation_length = 0; 
+        # 禁用 fish 风格的路径缩写
+        fish_style_pwd_dir_length = 0;
+      };
+    };
+  };
   programs.fish = {
     enable = true;
 
