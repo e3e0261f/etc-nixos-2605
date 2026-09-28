@@ -42,8 +42,6 @@ in
   services.dae = {
     enable = true;
     assets = [ my-dae-assets ];
-    restartIfChanged = false; # 设置为 false，只有你手动重启时才重启
-
 
     config = ''
       global {
