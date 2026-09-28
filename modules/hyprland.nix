@@ -47,46 +47,171 @@
   # =======================================================
   # 1. 視窗規則模組 (精準排版與置中懸浮)
   # =======================================================
+  # =======================================================
+  # 1. 視窗規則模組 (針對當前已安裝軟體清單 100% 量身定制)
+  # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
-    -- 0. 防全屏核心防御 & XWayland 修复
+    -- =========================================================================
+    -- 🛡️ 【第 0 級：系統核心防禦與 XWayland 拖曳修正】
+    -- =========================================================================
     hl.window_rule({ name = "suppress_maximize", match = { class = ".*" }, suppress_event = "maximize" })
     hl.window_rule({ name = "fix_xwayland_drags", match = { class = "^$", title = "^$", xwayland = true, float = true, fullscreen = false, pin = false }, no_focus = true })
 
-    -- 1. 系统通用弹窗 / 文件选择器 / 认证窗口
-    hl.window_rule({ name = "common_file_dialogs", match = { title = "^(Open File|Open Folder|Save As|Save File|另存为|打开文件|打开文件夹|Choose Files|File Upload)$" }, float = true, center = true, size = "60% 65%" })
-    hl.window_rule({ name = "portal_dialogs", match = { class = "^(xdg-desktop-portal-.*)$" }, float = true, center = true, size = "65% 70%" })
-    hl.window_rule({ name = "auth_dialogs", match = { class = "^(yad|io\\.ente\\.auth|ente_auth|pinentry-.*|gcr-prompter|.*polkit.*)$" }, float = true, center = true })
-    hl.window_rule({ name = "keepassxc_dialogs", match = { class = "^(org\\.keepassxc\\.KeePassXC)$", title = "^(KeePassXC - .*|解锁数据库.*|Unlock.*|确认.*)$" }, float = true, center = true })
+    -- =========================================================================
+    -- 🔐 【第 1 級：硬體 Key、安全認證、密碼庫 (小巧置中，防焦點迷失)】
+    -- =========================================================================
+    -- FIDO2 密鑰、智能卡通知、Polkit 提權彈窗
+    hl.window_rule({ 
+      name = "auth_and_fido", 
+      match = { class = "^(fido2-manage|org\\.opensc\\.notify|pinentry-.*|gcr-prompter|.*polkit.*|yad|zenity)$" }, 
+      float = true, center = true, size = "440 300" 
+    })
+    -- KeePassXC 密碼管理器解鎖與主視窗
+    hl.window_rule({ 
+      name = "keepassxc", 
+      match = { class = "^(org\\.keepassxc\\.KeePassXC)$" }, 
+      float = true, center = true, size = "55% 65%" 
+    })
 
-    -- 2. 常用小工具 & 看图 & 翻译 & 壁纸
-    hl.window_rule({ name = "float_swappy", match = { class = "^(swappy)$" }, float = true, center = true })
-    hl.window_rule({ name = "float_crow_translate", match = { class = "^(io\\.crow_translate\\.CrowTranslate|crow-translate)$" }, float = true, center = true, size = "45% 50%" })
-    hl.window_rule({ name = "float_media_viewers", match = { class = "^(waypaper|org\\.gnome\\.Loupe)$" }, float = true, center = true, size = "65% 70%" })
-    hl.window_rule({ name = "float_fcitx5", match = { class = "^(org\\.fcitx\\..*|fcitx5-config-qt|kcm_fcitx5)$" }, float = true, center = true, size = "50% 60%" })
+    -- =========================================================================
+    -- 📁 【第 2 級：檔案選擇器、壓縮工具、檔案傳輸進度 (中型黃金比例)】
+    -- =========================================================================
+    -- 全域對話框 (覆蓋 Chrome, Codium, Firefox 等另存為/上傳)
+    hl.window_rule({ 
+      name = "file_dialogs", 
+      match = { title = "^(Open File|Open Folder|Save As|Save File|另存為|另存新檔|開啟檔案|開啟資料夾|Choose Files|File Upload|Select a File.*)$" }, 
+      float = true, center = true, size = "65% 70%" 
+    })
+    -- 桌面門戶選擇器 (XDG Portal GTK / XApp)
+    hl.window_rule({ 
+      name = "portal_file_pickers", 
+      match = { class = "^(xdg-desktop-portal-.*)$" }, 
+      float = true, center = true, size = "65% 70%" 
+    })
+    -- 解壓工具專區 (Ark / PeaZip 主視窗與提取進度)
+    hl.window_rule({ 
+      name = "archivers", 
+      match = { class = "^(org\\.kde\\.ark|peazip|peazip-.*)$" }, 
+      float = true, center = true, size = "55% 60%" 
+    })
+    -- 檔案管理器進度條 (Thunar / Nemo / Dolphin / PCManFM 複製替換屬性彈窗)
+    hl.window_rule({ 
+      name = "file_progress_dialogs", 
+      match = { 
+        class = "^(nemo|Nemo|org\\.kde\\.dolphin|thunar|Thunar|pcmanfm-qt)$", 
+        title = "^(檔案操作進度|File Operation Progress|Confirm.*|屬性|Properties.*|Preferences|偏好設定)$" 
+      }, 
+      float = true, center = true, size = "480 340" 
+    })
 
-    -- 3. 独立应用浮动设置
-    hl.window_rule({ name = "float_pavu", match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol)$" }, float = true, center = true, size = "50% 60%" })
-    hl.window_rule({ name = "float_vlc", match = { class = "vlc" }, float = true, center = true })
-    hl.window_rule({ name = "float_spotify", match = { class = "^(spotify|Spotify)$" }, float = true, center = true, size = "65% 70%" })
-    hl.window_rule({ name = "float_vscodium", match = { class = "^(codium|vscodium|VSCodium)$" }, float = true })
-    hl.window_rule({ name = "float_nemo", match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = "60% 65%" })
-    hl.window_rule({ name = "float_dolphin", match = { class = "org.kde.dolphin" }, float = true, center = true, size = "60% 65%" })
-    hl.window_rule({ name = "float_ark", match = { class = "org.kde.ark" }, float = true, center = true })
-    hl.window_rule({ name = "file_progress", match = { class = "^(Thunar|thunar|nemo|Nemo|org\\.kde\\.dolphin)$", title = "^(文件操作进度|File Operation Progress|Confirm to replace files|属性|Properties)$" }, float = true, center = true })
-    hl.window_rule({ name = "float_qbittorrent", match = { class = "org.qbittorrent.qBittorrent" }, float = true, center = true })
-    hl.window_rule({ name = "float_steam_dialogs", match = { class = "^(steam)$", title = "^(Friends List|Settings|好友列表|设置|Steam Guard.*)$" }, float = true })
-    hl.window_rule({ name = "browser_pip", match = { title = "^(Picture-in-Picture|画中画)$" }, float = true, pin = true, keep_aspect_ratio = true, size = "28% 28%", move = "70% 70%" })
+    -- =========================================================================
+    -- 🎛️ 【第 3 級：專業音訊 DAW、跳線器與音量控制 (避免拉伸破壞排版)】
+    -- =========================================================================
+    -- REAPER 宿主：主工程平鋪，但所有 VST 效果器、渲染彈窗、設定視窗強制浮動！
+    hl.window_rule({ 
+      name = "reaper_vst_plugins", 
+      match = { class = "^(REAPER)$", title = "^(FX: .*|VST: .*|JS: .*|Render to File|Preferences.*)$" }, 
+      float = true, center = true 
+    })
+    -- 音量控制台、跳線器 (Pavucontrol / Crosspipe / qpwgraph)
+    hl.window_rule({ 
+      name = "audio_tools", 
+      match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol|io\\.github\\.dp0sk\\.Crosspipe)$" }, 
+      float = true, center = true, size = "55% 65%" 
+    })
 
-    -- 4. 专属工作区分流 & 悬浮布局
-    hl.window_rule({ name = "chromium_ws1", match = { class = "^(chromium|chromium-browser)$" }, workspace = "1" })
-    hl.window_rule({ name = "chrome_ws1", match = { class = "^(google-chrome|google-chrome-browser)$" }, workspace = "1" })
+    -- =========================================================================
+    -- 🧰 【第 4 級：系統管理、網路代理與輸入法設定】
+    -- =========================================================================
+    -- 網路與藍牙設定
+    hl.window_rule({ 
+      name = "net_bluetooth_manage", 
+      match = { class = "^(nm-connection-editor|blueman-manager|blueman-adapters)$" }, 
+      float = true, center = true, size = "520 560" 
+    })
+    -- 代理客戶端 (Clash Verge)
+    hl.window_rule({ 
+      name = "clash_verge", 
+      match = { class = "^(clash-verge)$" }, 
+      float = true, center = true, size = "60% 65%" 
+    })
+    -- Fcitx5 輸入法全套配置器
+    hl.window_rule({ 
+      name = "fcitx5_settings", 
+      match = { class = "^(org\\.fcitx\\..*|fcitx5-config-qt|kcm_fcitx5|kbd-layout-viewer5)$" }, 
+      float = true, center = true, size = "55% 60%" 
+    })
+
+    -- =========================================================================
+    -- 🖼️ 【第 5 級：看圖、修圖、OCR 與實用工具 (中大型置中)】
+    -- =========================================================================
+    -- 截圖標註
+    hl.window_rule({ name = "swappy_float", match = { class = "^(swappy)$" }, float = true, center = true })
+    -- 看圖工具 (Loupe / IMV)
+    hl.window_rule({ name = "image_viewers", match = { class = "^(org\\.gnome\\.Loupe|imv)$" }, float = true, center = true, size = "70% 75%" })
+    -- GIMP：所有彈出式濾鏡與工具面板
+    hl.window_rule({ name = "gimp_dialogs", match = { class = "^(gimp-.*|gimp)$", title = "^.*(Dialog|Settings|Export|Open|Preferences).*$" }, float = true, center = true })
+    -- gImageReader (OCR 文字識別)
+    hl.window_rule({ name = "gimagereader", match = { class = "^(gimagereader-gtk)$" }, float = true, center = true, size = "65% 70%" })
+    -- 翻譯工具 (Crow Translate)
+    hl.window_rule({ name = "crow_translate", match = { class = "^(org\\.kde\\.CrowTranslate)$" }, float = true, center = true, size = "45% 55%" })
+    -- 桌布選擇器 (Waypaper)
+    hl.window_rule({ name = "waypaper", match = { class = "^(waypaper)$" }, float = true, center = true, size = "60% 65%" })
+    -- 獨立文字編輯小彈窗 (KWrite)
+    hl.window_rule({ name = "kwrite_float", match = { class = "^(org\\.kde\\.kwrite)$" }, float = true, center = true, size = "50% 60%" })
+
+    -- =========================================================================
+    -- 🎮 【第 6 級：遊戲、輔助器與啟動器 (Steam / Heroic / UU)】
+    -- =========================================================================
+    -- Steam 對話框、好友列表、設定
+    hl.window_rule({ 
+      name = "steam_popups", 
+      match = { class = "^(steam)$", title = "^(Friends List|Settings|好友列表|設定|Steam Guard.*|新聞.*|News.*)$" }, 
+      float = true, center = true, size = "450 650" 
+    })
+    -- Heroic 遊戲啟動器主介面
+    hl.window_rule({ 
+      name = "heroic_launcher", 
+      match = { class = "^(com\\.heroicgameslauncher\\.hgl)$" }, 
+      float = true, center = true, size = "70% 75%" 
+    })
+    -- GameConqueror (遊戲記憶體修改器)
+    hl.window_rule({ name = "game_conqueror", match = { class = "^(GameConqueror)$" }, float = true, center = true, size = "55% 60%" })
+    -- UU 加速器控制端 (uuctl)
+    hl.window_rule({ name = "uuctl_float", match = { class = "^(uuctl)$" }, float = true, center = true, size = "400 500" })
+
+    -- =========================================================================
+    -- 📺 【第 7 級：畫中畫與釘子戶視窗】
+    -- =========================================================================
+    -- 瀏覽器畫中畫 (Chrome / Firefox 全覆蓋，釘在右下角)
+    hl.window_rule({ 
+      name = "browser_pip", 
+      match = { title = "^(Picture-in-Picture|畫中畫|子母畫面)$" }, 
+      float = true, pin = true, keep_aspect_ratio = true, size = "26% 26%", move = "73% 72%" 
+    })
+    -- Chrome / Chromium 帳密保存與 USB 安全密鑰彈窗
+    hl.window_rule({ 
+      name = "chrome_auth_popups", 
+      match = { class = "^(google-chrome|com\\.google\\.Chrome|chromium-browser)$", title = "^.*(偵測到|Account and password|Pico Key|USB).*$" }, 
+      float = true, size = "360 140", move = "100%-380 40" 
+    })
+    -- 懸浮 Yazi 終端檔案管理器 (Super + E 呼出)
+    hl.window_rule({ name = "yazi_float_center", match = { class = "yazi-float" }, float = true, center = true, size = "75% 75%" })
+
+    -- =========================================================================
+    -- 🗂️ 【第 8 級：專屬工作區自動分流】
+    -- =========================================================================
+    -- 1 號工作區：主瀏覽器 (Chrome / Firefox)
+    hl.window_rule({ name = "browser_ws1", match = { class = "^(google-chrome|com\\.google\\.Chrome|firefox)$" }, workspace = "1" })
+    
+    -- 3 號工作區：社交通訊 (Discord / Spotify 靜音常駐)
     hl.window_rule({ name = "discord_ws3", match = { class = "discord" }, workspace = "3 silent" })
-    hl.window_rule({ name = "kitty_half_right", match = { class = "kitty" }, float = true, size = "50% 100%", move = "50% 0" })
+    hl.window_rule({ name = "spotify_ws3", match = { class = "^(spotify|Spotify)$" }, workspace = "3 silent" })
+
+    -- 4 號工作區：發燒音訊專業工作區 (qpwgraph 在左，EasyEffects 在右，50% 對開)
     hl.window_rule({ name = "qpwgraph_ws4_left", match = { class = "org.rncbc.qpwgraph" }, workspace = "4 silent", float = true, size = "50% 100%", move = "0 0" })
     hl.window_rule({ name = "easyeffects_ws4_right", match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", float = true, size = "50% 100%", move = "50% 0" })
-    hl.window_rule({ name = "yazi_float_center", match = { class = "yazi-float" }, float = true, center = true, size = "75% 75%" })
-    hl.window_rule({ name = "google-chrome", match = { class = "^(google-chrome|chromium-browser)$", title = "^.*(偵測到|Account and password|Pico Key|USB).*$" }, float = true, size = "360 140", move = "100%-380 40" })
-'';
+  '';
 
   # =======================================================
   # 2. 快捷鍵模組
