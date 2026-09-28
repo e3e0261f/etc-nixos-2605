@@ -202,7 +202,6 @@
   hyprland.withUWSM = true;
   hyprland.xwayland.enable = true;
   };
-  
   #允许所有非自由软件
   nixpkgs.config.allowUnfree = true;
   # 自动休眠
