@@ -64,7 +64,7 @@
     -- 🎛️ 3. 【音訊專用調控】：PAV 控制台中間偏右 (1080x760)，4號工作區避讓左側 80px 任務欄左右對開
     hl.window_rule({ name = "audio_pavu",   match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol|pwvucontrol)$" }, float = true, center = true, size = "2423 1329", move = "80 80" })
     hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, tile = true, workspace = "4 silent" })
-    hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" }float = true, center = true, size = "2423 1329", move = "80 80" })
+    hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" },float = true, center = true, size = "2423 1329", move = "80 80" })
 
     -- 📁 4. 【主力檔案與終端】：全域優雅置中懸浮
     hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = SIzeNUm })
