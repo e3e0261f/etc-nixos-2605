@@ -202,6 +202,7 @@
   hyprland.withUWSM = true;
   hyprland.xwayland.enable = true;
   };
+  xdg.mime.enable = true; # 必须开启，这是系统处理“打开方式”的底层核心
   #允许所有非自由软件
   nixpkgs.config.allowUnfree = true;
   # 自动休眠
