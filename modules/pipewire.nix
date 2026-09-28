@@ -676,20 +676,6 @@ in
                   name = "phaser_l";
                   plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/phasers_1217.so";
                   label = "lfoPhaser";
-
-                  control = {
-                    "Frequency 1" = 700.0;
-                    "Feedback 1" = 0.30;
-
-                    "Frequency 2" = 1400.0;
-                    "Feedback 2" = 0.30;
-
-                    "Frequency 3" = 2800.0;
-                    "Feedback 3" = 0.30;
-
-                    "Frequency 4" = 5600.0;
-                    "Feedback 4" = 0.30;
-                  };
                 }
 
                 {
@@ -697,20 +683,6 @@ in
                   name = "phaser_r";
                   plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/phasers_1217.so";
                   label = "lfoPhaser";
-
-                  control = {
-                    "Frequency 1" = 700.0;
-                    "Feedback 1" = 0.30;
-
-                    "Frequency 2" = 1400.0;
-                    "Feedback 2" = 0.30;
-
-                    "Frequency 3" = 2800.0;
-                    "Feedback 3" = 0.30;
-
-                    "Frequency 4" = 5600.0;
-                    "Feedback 4" = 0.30;
-                  };
                 }
               ];
 
@@ -743,50 +715,50 @@ in
         # FX · DE-ESSER · VOCAL
         # Calf LV2 Deesser
         # =======================================================
-        {
-          name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
-          args = {
-            "node.description" = "FX · DE-ESSER · VOCAL";
-            "media.name" = "FX_DE_ESSER_VOCAL";
+        # {
+        #   name = "libpipewire-module-filter-chain";
+        #   flags = [ "ifexists" "nofail" ];
+        #   args = {
+        #     "node.description" = "FX · DE-ESSER · VOCAL";
+        #     "media.name" = "FX_DE_ESSER_VOCAL";
 
-            "filter.graph" = {
-              nodes = [
-                {
-                  type = "lv2";
-                  name = "deesser";
-                  plugin = "http://calf.sourceforge.net/plugins/Deesser";
+        #     "filter.graph" = {
+        #       nodes = [
+        #         {
+        #           type = "lv2";
+        #           name = "deesser";
+        #           plugin = "http://calf.sourceforge.net/plugins/Deesser";
 
-                  control = {
-                    "threshold" = 0.009375;
-                  };
-                }
-              ];
+        #           control = {
+        #             "threshold" = 0.009375;
+        #           };
+        #         }
+        #       ];
 
-              inputs = [
-                "deesser:In L"
-                "deesser:In R"
-              ];
+        #       inputs = [
+        #         "deesser:In L"
+        #         "deesser:In R"
+        #       ];
 
-              outputs = [
-                "deesser:Out L"
-                "deesser:Out R"
-              ];
-            };
+        #       outputs = [
+        #         "deesser:Out L"
+        #         "deesser:Out R"
+        #       ];
+        #     };
 
-            "audio.position" = [ "FL" "FR" ];
+        #     "audio.position" = [ "FL" "FR" ];
 
-            "capture.props" = {
-              "node.name" = "FX_DE_ESSER_VOCAL_In";
-              "media.class" = "Audio/Sink";
-            };
+        #     "capture.props" = {
+        #       "node.name" = "FX_DE_ESSER_VOCAL_In";
+        #       "media.class" = "Audio/Sink";
+        #     };
 
-            "playback.props" = {
-              "node.name" = "FX_DE_ESSER_VOCAL_Out";
-              "node.passive" = true;
-            };
-          };
-        }
+        #     "playback.props" = {
+        #       "node.name" = "FX_DE_ESSER_VOCAL_Out";
+        #       "node.passive" = true;
+        #     };
+        #   };
+        # }
 
 
         # =======================================================
