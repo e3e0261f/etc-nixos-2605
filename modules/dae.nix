@@ -215,6 +215,9 @@ in
           domain(suffix: mega.nz) -> for1
           dport(22) -> for1
           domain(suffix:discord) -> for146
+          # 直连下载会遭遇严重的GFW丢包、连接重置和反复重试。
+          # 这进一步打烂Wi-Fi 吞吐，导致 dae 的后台探测包彻底发不出去。
+          pname(aria2c) && !domain(geosite:cn) -> for1
 
           # ⭐️【終極兜底】：國外未知流量走 1倍 for1 省錢池！
           fallback: for1
