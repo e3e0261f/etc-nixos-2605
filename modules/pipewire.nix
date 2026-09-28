@@ -434,50 +434,119 @@ in
         }
 
         # =======================================================
-        # 🎸 破音模組 2：數碼降採樣碎裂破音（Bitcrusher / Decimator 立體聲版）
-        # 效果：製造 8-bit 復古遊戲機、對講機、機械人、數碼斷流的電子碎裂感
+        # 🎸 破音模組 2：SWH Diode
+        # 二极管非线性失真
         # =======================================================
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Bitcrusher (Stereo)";
-            "media.name" = "Studio_Bitcrusher";
+            "node.description" = "SWH Diode Distortion";
+            "media.name" = "SWH_Diode";
+
             "filter.graph" = {
               nodes = [
-                { type = "ladspa"; plugin = "decimator_1202"; label = "decimator"; name = "dec_l"; control = { "Bit depth" = 6.0; "Sample rate (Hz)" = 8000.0; }; }
-                { type = "ladspa"; plugin = "decimator_1202"; label = "decimator"; name = "dec_r"; control = { "Bit depth" = 6.0; "Sample rate (Hz)" = 8000.0; }; }
+                {
+                  type = "ladspa";
+                  name = "diode";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/diode_1185.so";
+                  label = "diode";
+                }
               ];
-              inputs = [ "dec_l:Input" "dec_r:Input" ];
-              outputs = [ "dec_l:Output" "dec_r:Output" ];
+
+              inputs = [ "diode:In" ];
+              outputs = [ "diode:Out" ];
             };
+
             "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Decimator_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Decimator_Out"; "node.passive" = true; };
+
+            "capture.props" = {
+              "node.name" = "SWH_Diode_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "SWH_Diode_Out";
+              "node.passive" = true;
+            };
           };
         }
 
-        # =======================================================
-        # 🎸 破音模組 3：二極管過載器（Diode Overdrive 立體聲版）
-        # 效果：模擬真實吉他過載踏板，產生温暖但颗粒感十足的模拟失真
+                # =======================================================
+        # 🎸 破音模組 3：SWH FOverdrive
+        # 傳統 Overdrive / 軟性過載
         # =======================================================
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Diode Overdrive (Stereo)";
-            "media.name" = "Studio_Diode_Overdrive";
+            "node.description" = "SWH FOverdrive";
+            "media.name" = "SWH_FOverdrive";
+
             "filter.graph" = {
               nodes = [
-                { type = "ladspa"; plugin = "diodes_1409"; label = "diodes"; name = "dio_l"; control = { "Drive" = 5.0; }; }
-                { type = "ladspa"; plugin = "diodes_1409"; label = "diodes"; name = "dio_r"; control = { "Drive" = 5.0; }; }
+                {
+                  type = "ladspa";
+                  name = "foverdrive";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/foverdrive_1196.so";
+                  label = "foverdrive";
+                }
               ];
-              inputs = [ "dio_l:Input" "dio_r:Input" ];
-              outputs = [ "dio_l:Output" "dio_r:Output" ];
+
+              inputs = [ "foverdrive:In" ];
+              outputs = [ "foverdrive:Out" ];
             };
+
             "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Overdrive_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Overdrive_Out"; "node.passive" = true; };
+
+            "capture.props" = {
+              "node.name" = "SWH_FOverdrive_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "SWH_FOverdrive_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+
+                # =======================================================
+        # 🎸 破音模組 4：SWH Valve
+        # 真空管 / 電子管風格非線性
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "SWH Valve";
+            "media.name" = "SWH_Valve";
+
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  name = "valve";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_1209.so";
+                  label = "valve";
+                }
+              ];
+
+              inputs = [ "valve:In" ];
+              outputs = [ "valve:Out" ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+
+            "capture.props" = {
+              "node.name" = "SWH_Valve_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "SWH_Valve_Out";
+              "node.passive" = true;
+            };
           };
         }
 
