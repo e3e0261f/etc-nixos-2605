@@ -28,7 +28,8 @@
     mainMod     = "SUPER"
     terminal    = "kitty"
     fileManager = "nemo"
-    menu        = "caelestia shell drawers toggle launcher"    
+    menu        = "caelestia shell drawers toggle launcher"
+    SIzeNUm     = "1438 866"
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
@@ -62,13 +63,13 @@
 
     -- 🎛️ 3. 【音訊專用調控】：PAV 控制台中間偏右 (1080x760)，4號工作區避讓左側 80px 任務欄左右對開
     hl.window_rule({ name = "audio_pavu",   match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol|pwvucontrol)$" }, float = true, center = true, size = "2423 1329", move = "80 80" })
-    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, workspace = "4 silent", float = true, size = "1200 100%", move = "80 60" })
-    hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", float = true, size = "1280 100%", move = "1280 70" })
+    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, tile = true, workspace = "4 silent" })
+    hl.window_rule({ name = "easyeffects",  match = { class = "com.github.wwmm.easyeffects" }float = true, center = true, size = "2423 1329", move = "80 80" })
 
     -- 📁 4. 【主力檔案與終端】：全域優雅置中懸浮
-    hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = "65% 70%" })
-    hl.window_rule({ name = "float_kitty",  match = { class = "^(kitty)$" }, float = true, center = true, size = "72% 76%" })
-    hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = "75% 75%" })
+    hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = SIzeNUm })
+    hl.window_rule({ name = "float_kitty",  match = { class = "^(kitty)$" }, float = true, center = true, size = SIzeNUm )
+    hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = SIzeNUm )
 
     -- 🎯 5. 【小工具、認證、選擇器與進度條】
     hl.window_rule({ name = "auth_keys",    match = { class = "^(fido2-manage|pinentry-.*|gcr-prompter|.*polkit.*|yad|zenity)$" }, float = true, center = true, size = "440 300" })
