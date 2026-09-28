@@ -294,28 +294,16 @@ in
                   };
                 }
               ];
-
-              inputs = [
-                "limiter:Input 1"
-                "limiter:Input 2"
-              ];
-
-              outputs = [
-                "limiter:Output 1"
-                "limiter:Output 2"
-              ];
             };
 
             "audio.position" = [ "FL" "FR" ];
 
-            # 这里接收真正的硬件麦克风/声卡输入
             "capture.props" = {
               "node.name" = "FX_LIMITER_MIC_INPUT";
-              "media.class" = "Audio/Sink";
               "node.description" = "FX · LIMITER · MIC · INPUT";
+              "media.class" = "Audio/Sink";
             };
 
-            # 这里就是软件看到的“麦克风”
             "playback.props" = {
               "node.name" = "FX_LIMITER_MIC";
               "node.description" = "FX · LIMITER · MIC";
@@ -324,7 +312,6 @@ in
             };
           };
         }
-
         # 6. SOFA 虛擬雙耳監聽音箱（使用你的 dtf_nh2.sofa）
         {
           name = "libpipewire-module-filter-chain";
