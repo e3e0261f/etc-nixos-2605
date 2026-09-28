@@ -83,6 +83,12 @@
 
       -- 發燒音訊 4 號工作區右半屏 (EasyEffects)
       audio_right = { workspace = "4 silent", float = true, size = "50% 100%", move = "50% 0" },
+
+      -- ⭐️ 幽靈彈窗必殺技：凡是 class 和 title 同時為空的無名窗口，強制縮成右上角迷你小卡片！
+      { class = "^$", title = "^$", float = true, size = "380 140", move = "100%-400 50" },
+
+      -- 🔐 系統認證與密鑰
+      { class = "^(fido2-manage|org\\.opensc\\.notify|pinentry-.*|gcr-prompter|.*polkit.*|yad|zenity)$", preset = "auth" },
     }
 
     -- =========================================================================
