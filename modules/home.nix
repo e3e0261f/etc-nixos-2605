@@ -22,6 +22,7 @@
     ./helix.nix         # 🧬 Helix 現代模態編輯器 (Space+w 存檔 | Space+Space 搜檔 | LSP 自動補全)
     ./yazi.nix          # 📁 Yazi 終端檔案管理器 (g D 一秒跳 ~/DOwn，Enter 直連 Helix，極速預覽)
     ./defaults.nix      # 🌐 全域預設應用程式關聯 (預設 Chrome、檔案管理 Nemo、播放器 VLC)
+    ./discord.nix       #    跳过discord更新
 
     # -----------------------------------------------------------------------
     # 🛠️ 3. 程式開發、版本控制與常用工具 (Dev & CLI Tools)
