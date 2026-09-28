@@ -2,7 +2,8 @@
 { config, pkgs, ... }:
 let
   # 📁 指向你的寶庫基礎路徑：
-  irDir = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane";
+  # irDir = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane";
+  irDir = "/home/rhys/DOwn/EAsyeffects-main/6Spaces13Hillside48K.wav";
 
   # ⭐️【大場地菜單】：把你想聽的那個取消註釋，其他加上 # 即可！
   
