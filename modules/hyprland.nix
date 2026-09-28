@@ -49,13 +49,11 @@
   # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
     -- 1. 定义基准风格
-    local base = {float = true, center = true, size = "1438 866" 
-    local tool = {
-        audio   = { workspace = "4 silent", move = "80 80" },
-        term    = { workspace = "2 silent" },
-        chat    = { workspace = "3 silent" },
-        browser = { workspace = "1 silent", float = false, tile = true }
-      }
+    local base    = {float = true, center = true, size = "1438 866"} 
+    local audio   = { workspace = "4 silent", move = "80 80" }
+    local term    = { workspace = "2 silent" }
+    local chat    = { workspace = "3 silent" }
+    local browser = { workspace = "1 silent", float = false, tile = true }
 
     -- 🛡️ 0. 底層硬體防禦
     hl.window_rule({ name = "suppress_max", match = { class = ".*" }, suppress_event = "maximize" })
