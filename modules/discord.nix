@@ -18,7 +18,6 @@
       DESKTOP_TTI_UPDATE_BACKOFF_MAX_MS = 20000;
       chromiumSwitches = {};
       # 窗口大小建议让它动态保存（force = false），或者像下面这样直接锁死
-      IS_MAXIMIZED = true;
       IS_MINIMIZED = false;
       WINDOW_BOUNDS = {
         x = 16;
@@ -27,7 +26,7 @@
         height = 726;
       };
     };
-    # force = true 确保即使 Discord 修改了它，下次激活配置时也会被强制覆盖回来
-    Force = true;
+    # 确保这里是全小写的 force
+    force = true; 
   };
 }
