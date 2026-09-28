@@ -242,32 +242,86 @@ in
         }
 
         # 5. 磚牆防爆限制器（LADSPA）
+        # {
+        #   name = "libpipewire-module-filter-chain";
+        #   flags = [ "ifexists" "nofail" ];
+        #   args = {
+        #     "node.description" = "FX · LIMITER · MASTER";
+        #     "media.name" = "Studio_Brickwall_Limiter";
+        #     "filter.graph" = {
+        #       nodes = [
+        #         {
+        #           type = "ladspa";
+        #           plugin = "fast_lookahead_limiter_1913";
+        #           label = "fastLookaheadLimiter";
+        #           name = "fastLookaheadLimiter";
+        #           control = {
+        #             "Input gain (dB)" = 0.0;
+        #             "Limit (dB)" = -0.5;
+        #             "Release time (s)" = 0.05;
+        #           };
+        #         }
+        #       ];
+        #       inputs = [ "fastLookaheadLimiter:Input 1" "fastLookaheadLimiter:Input 2" ];
+        #       outputs = [ "fastLookaheadLimiter:Output 1" "fastLookaheadLimiter:Output 2" ];
+        #     };
+        #     "audio.position" = [ "FL" "FR" ];
+        #     "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
+        #     "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
+        #   };
+        # }
+        #
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
+
           args = {
-            "node.description" = "FX · LIMITER · MASTER";
-            "media.name" = "Studio_Brickwall_Limiter";
+            "node.description" = "FX · LIMITER · MIC";
+            "media.name" = "FX_LIMITER_MIC";
+
             "filter.graph" = {
               nodes = [
                 {
                   type = "ladspa";
-                  plugin = "fast_lookahead_limiter_1913";
+                  name = "limiter";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/fast_lookahead_limiter_1913.so";
                   label = "fastLookaheadLimiter";
-                  name = "fastLookaheadLimiter";
+
                   control = {
                     "Input gain (dB)" = 0.0;
-                    "Limit (dB)" = -0.5;
-                    "Release time (s)" = 0.05;
+                    "Limit (dB)" = -1.0;
+                    "Release time (s)" = 0.30;
                   };
                 }
               ];
-              inputs = [ "fastLookaheadLimiter:Input 1" "fastLookaheadLimiter:Input 2" ];
-              outputs = [ "fastLookaheadLimiter:Output 1" "fastLookaheadLimiter:Output 2" ];
+
+              inputs = [
+                "limiter:Input 1"
+                "limiter:Input 2"
+              ];
+
+              outputs = [
+                "limiter:Output 1"
+                "limiter:Output 2"
+              ];
             };
+
             "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
+
+            # 这里接收真正的硬件麦克风/声卡输入
+            "capture.props" = {
+              "node.name" = "FX_LIMITER_MIC_INPUT";
+              "media.class" = "Audio/Sink";
+              "node.description" = "FX · LIMITER · MIC · INPUT";
+            };
+
+            # 这里就是软件看到的“麦克风”
+            "playback.props" = {
+              "node.name" = "FX_LIMITER_MIC";
+              "node.description" = "FX · LIMITER · MIC";
+              "media.class" = "Audio/Source";
+              "node.passive" = true;
+            };
           };
         }
 
@@ -760,7 +814,6 @@ in
         #   };
         # }
 
-
         # =======================================================
         # 🎸 破音模組 1：硬裁剪失真（Hard Clipper 立體聲版）
         # 效果：直接把波形強制削頂，產生極其粗暴、帶磁性的喇叭撕裂破音
@@ -1083,6 +1136,16 @@ in
       ];
     };
   };
+
+# EQ	频率塑形、削减共振	FX · EQ · PARAMETRIC
+# Compressor	动态压缩，让音量更稳定	FX · COMP · STUDIO
+# Limiter	防止峰值爆音、母线保护	FX · LIMITER · MASTER
+# Gate	消除底噪、控制无声段	FX · GATE · STUDIO
+# Delay	回声、空间感、节奏效果	FX · DELAY · STUDIO
+# Reverb	房间、Hall、Plate 等空间	FX · REVERB · STUDIO
+# Chorus	加宽、复制/调制声音	FX · CHORUS · STUDIO
+# Flanger	金属扫频、特殊空间感	FX · FLANGER · STUDIO
+# Phaser	相位旋转效果	FX · PHASER · STUDIO
 
   # 3. 系統工具
   environment.systemPackages = with pkgs; [
