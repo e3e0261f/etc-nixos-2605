@@ -106,7 +106,7 @@ in
     pkgs.libnotify
     pkgs.wl-clipboard
     pkgs.wf-recorder
-    pkgs.rememberFloatScript
+    rememberFloatScript
 
 
     # 螢幕錄影工具
