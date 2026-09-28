@@ -48,6 +48,8 @@
   # 1. 視窗規則模組 (精準排版與置中懸浮)
   # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
+    windowrulev2 = float, title:^(Open File|Save File|Confirm|Dialog)$
+    windowrulev2 = float, class:^(.*)$ title:^(.*Settings.*)$
     -- 0. 防全屏核心防御 & XWayland 修复
     hl.window_rule({ name = "suppress_maximize", match = { class = ".*" }, suppress_event = "maximize" })
     hl.window_rule({ name = "fix_xwayland_drags", match = { class = "^$", title = "^$", xwayland = true, float = true, fullscreen = false, pin = false }, no_focus = true })
