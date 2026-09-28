@@ -74,6 +74,13 @@ in
 
           {
             on = [ "c" "a" ];
+            # 核心：直接把选中的文件路径 "$@" 传递给你系统里的 copyfile 命令
+            run = ''shell 'copyfile "$@"' --confirm'';
+            desc = "Copy file to system clipboard (via copyfile)";
+          }
+
+          {
+            on = [ "c" "s" ];
             # 核心：将选中的文件（%s）转换成 file:// 协议的绝对路径，并通过 wl-copy 塞入系统剪贴板
             run = ''shell -- for path in "$@"; do echo "file://$path"; done | wl-copy -t text/uri-list'';
             desc = "Copy current/selected files to system clipboard";
