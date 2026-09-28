@@ -400,6 +400,39 @@ in
           };
         }
 
+        # =======================================================
+        # 🎸 內置純血硬破音/過載模組（Hard Overdrive / Distortion）
+        # 原理：通過數學非線性增益，製造經典的吉他/人聲過載磁性破音
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Hard Overdrive (Stereo)";
+            "media.name" = "Studio_Overdrive";
+            "filter.graph" = {
+              nodes = [
+                # 左聲道過載鏈：前級推大 (Gain) -> 軟/硬裁剪失真 (bq_peaking 激增波形)
+                { type = "builtin"; label = "linear"; name = "drive_l"; control = { "Mult" = 3.0; }; } # 推大 3 倍進去過載
+                { type = "builtin"; label = "bq_peaking"; name = "clip_l"; control = { "Freq" = 1500.0; "Q" = 0.5; "Gain" = 12.0; }; } # 高增益染色
+
+                # 右聲道過載鏈
+                { type = "builtin"; label = "linear"; name = "drive_r"; control = { "Mult" = 3.0; }; }
+                { type = "builtin"; label = "bq_peaking"; name = "clip_r"; control = { "Freq" = 1500.0; "Q" = 0.5; "Gain" = 12.0; }; }
+              ];
+              links = [
+                { output = "drive_l:Out"; input = "clip_l:In"; }
+                { output = "drive_r:Out"; input = "clip_r:In"; }
+              ];
+              inputs = [ "drive_l:In" "drive_r:In" ];
+              outputs = [ "clip_l:Out" "clip_r:Out" ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = { "node.name" = "Studio_Overdrive_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Overdrive_Out"; "node.passive" = true; };
+          };
+        }
+
         # 7. 純大廳混響（你的 05Hall5）
         {
           name = "libpipewire-module-filter-chain";
