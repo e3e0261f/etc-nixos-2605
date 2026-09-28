@@ -310,6 +310,33 @@ in
           };
         }
 
+        # ⭐️ 卷积器 2：耳机虚拟音箱空间化（串联在耳机前，彻底消除压迫感）
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Virtual Studio Monitor Spatializer";
+            "media.name" = "Studio_Monitor_Spatializer";
+            "filter.graph" = {
+              nodes = [
+                # 加载你的虚拟音箱空间脉冲 WAV 文件（例如 HeSuVi 或监听室双耳脉冲）
+                { type = "builtin"; label = "convolver"; name = "spatFL"; config = { filename = "/path/to/monitor_crossfeed.wav"; channel = 0; gain = 1.0; }; }
+                { type = "builtin"; label = "convolver"; name = "spatFR"; config = { filename = "/path/to/monitor_crossfeed.wav"; channel = 1; gain = 1.0; }; }
+              ];
+              inputs = [ "spatFL:In" "spatFR:In" ];
+              outputs = [ "spatFL:Out" "spatFR:Out" ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = { "node.name" = "Studio_Spatial_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = {
+              "node.name" = "Studio_Spatial_Out";
+              "node.passive" = true;
+              # 直通你的物理耳机声卡
+              "target.object" = "alsa_output.pci-0000_00_1b.0.pro-output-0";
+            };
+          };
+        }
+
         # 7. 純大廳混響（你的 05Hall5）
         {
           name = "libpipewire-module-filter-chain";

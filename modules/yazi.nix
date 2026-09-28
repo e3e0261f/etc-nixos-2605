@@ -3,8 +3,43 @@
 
 let
   # ⭐️ 在此自訂你中意的圖片查看器（切換非常方便）：
-  # 推薦 imv（極速、原生支援 Wayland/X11），或換成 pkgs.loupe, pkgs.swayimg, pkgs.feh
   imageViewer = pkgs.imv;
+
+  # ⭐️ 核心智能剪貼板腳本：滿足「本機檔案系統 + 瀏覽器/Google AI 網頁端」同時完美粘貼
+  smartCopyScript = pkgs.writeShellScriptBin "yazi-smart-copy" ''
+    if [ $# -eq 0 ]; then
+      exit 0
+    fi
+
+    FIRST_FILE="$1"
+
+    # 如果有自定義的 copyfile 命令，先執行它
+    if command -v copyfile >/dev/null 2>&1; then
+      copyfile "$@" 2>/dev/null || true
+    fi
+
+    # 針對 Wayland 環境 (wl-copy) 進行深度 MIME 適配：
+    if command -v wl-copy >/dev/null 2>&1; then
+      MIME_TYPE=$(file --mime-type -b "$FIRST_FILE")
+
+      case "$MIME_TYPE" in
+        image/*)
+          # ⭐️ 圖片檔案：直接將二進制注入剪貼簿，在 Google AI / 網頁中直接 Ctrl+V 秒出圖片！
+          cat "$FIRST_FILE" | wl-copy -t "$MIME_TYPE"
+          ;;
+        text/*|application/json|application/javascript|application/xml|application/x-sh)
+          # ⭐️ 代碼/文本檔案：直接複製文件全文，在 Google AI 聊天框直接 Ctrl+V 貼出內容！
+          cat "$FIRST_FILE" | wl-copy
+          ;;
+        *)
+          # 其他檔案：複製為 file:// 協議 URI，支援在檔案管理器之間粘貼
+          for path in "$@"; do
+            echo "file://$path"
+          done | wl-copy -t text/uri-list
+          ;;
+      esac
+    fi
+  '';
 in
 {
   programs.yazi = {
@@ -24,7 +59,6 @@ in
       };
 
       opener = {
-        # 原有的編輯器設定
         edit = [
           {
             run = ''hx "$@"'';
@@ -33,10 +67,8 @@ in
           }
         ];
 
-        # 🌟【新增】圖片查看器設定
         image = [
           {
-            # 呼叫你指定的查看器，以獨立進程 (orphan = true) 執行，不佔用終端
             run = ''${imageViewer}/bin/${imageViewer.meta.mainProgram or imageViewer.pname} "$@"'';
             orphan = true;
             desc = "View Image";
@@ -46,10 +78,7 @@ in
 
       open = {
         prepend_rules = [
-          # ⭐️ 只要这一行即可！自动匹配所有类型的图片，调用自订的 image opener
           { mime = "image/*"; use = "image"; }
-
-          # 原有的代碼/文本關聯規則（保持使用 url）
           { mime = "text/*"; use = "edit"; }
           { url = "*.nix"; use = "edit"; }
           { url = "*.lua"; use = "edit"; }
@@ -66,51 +95,46 @@ in
     };
 
     # =======================================================
-    # ⭐️ 2. keymap 區塊 (原配置完整保留)
+    # ⭐️ 2. keymap 區塊
     # =======================================================
     keymap = {
       manager = {
         prepend_keymap = [
-
+          # ⭐️ 滿足需求 B：按 c 再按 a，智能複製！
+          # （在 Google AI 貼圖片出圖片、貼 txt 出文字、在檔案管理器貼出檔案）
           {
             on = [ "c" "a" ];
-            # 核心：直接把选中的文件路径 "$@" 传递给你系统里的 copyfile 命令
-            run = ''shell 'copyfile "$@"' --confirm'';
-            desc = "Copy file to system clipboard (via copyfile)";
+            run = ''shell '${smartCopyScript}/bin/yazi-smart-copy "$@"' --confirm'';
+            desc = "Smart copy (pasteable into Google AI / Browser / Dolphin)";
           }
 
+          # 備用：純路徑複製
           {
             on = [ "c" "s" ];
-            # 核心：将选中的文件（%s）转换成 file:// 协议的绝对路径，并通过 wl-copy 塞入系统剪贴板
             run = ''shell -- for path in "$@"; do echo "file://$path"; done | wl-copy -t text/uri-list'';
-            desc = "Copy current/selected files to system clipboard";
+            desc = "Copy as file:// URI";
           }
-          # 按 g 再按大寫 D：秒跳 ~/DOwn/ 目錄
+
+          # 快速導航快捷鍵
           {
             on = [ "g" "D" ];
             run = "cd ~/DOwn";
             desc = "Go to ~/DOwn";
           }
-
-          # 按 g 再按 n：直達 /etc/nixos
           {
             on = [ "g" "n" ];
             run = "cd /etc/nixos";
             desc = "Go to /etc/nixos";
           }
-
-          # 按 g 再按 m：直達 /etc/nixos/modules
           {
             on = [ "g" "m" ];
             run = "cd /etc/nixos/modules";
             desc = "Go to /etc/nixos/modules";
           }
-
-          # 按 Shift + Y：直接複製檔案實體到剪貼簿 (給 Dolphin/瀏覽器貼上)
           {
             on = [ "Y" ];
-            run = ''shell 'copyfile "$@"' --confirm'';
-            desc = "Copy file to system clipboard";
+            run = ''shell '${smartCopyScript}/bin/yazi-smart-copy "$@"' --confirm'';
+            desc = "Smart copy file to system clipboard";
           }
         ];
       };
@@ -118,17 +142,55 @@ in
   };
 
   # =======================================================
-  # ⭐️ 3. 多媒體高清預覽與外部工具支援
+  # ⭐️ 滿足需求 A：持久化記憶上次關閉目錄的 Fish 包裝函數
+  # =======================================================
+  # 覆蓋或增強 y 命令：每次退出保存目錄，每次啟動預設還原上次目錄
+  programs.fish.functions.y = {
+    description = "Yazi wrapper with persistent last-cwd memory";
+    body = ''
+      set -l state_dir "$HOME/.local/state/yazi"
+      set -l last_file "$state_dir/last-cwd"
+      mkdir -p "$state_dir"
+
+      # 如果有給定參數（例如 y /etc/nixos），使用使用者參數；否則嘗試讀取上次儲存的目錄
+      set -l target_args $argv
+      if test (count $argv) -eq 0 -a -f "$last_file"
+        set -l saved_cwd (command cat "$last_file" 2>/dev/null)
+        if test -n "$saved_cwd" -a -d "$saved_cwd"
+          set target_args "$saved_cwd"
+        end
+      end
+
+      # 調用 yazi，並要求在退出時寫入目前目錄
+      set -l tmp (command mktemp -t "yazi-cwd.XXXXXX")
+      command yazi $target_args --cwd-file="$tmp"
+
+      # 讀取退出時的目錄，更新當前 shell 並永久保存
+      if test -f "$tmp"
+        set -l exit_cwd (command cat "$tmp" 2>/dev/null)
+        command rm -f "$tmp"
+        if test -n "$exit_cwd" -a -d "$exit_cwd"
+          echo "$exit_cwd" > "$last_file"
+          builtin cd -- "$exit_cwd"
+        end
+      end
+    '';
+  };
+
+  # =======================================================
+  # ⭐️ 3. 多媒體與剪貼簿必備工具
   # =======================================================
   home.packages = with pkgs; [
-    imageViewer        # 確保指定的圖片查看器被安裝
-    file               # 核心依賴：Yazi 靠它精準判斷檔案真實 MIME 類型
-    imagemagick        # 圖片終端內預覽、裁切、縮放
+    smartCopyScript    # 確保智能剪貼板腳本可用
+    wl-clipboard       # Wayland 剪貼簿核心
+    imageViewer        # 圖片查看器
+    file               # MIME 識別
+    imagemagick        # 圖片預覽
     ffmpegthumbnailer  # 影片縮圖
-    unar               # 壓縮包預覽
-    poppler-utils      # PDF 預覽
-    jq                 # JSON 格式化高亮
-    chafa              # 字符模式圖形降級相容
+    unar               # 壓縮包
+    poppler-utils      # PDF
+    jq                 # JSON
+    chafa              # 字符模式圖形
   ];
 
   # =======================================================
