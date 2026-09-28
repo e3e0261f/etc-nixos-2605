@@ -71,6 +71,12 @@ in
     keymap = {
       manager = {
         prepend_keymap = [
+
+          {
+            on = [ "c" "a" ];
+            run = "yank";
+            desc = "Copy current file to clipboard (Yank)";
+          }
           # 按 g 再按大寫 D：秒跳 ~/DOwn/ 目錄
           {
             on = [ "g" "D" ];
