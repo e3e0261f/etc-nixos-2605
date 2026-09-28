@@ -401,31 +401,70 @@ in
         }
 
         # =======================================================
-        # 🎸 內置純血硬破音/過載模組（Hard Overdrive / Distortion）
-        # 原理：通過數學非線性增益，製造經典的吉他/人聲過載磁性破音
+        # 🎸 破音模組 1：硬裁剪失真（Hard Clipper 立體聲版）
+        # 效果：直接把波形強制削頂，產生極其粗暴、帶磁性的喇叭撕裂破音
         # =======================================================
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Hard Overdrive (Stereo)";
-            "media.name" = "Studio_Overdrive";
+            "node.description" = "Studio Hard Clipper (Stereo)";
+            "media.name" = "Studio_Hard_Clipper";
             "filter.graph" = {
               nodes = [
-                # 左聲道過載鏈：前級推大 (Gain) -> 軟/硬裁剪失真 (bq_peaking 激增波形)
-                { type = "builtin"; label = "linear"; name = "drive_l"; control = { "Mult" = 3.0; }; } # 推大 3 倍進去過載
-                { type = "builtin"; label = "bq_peaking"; name = "clip_l"; control = { "Freq" = 1500.0; "Q" = 0.5; "Gain" = 12.0; }; } # 高增益染色
+                { type = "ladspa"; plugin = "hard_clipper_1433"; label = "hardClipper"; name = "clip_l"; control = { "Clipping level (dB)" = -6.0; }; }
+                { type = "ladspa"; plugin = "hard_clipper_1433"; label = "hardClipper"; name = "clip_r"; control = { "Clipping level (dB)" = -6.0; }; }
+              ];
+              inputs = [ "clip_l:Input" "clip_r:Input" ];
+              outputs = [ "clip_l:Output" "clip_r:Output" ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = { "node.name" = "Studio_Clipper_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Clipper_Out"; "node.passive" = true; };
+          };
+        }
 
-                # 右聲道過載鏈
-                { type = "builtin"; label = "linear"; name = "drive_r"; control = { "Mult" = 3.0; }; }
-                { type = "builtin"; label = "bq_peaking"; name = "clip_r"; control = { "Freq" = 1500.0; "Q" = 0.5; "Gain" = 12.0; }; }
+        # =======================================================
+        # 🎸 破音模組 2：數碼降採樣碎裂破音（Bitcrusher / Decimator 立體聲版）
+        # 效果：製造 8-bit 復古遊戲機、對講機、機械人、數碼斷流的電子碎裂感
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Bitcrusher (Stereo)";
+            "media.name" = "Studio_Bitcrusher";
+            "filter.graph" = {
+              nodes = [
+                { type = "ladspa"; plugin = "decimator_1202"; label = "decimator"; name = "dec_l"; control = { "Bit depth" = 6.0; "Sample rate (Hz)" = 8000.0; }; }
+                { type = "ladspa"; plugin = "decimator_1202"; label = "decimator"; name = "dec_r"; control = { "Bit depth" = 6.0; "Sample rate (Hz)" = 8000.0; }; }
               ];
-              links = [
-                { output = "drive_l:Out"; input = "clip_l:In"; }
-                { output = "drive_r:Out"; input = "clip_r:In"; }
+              inputs = [ "dec_l:Input" "dec_r:Input" ];
+              outputs = [ "dec_l:Output" "dec_r:Output" ];
+            };
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = { "node.name" = "Studio_Decimator_In"; "media.class" = "Audio/Sink"; };
+            "playback.props" = { "node.name" = "Studio_Decimator_Out"; "node.passive" = true; };
+          };
+        }
+
+        # =======================================================
+        # 🎸 破音模組 3：二極管過載器（Diode Overdrive 立體聲版）
+        # 效果：模擬真實吉他過載踏板，產生温暖但颗粒感十足的模拟失真
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "Studio Diode Overdrive (Stereo)";
+            "media.name" = "Studio_Diode_Overdrive";
+            "filter.graph" = {
+              nodes = [
+                { type = "ladspa"; plugin = "diodes_1409"; label = "diodes"; name = "dio_l"; control = { "Drive" = 5.0; }; }
+                { type = "ladspa"; plugin = "diodes_1409"; label = "diodes"; name = "dio_r"; control = { "Drive" = 5.0; }; }
               ];
-              inputs = [ "drive_l:In" "drive_r:In" ];
-              outputs = [ "clip_l:Out" "clip_r:Out" ];
+              inputs = [ "dio_l:Input" "dio_r:Input" ];
+              outputs = [ "dio_l:Output" "dio_r:Output" ];
             };
             "audio.position" = [ "FL" "FR" ];
             "capture.props" = { "node.name" = "Studio_Overdrive_In"; "media.class" = "Audio/Sink"; };
