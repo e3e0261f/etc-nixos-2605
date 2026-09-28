@@ -102,7 +102,7 @@ in
             { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-8"; }
             { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-10"; }
             { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-11"; }
-            # { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-2"; }
+            { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-2"; }
           ];
           actions = { update-props = { "node.disabled" = true; }; };
         }
