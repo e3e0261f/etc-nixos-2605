@@ -61,7 +61,7 @@
       match = { class = ".*" }, 
       float = true, 
       center = true,
-      size = "65% 70%" -- 預設給一個舒適的黃金比例尺寸
+      size = "2192 1311" -- 預設給一個舒適的黃金比例尺寸
     })
 
     -- =========================================================================
@@ -120,7 +120,8 @@
     })
 
     -- 4 號發燒音訊工作區：左右 50% 對開
-    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.rncbc.qpwgraph" }, workspace = "4 silent", size = "50% 100%", move = "0 0" })
+    hl.window_rule({ name = "音量控制", match = { class = "org.rncbc.qpwgraph" }, size = "2192 1311", center = true })
+    hl.window_rule({ name = "qpwgraph_ws4", match = { class = "org.pulseaudio.pavucontrol" }, workspace = "4 silent", size = "50% 100%", move = "0 0" })
     hl.window_rule({ name = "easyeffects_ws4", match = { class = "com.github.wwmm.easyeffects" }, workspace = "4 silent", size = "50% 100%", move = "50% 0" })
 
     -- 社交軟體靜音分流
