@@ -119,7 +119,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Vocal EQ (Stereo)";
+            "node.description" = "FX · EQ · PARAMETRIC";
             "media.name" = "Studio_Vocal_EQ";
             "filter.graph" = {
               nodes = [
@@ -146,7 +146,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Vocal Compressor";
+            "node.description" = "FX · COMP · VOCAL";
             "media.name" = "Studio_Vocal_Compressor";
             "filter.graph" = {
               nodes = [
@@ -180,7 +180,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Noise Gate (Stereo)";
+            "node.description" = "FX · GATE · Noise";
             "media.name" = "Studio_Noise_Gate";
             "filter.graph" = {
               nodes = [
@@ -213,7 +213,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Tube Warmth (Stereo)";
+            "node.description" = "FX · TUBE · WARMTH";
             "media.name" = "Studio_Tube_Warmth";
             "filter.graph" = {
               nodes = [
@@ -246,7 +246,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Brickwall Limiter";
+            "node.description" = "FX · LIMITER · MASTER";
             "media.name" = "Studio_Brickwall_Limiter";
             "filter.graph" = {
               nodes = [
@@ -276,7 +276,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio SOFA Virtual Monitors";
+            "node.description" = "FX · SOFA · MONITORS";
             "media.name" = "Studio_SOFA_Monitors";
             "filter.graph" = {
               nodes = [
@@ -317,7 +317,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Virtual Studio Monitor Spatializer";
+            "node.description" = "OUT · STUDIO · MONITOR";
             "media.name" = "Studio_Monitor_Spatializer";
             "filter.graph" = {
               nodes = [
@@ -346,7 +346,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Super Audio Booster (500% - 1000%)";
+            "node.description" = "SuperAudio · 500% - 1000%";
             "media.name" = "Audio_Booster";
             "filter.graph" = {
               nodes = [
