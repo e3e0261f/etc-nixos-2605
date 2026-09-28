@@ -18,6 +18,9 @@ in
 {
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 1;
+      # ⭐️ 核心修復：防止 MT7925 網卡 DMA 內存池打爆崩潰
+    "iommu" = "pt";          # 開啟 IOMMU 直通，大幅減輕 swiotlb 負擔
+    "swiotlb" = 131072;    # 將彈跳緩衝區從 64MB 強制擴容至 256MB，徹底杜絕 buffer full！
     # 禁用 IPv6 的自动配置（Router Advertisement）
     # "net.ipv6.conf.all.disable_ipv6" = 1;
     # "net.ipv6.conf.default.disable_ipv6" = 1;
