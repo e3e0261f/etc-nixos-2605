@@ -192,17 +192,13 @@ in
           domain(suffix: z.luxury, suffix: rockey-repo.org) -> direct(must)
           domain(suffix: edu.cn) -> direct(must)
 
-          # 1. 拦截 Discord 网页与客户端核心域名
-          domain(suffix: discord.com, suffix: discord.gg, suffix: discord.media, suffix: discordapp.com, suffix: discordapp.net) -> for146
-          domain(suffix: discordstatus.com, suffix: discordgcdn.com) -> for146
-
-          # 2. 核心网关与 CDN 加速（解决客户端卡检测更新、卡登录旋转动画）
-          domain(keyword: discord) -> for146
+          # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
+          domain(suffix: discord.gg) -> for146
+          domain(suffix: discord.com) -> for146
+          domain(suffix: discordapp.com) -> for146
+          domain(suffix: discordapp.net) -> for146
+          domain(suffix: discord.media) -> for146
           domain(suffix: gateway.discord.gg) -> for146
-
-          # 3. 解决语音通话和海外节点握手慢（放行 Discord 使用的 STUN 语音/视频 UDP 流量）
-          # Discord 语音服务器通常包含 'discord' 关键字或使用特定端口，由上方的 keyword 规则或此处兜底
-          dip(ext:geoip:discord) -> for146
 
           # ⭐️【第 2 級】：Google AI 專屬池
           domain(suffix: aistudio.google.com) -> google_ai
