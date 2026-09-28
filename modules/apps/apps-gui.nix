@@ -3,6 +3,28 @@
 { pkgs, ... }:
 
 {
+  environment.systemPackages = with pkgs; [
+    google-chrome
+    # spotify
+    discord # 确保你已经添加了 unstable channel
+    keepassxc
+    crow-translate
+    gimagereader
+    tesseract   #图片字符识别
+    waypaper    #背景工具
+    loupe       #图片检查器
+    # spotify
+    # ente-auth
+    # hydrogen  #强大鼓机
+    # supercollider
+    # emacs-pgtk
+    sl
+    clash-verge-rev
+    gimp
+    wl-kbptr
+    reaper
+    pcmanfm-qt
+  ];
 
   # HYprland 
   programs.hyprland = {
@@ -27,25 +49,4 @@
     config.common.default = "*"; 
   };
 
-  environment.systemPackages = with pkgs; [
-    google-chrome
-    # spotify
-    discord # 确保你已经添加了 unstable channel
-    keepassxc
-    crow-translate
-    gimagereader
-    tesseract   #图片字符识别
-    waypaper    #背景工具
-    loupe       #图片检查器
-    # spotify
-    # ente-auth
-    # hydrogen  #强大鼓机
-    # supercollider
-    # emacs-pgtk
-    sl
-    clash-verge-rev
-    gimp
-    wl-kbptr
-    reaper
-  ];
 }
