@@ -48,7 +48,7 @@
   # 1. 視窗規則模組 (⭐️ 緊湊單行美化 · 浮動優先避讓架構)
   # =======================================================
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
-    local SIzeNUm = "1438 866"
+    local SizeNum = "1438 866"
     -- 🛡️ 0. 底層硬體防禦
     hl.window_rule({ name = "suppress_max", match = { class = ".*" }, suppress_event = "maximize" })
     hl.window_rule({ name = "fix_drags",    match = { class = "^$", title = "^$", xwayland = true }, no_focus = true })
@@ -68,7 +68,7 @@
 
     -- 📁 4. 【主力檔案與終端】：全域優雅置中懸浮
     hl.window_rule({ name = "float_nemo",   match = { class = "^(nemo|Nemo)$" }, float = true, center = true, size = SIzeNUm })
-    hl.window_rule({ name = "float_kitty",  match = { class = "^(kitty)$" }, float = true, center = true, size = SIzeNUm )
+    hl.window_rule({ name = "float_kitty", match = { class = "^(kitty)$" }, float = true, center = true, size = SizeNum })
     hl.window_rule({ name = "float_yazi",   match = { class = "yazi-float" }, float = true, center = true, size = SIzeNUm )
 
     -- 🎯 5. 【小工具、認證、選擇器與進度條】
