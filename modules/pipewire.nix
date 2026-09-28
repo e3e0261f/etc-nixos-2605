@@ -433,19 +433,24 @@ in
           };
         }
 
-        # =======================================================
+                # =======================================================
         # 🎸 破音模組 2：SWH Diode
         # 二极管非线性失真
+        # Mode:
+        #   0 = None
+        #   1 = Half Wave
+        #   2 = Full Wave
         # =======================================================
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "LADSPA Diode Distortion (Stereo)";
-            "media.name" = "LADSPA_Diode";
+            "node.description" = "SWH Diode Distortion (Stereo)";
+            "media.name" = "SWH_Diode";
 
             "filter.graph" = {
               nodes = [
+                # 左声道
                 {
                   type = "ladspa";
                   name = "diode_l";
@@ -455,6 +460,8 @@ in
                     "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
                   };
                 }
+
+                # 右声道
                 {
                   type = "ladspa";
                   name = "diode_r";
@@ -466,15 +473,13 @@ in
                 }
               ];
 
-              links = [
-                { output = "diode_l:Output"; input = "diode_r:Input"; }
-              ];
-
               inputs = [
                 "diode_l:Input"
+                "diode_r:Input"
               ];
 
               outputs = [
+                "diode_l:Output"
                 "diode_r:Output"
               ];
             };
@@ -482,40 +487,64 @@ in
             "audio.position" = [ "FL" "FR" ];
 
             "capture.props" = {
-              "node.name" = "LADSPA_Diode_In";
+              "node.name" = "SWH_Diode_In";
               "media.class" = "Audio/Sink";
             };
 
             "playback.props" = {
-              "node.name" = "LADSPA_Diode_Out";
+              "node.name" = "SWH_Diode_Out";
               "node.passive" = true;
             };
           };
         }
 
+
         # =======================================================
         # 🎸 破音模組 3：SWH FOverdrive
-        # 傳統 Overdrive / 軟性過載
+        # Fast Overdrive
+        # Drive level：1.0 ～ 3.0
         # =======================================================
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "SWH FOverdrive";
+            "node.description" = "SWH Fast Overdrive (Stereo)";
             "media.name" = "SWH_FOverdrive";
 
             "filter.graph" = {
               nodes = [
+                # 左声道
                 {
                   type = "ladspa";
-                  name = "foverdrive";
+                  name = "foverdrive_l";
                   plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/foverdrive_1196.so";
                   label = "foverdrive";
+                  control = {
+                    "Drive level" = 2.0;
+                  };
+                }
+
+                # 右声道
+                {
+                  type = "ladspa";
+                  name = "foverdrive_r";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/foverdrive_1196.so";
+                  label = "foverdrive";
+                  control = {
+                    "Drive level" = 2.0;
+                  };
                 }
               ];
 
-              inputs = [ "foverdrive:In" ];
-              outputs = [ "foverdrive:Out" ];
+              inputs = [
+                "foverdrive_l:Input"
+                "foverdrive_r:Input"
+              ];
+
+              outputs = [
+                "foverdrive_l:Output"
+                "foverdrive_r:Output"
+              ];
             };
 
             "audio.position" = [ "FL" "FR" ];
@@ -532,29 +561,57 @@ in
           };
         }
 
-                # =======================================================
+
+        # =======================================================
         # 🎸 破音模組 4：SWH Valve
-        # 真空管 / 電子管風格非線性
+        # Valve Saturation / 真空管饱和
+        #
+        # Distortion level     = 0.0 ～ 1.0
+        # Distortion character = 0.0 ～ 1.0
         # =======================================================
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "SWH Valve";
+            "node.description" = "SWH Valve Saturation (Stereo)";
             "media.name" = "SWH_Valve";
 
             "filter.graph" = {
               nodes = [
+                # 左声道
                 {
                   type = "ladspa";
-                  name = "valve";
+                  name = "valve_l";
                   plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_1209.so";
                   label = "valve";
+                  control = {
+                    "Distortion level" = 0.50;
+                    "Distortion character" = 0.50;
+                  };
+                }
+
+                # 右声道
+                {
+                  type = "ladspa";
+                  name = "valve_r";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_1209.so";
+                  label = "valve";
+                  control = {
+                    "Distortion level" = 0.50;
+                    "Distortion character" = 0.50;
+                  };
                 }
               ];
 
-              inputs = [ "valve:In" ];
-              outputs = [ "valve:Out" ];
+              inputs = [
+                "valve_l:Input"
+                "valve_r:Input"
+              ];
+
+              outputs = [
+                "valve_l:Output"
+                "valve_r:Output"
+              ];
             };
 
             "audio.position" = [ "FL" "FR" ];
@@ -571,6 +628,73 @@ in
           };
         }
 
+
+        # =======================================================
+        # 🎸 破音模組 5：SWH Valve Rectifier
+        # 真空管整流器 + Sag + Distortion
+        #
+        # Sag level  = 0.0 ～ 1.0
+        # Distortion = 0.0 ～ 1.0
+        # =======================================================
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [ "ifexists" "nofail" ];
+          args = {
+            "node.description" = "SWH Valve Rectifier (Stereo)";
+            "media.name" = "SWH_ValveRect";
+
+            "filter.graph" = {
+              nodes = [
+                # 左声道
+                {
+                  type = "ladspa";
+                  name = "valve_rect_l";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_rect_1405.so";
+                  label = "valveRect";
+                  control = {
+                    "Sag level" = 0.50;
+                    "Distortion" = 0.50;
+                  };
+                }
+
+                # 右声道
+                {
+                  type = "ladspa";
+                  name = "valve_rect_r";
+                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_rect_1405.so";
+                  label = "valveRect";
+                  control = {
+                    "Sag level" = 0.50;
+                    "Distortion" = 0.50;
+                  };
+                }
+              ];
+
+              inputs = [
+                "valve_rect_l:Input"
+                "valve_rect_r:Input"
+              ];
+
+              outputs = [
+                "valve_rect_l:Output"
+                "valve_rect_r:Output"
+              ];
+            };
+
+            "audio.position" = [ "FL" "FR" ];
+
+            "capture.props" = {
+              "node.name" = "SWH_ValveRect_In";
+              "media.class" = "Audio/Sink";
+            };
+
+            "playback.props" = {
+              "node.name" = "SWH_ValveRect_Out";
+              "node.passive" = true;
+            };
+          };
+        }
+        
         # 7. 純大廳混響（你的 05Hall5）
         {
           name = "libpipewire-module-filter-chain";
