@@ -408,7 +408,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "Studio Hard Overdrive (Stereo)";
+            "node.description" = "🔥 OVERDRIVE · HARD CLIPPER";
             "media.name" = "Studio_Overdrive";
             "filter.graph" = {
               nodes = [
@@ -445,7 +445,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "SWH Diode Distortion (Stereo)";
+            "node.description" = "🔥 OVERDRIVE · DIODE";
             "media.name" = "SWH_Diode";
 
             "filter.graph" = {
@@ -508,7 +508,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "SWH Fast Overdrive (Stereo)";
+            "node.description" = "🔥 OVERDRIVE · FAST DRIVE";
             "media.name" = "SWH_FOverdrive";
 
             "filter.graph" = {
@@ -573,7 +573,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "SWH Valve Saturation (Stereo)";
+            "node.description" = "🔥 OVERDRIVE · TUBE SATURATION";
             "media.name" = "SWH_Valve";
 
             "filter.graph" = {
@@ -640,7 +640,7 @@ in
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
           args = {
-            "node.description" = "SWH Valve Rectifier (Stereo)";
+            "node.description" = "🔥 OVERDRIVE · TUBE RECTIFIER";
             "media.name" = "SWH_ValveRect";
 
             "filter.graph" = {
