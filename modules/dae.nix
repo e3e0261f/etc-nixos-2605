@@ -49,7 +49,8 @@ in
           # ⭐️ 核心修復 2：鎖定你的 Wi-Fi 網卡，加入快速重連自愈 (5s)，杜絕登出斷網！
           wan_interface: wlp8s0, auto
           dial_mode: domain
-          log_level: info
+          # log_level: info
+          log_level: warn
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
