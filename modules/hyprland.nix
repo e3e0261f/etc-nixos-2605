@@ -50,14 +50,12 @@
   xdg.configFile."MYHYprLUa/window_rules.lua".text = ''
     -- 1. 定义基准风格
     local BASE_TOOL = { float = true, center = true, size = "1438 866" }
-
-    -- 2. 定义特殊覆盖规则
     local cfg = {
       tool = {
         audio   = { workspace = "4 silent", move = "80 80" },
         term    = { workspace = "2 silent" },
         chat    = { workspace = "3 silent" },
-        browser = { float = false, tile = true, workspace = "1 silent" }
+        browser = { workspace = "1 silent", float = false, tile = true }
       }
     }
 
@@ -88,7 +86,7 @@
     hl.window_rule({ name = "fix_drags",    match = { class = "^$", title = "^$", xwayland = true }, no_focus = true })
 
     -- 👑 1. 【核心基石】：全系統所有視窗預設全部浮動居中 (大氣的 65% 70% 黃金比例)
-    hl.window_rule({ name = "default_float", match = { class = ".*" }, float = true, center = true, size = "65% 70%" })
+    --hl.window_rule({ name = "default_float", match = { class = ".*" }, float = true, center = true, size = "65% 70%" })
 
     -- ⭐️ 2. 【平鋪白名單】：僅主力生產力工作視窗允許分屏平鋪
     hl.window_rule({ name = "tile_browser", match = { class = "^(google-chrome|com\\.google\\.Chrome|chromium-browser|firefox)$", title = "^(.* - Google Chrome|.* - Chromium|.* — Mozilla Firefox)$" }, tile = true, workspace = "1" })
