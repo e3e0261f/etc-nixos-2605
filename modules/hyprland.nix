@@ -100,6 +100,7 @@
       { class = "^(nemo|Nemo|org\\.kde\\.dolphin|thunar|Thunar|pcmanfm-qt)$", title = "^(檔案操作進度|File Operation Progress|Confirm.*|屬性|Properties.*|Preferences|偏好設定)$", preset = "dialog" },
       { class = "^(org\\.kde\\.ark|peazip.*)$", preset = "tool_md" },
       { class = "^(nemo|Nemo)$", preset = "viewer" },
+      { class = "^(kitty|Nemo)$", preset = "viewer" },
 
       -- 🎛️ 音訊控制與宿主外掛 (REAPER / Crosspipe / Pavucontrol)
       { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol|io\\.github\\.dp0sk\\.Crosspipe)$", preset = "tool_md" },
