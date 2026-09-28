@@ -13,7 +13,7 @@ let
 
     FIRST_FILE="$1"
 
-    # 如果有自定義的 copyfile 命令，先執行它
+    # 如果系統中有自定義的 copyfile 命令，先執行它
     if command -v copyfile >/dev/null 2>&1; then
       copyfile "$@" 2>/dev/null || true
     fi
@@ -24,15 +24,15 @@ let
 
       case "$MIME_TYPE" in
         image/*)
-          # ⭐️ 圖片檔案：直接將二進制注入剪貼簿，在 Google AI / 網頁中直接 Ctrl+V 秒出圖片！
+          # ⭐️ 圖片檔案：直接將二進制數據注入剪貼簿，在 Google AI / 網頁中 Ctrl+V 秒出圖片！
           cat "$FIRST_FILE" | wl-copy -t "$MIME_TYPE"
           ;;
         text/*|application/json|application/javascript|application/xml|application/x-sh)
-          # ⭐️ 代碼/文本檔案：直接複製文件全文，在 Google AI 聊天框直接 Ctrl+V 貼出內容！
+          # ⭐️ 代碼/文本檔案：直接複製文件全文，在 Google AI 聊天框 Ctrl+V 貼出內容！
           cat "$FIRST_FILE" | wl-copy
           ;;
         *)
-          # 其他檔案：複製為 file:// 協議 URI，支援在檔案管理器之間粘貼
+          # 其他檔案：複製為 file:// 協議 URI，支援在檔案管理器/Dolphin 之間粘貼
           for path in "$@"; do
             echo "file://$path"
           done | wl-copy -t text/uri-list
@@ -44,8 +44,8 @@ in
 {
   programs.yazi = {
     enable = true;
-    enableFishIntegration = true;
-    shellWrapperName = "y";
+    # ⭐️ 核心修正 1：關閉官方自帶的簡易 y 函數，避免與我們下方的持久化記憶版衝突
+    enableFishIntegration = false;
 
     # =======================================================
     # ⭐️ 1. settings 區塊 (yazi.toml)
@@ -115,7 +115,7 @@ in
             desc = "Copy as file:// URI";
           }
 
-          # 快速導航快捷鍵
+          # 快速跳轉快捷鍵
           {
             on = [ "g" "D" ];
             run = "cd ~/DOwn";
@@ -142,47 +142,45 @@ in
   };
 
   # =======================================================
-  # ⭐️ 滿足需求 A：持久化記憶上次關閉目錄的 Fish 包裝函數
+  # ⭐️ 核心修正 2：純字串格式定義的 Fish 持久化記憶 y 函數
   # =======================================================
-  # 覆蓋或增強 y 命令：每次退出保存目錄，每次啟動預設還原上次目錄
-  programs.fish.functions.y = {
-    description = "Yazi wrapper with persistent last-cwd memory";
-    body = ''
-      set -l state_dir "$HOME/.local/state/yazi"
-      set -l last_file "$state_dir/last-cwd"
-      mkdir -p "$state_dir"
+  # 退出時寫入目前目錄，啟動時無參數自動恢復上次目錄，退出時同步切換當前 shell 目錄
+  programs.fish.functions.y = ''
+    set -l state_dir "$HOME/.local/state/yazi"
+    set -l last_file "$state_dir/last-cwd"
+    command mkdir -p "$state_dir"
 
-      # 如果有給定參數（例如 y /etc/nixos），使用使用者參數；否則嘗試讀取上次儲存的目錄
-      set -l target_args $argv
-      if test (count $argv) -eq 0 -a -f "$last_file"
-        set -l saved_cwd (command cat "$last_file" 2>/dev/null)
-        if test -n "$saved_cwd" -a -d "$saved_cwd"
-          set target_args "$saved_cwd"
-        end
+    # 如果沒有給參數，且記錄檔案存在，讀取上次目錄
+    set -l target_args $argv
+    if test (count $argv) -eq 0 -a -f "$last_file"
+      set -l saved_cwd (command cat "$last_file" 2>/dev/null)
+      if test -n "$saved_cwd" -a -d "$saved_cwd"
+        set target_args "$saved_cwd"
       end
+    end
 
-      # 調用 yazi，並要求在退出時寫入目前目錄
-      set -l tmp (command mktemp -t "yazi-cwd.XXXXXX")
-      command yazi $target_args --cwd-file="$tmp"
+    # 執行 yazi 並記錄退出時的目錄
+    set -l tmp (command mktemp -t "yazi-cwd.XXXXXX")
+    command yazi $target_args --cwd-file="$tmp"
 
-      # 讀取退出時的目錄，更新當前 shell 並永久保存
-      if test -f "$tmp"
-        set -l exit_cwd (command cat "$tmp" 2>/dev/null)
-        command rm -f "$tmp"
-        if test -n "$exit_cwd" -a -d "$exit_cwd"
-          echo "$exit_cwd" > "$last_file"
+    if test -f "$tmp"
+      set -l exit_cwd (command cat "$tmp" 2>/dev/null)
+      command rm -f "$tmp"
+      if test -n "$exit_cwd" -a -d "$exit_cwd"
+        echo "$exit_cwd" > "$last_file"
+        if test "$exit_cwd" != "$PWD"
           builtin cd -- "$exit_cwd"
         end
       end
-    '';
-  };
+    end
+  '';
 
   # =======================================================
   # ⭐️ 3. 多媒體與剪貼簿必備工具
   # =======================================================
   home.packages = with pkgs; [
-    smartCopyScript    # 確保智能剪貼板腳本可用
-    wl-clipboard       # Wayland 剪貼簿核心
+    smartCopyScript    # 智能剪貼簿腳本
+    wl-clipboard       # Wayland 剪貼簿工具
     imageViewer        # 圖片查看器
     file               # MIME 識別
     imagemagick        # 圖片預覽
