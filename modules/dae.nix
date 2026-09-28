@@ -206,6 +206,7 @@ in
           domain(suffix: googleusercontent.com, suffix: gemini.google.com) -> google_ai
           domain(suffix: makersuite.google.com, suffix: alkalimakersuite.googleapis.com) -> google_ai
           domain(suffix: generativelanguage.googleapis.com, suffix: clients6.google.com) -> google_ai
+          domain(suffix: chatgpt) -> google_ai
 
           # ⭐️【第 3 級】：開發與特定應用走代理
           pname(git) -> for1
