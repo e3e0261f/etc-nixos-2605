@@ -26,6 +26,19 @@
       ./apps/apps-heavy.nix  # ⭐️ 第 2 步解封：裝上 Steam、VSCode 與 4K 桌布
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
+
+  # 1. 挂载 585G 合并 SSD 存储池
+  fileSystems."/mnt/ssd" = {
+    device = "/dev/vg_ssd/lv_fast";
+    fsType = "xfs";
+    options = [ "defaults" "noatime" "nofail" "discard" ];
+  };
+
+  # 2. 自动给 rhys 用户分配 /mnt/ssd 读写权限
+  systemd.tmpfiles.rules = [
+    "d /mnt/ssd 0755 rhys users -"
+  ];
+
   # 平时不想常驻挂载
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
@@ -203,6 +216,9 @@
     "iommu" = "pt";          # 開啟 IOMMU 直通，大幅減輕 swiotlb 負擔
     "swiotlb" = 131072;    # 將彈跳緩衝區從 64MB 強制擴容至 256MB，徹底杜絕 buffer full！
   };
+
+  # 3. 启用 LVM 支持（确保开机自动激活卷组）
+  services.lvm.enable = true;
   # YUbikey
   services.yubikey-agent.enable = false;
   # Android 端安装 LocalSend，打开即可 https://localsend.org/zh-TW/download?utm_source=chatgpt.com
