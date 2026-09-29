@@ -216,6 +216,14 @@
     "iommu" = "pt";          # 開啟 IOMMU 直通，大幅減輕 swiotlb 負擔
     "swiotlb" = 131072;    # 將彈跳緩衝區從 64MB 強制擴容至 256MB，徹底杜絕 buffer full！
   };
+
+  boot.extraModprobeConfig = ''
+    # 1. 禁用 ALC1150 硬件级省电休眠，保持 DAC 和外部耳放 (EAPD) 持续通电
+    options snd_hda_intel power_save=0 power_save_controller=N
+
+    # 2. 针对 Realtek ALC1150 指定专用的主板电路初始化模型
+    options snd_hda_codec_realtek model=alc1150
+  '';
   # 全面禁止IPV6 
   networking.enableIPv6 = false;
   # 3. 启用 LVM 支持（确保开机自动激活卷组）
