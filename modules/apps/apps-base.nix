@@ -25,16 +25,13 @@
     swappy bash fish zsh ninja glibc libgcc
     papirus-icon-theme
     playerctl
-    wireplumber
     networkmanager
     mimeo  #打开程序菜单支持
     
     # 圖形與音訊管理
     wl-clipboard grim slurp translate-shell
-    kdePackages.ark kdePackages.dolphin kdePackages.kservice
     easyeffects pavucontrol qpwgraph crosspipe
     appimage-run
-    pipewire
 
     # 解压缩
     ouch      # 主力 Rust 万能解压

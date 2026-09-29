@@ -6,7 +6,7 @@
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
-    pinentryPackage = pkgs.pinentry-gnome3; # 確保彈出輸入密碼的視窗
+    pinentryPackage = pkgs.pinentry-curses;# 確保彈出輸入密碼的視窗
   };
 
   # 確保 SSH 請求會去找 GPG Agent
