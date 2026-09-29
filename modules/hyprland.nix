@@ -206,6 +206,7 @@
    hl.on("hyprland.start", function ()
       hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
       hl.exec_cmd("fcitx5 -d")
+      hl.exec_cmd("wpctl set-profile 122 1 && wpctl set-profile 122 16")
       hl.exec_cmd("wall-random")
       hl.exec_cmd("google-chrome")
       hl.exec_cmd("qpwgraph")
