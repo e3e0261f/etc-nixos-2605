@@ -178,7 +178,7 @@
   services.udisks2.enable = true;
   services.printing.enable = true;
   # services.flatpak.enable = true;
-  services.gnome.gnome-keyring.enable = true;
+  # services.gnome.gnome-keyring.enable = true;
   services.gvfs.enable = true; 
   
   # --- 網路與系統服務 ---
