@@ -208,6 +208,8 @@
     "iommu" = "pt";          # 開啟 IOMMU 直通，大幅減輕 swiotlb 負擔
     "swiotlb" = 131072;    # 將彈跳緩衝區從 64MB 強制擴容至 256MB，徹底杜絕 buffer full！
   };
+  # Android 端安装 LocalSend，打开即可 https://localsend.org/zh-TW/download?utm_source=chatgpt.com
+  programs.localsend.enable = true;
   xdg.mime.enable = true; # 必须开启，这是系统处理“打开方式”的底层核心
   #允许所有非自由软件
   nixpkgs.config.allowUnfree = true;
