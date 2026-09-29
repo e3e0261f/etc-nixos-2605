@@ -22,7 +22,6 @@
   # ============================================================
   services.greetd = {
     enable = true;
-    vt = 2; # ⭐️ 核心：将登录界面移到 TTY2，彻底隔离 TTY1 的开机日志通道
     settings = {
       default_session = {
         # 保留你原本配置的 Matrix 炫酷黑客帝国背景动效与参数
