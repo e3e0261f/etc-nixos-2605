@@ -134,9 +134,10 @@ in
             }
           ];
 
-          actions = {
+            actions = {
             update-props = {
-              "audio.channels" = 2;
+              # ⭐️ 恢复 6 声道，让你的所有物理孔重新上线
+              "audio.channels" = 6;
               "audio.position" = [
                 "FL"
                 "FR"
@@ -145,6 +146,10 @@ in
                 "FC"
                 "LFE"
               ];
+              
+              # ⭐️ 核心防线：启用通道适配，阻止普通立体声源乱串到环绕孔
+              "channelmix.upmix" = false;     # 关闭自动上混（防止立体声被强行扩音到 5.1）
+              "channelmix.stereo-widen" = 0.0;
             };
           };
         }
