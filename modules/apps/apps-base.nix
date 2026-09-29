@@ -6,11 +6,11 @@
     (discord.override {
       withOpenASAR = true;
     })
-    helix wget curl unzip gh pstree
+    helix gnupg wget curl unzip gh pstree
     procps lvm2 p7zip unrar pinentry-curses
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc
-    mpv cloudflared
+    mpv cloudflared 
     
     # 桌面與視窗管理器核心組件
     hyprlauncher hyprshutdown wlogout

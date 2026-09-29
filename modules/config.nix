@@ -25,18 +25,12 @@
       ./apps/apps-heavy.nix  # ⭐️ 第 2 步解封：裝上 Steam、VSCode 與 4K 桌布
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
-
+  # Wayland 截图
   xdg.portal = {
     enable = true;
     extraPortals = [ 
       pkgs.xdg-desktop-portal-hyprland 
-      pkgs.xdg-desktop-portal-xapp
     ];
-    config = {
-      common = {
-        "org.freedesktop.impl.portal.FileChooser" = [ "xapp" "gtk" ];
-      };
-    };
     configPackages = [ pkgs.hyprland ];
     config.common.default = "*"; 
   };
