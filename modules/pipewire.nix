@@ -286,33 +286,14 @@ in
               nodes = [
                 {
                   type = "builtin";
-                  name = "limiter_l";
+                  name = "limiter";
                   label = "clamp";
+
                   control = {
                     "Min" = -0.891251;
                     "Max" = 0.891251;
                   };
                 }
-
-                {
-                  type = "builtin";
-                  name = "limiter_r";
-                  label = "clamp";
-                  control = {
-                    "Min" = -0.891251;
-                    "Max" = 0.891251;
-                  };
-                }
-              ];
-
-              inputs = [
-                "limiter_l:In"
-                "limiter_r:In"
-              ];
-
-              outputs = [
-                "limiter_l:Out"
-                "limiter_r:Out"
               ];
             };
 
