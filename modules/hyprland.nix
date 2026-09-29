@@ -26,7 +26,7 @@
     mainMod     = "SUPER"
     terminal    = "kitty"
     fileManager = "nemo"
-    menu        = "caelestia shell drawers toggle launcher"
+    menu        = "fuzzel"
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
