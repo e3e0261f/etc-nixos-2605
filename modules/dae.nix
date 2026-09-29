@@ -39,7 +39,10 @@ in
       subscription {
           # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
           # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
-          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          # 旧版clash订阅 (含ssr节点):
+          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
+  
       }
 
       # =======================================================
@@ -136,7 +139,6 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
-          # ipversion(6) -> direct
           ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
