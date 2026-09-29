@@ -216,7 +216,8 @@
     "iommu" = "pt";          # 開啟 IOMMU 直通，大幅減輕 swiotlb 負擔
     "swiotlb" = 131072;    # 將彈跳緩衝區從 64MB 強制擴容至 256MB，徹底杜絕 buffer full！
   };
-
+  # 全面禁止IPV6 
+  networking.enableIPv6 = false;
   # 3. 启用 LVM 支持（确保开机自动激活卷组）
   services.lvm.enable = true;
   # YUbikey

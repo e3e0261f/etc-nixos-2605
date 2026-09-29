@@ -64,7 +64,10 @@ in
         routing {
           request {
             qtype(https) -> reject
-            fallback: alidns
+            qname(geosite:cn) -> alidns
+            qtype(aaaa) -> reject
+            # fallback: alidns
+            fallback: googledns
           }
           response {
             upstream(googledns) -> accept
