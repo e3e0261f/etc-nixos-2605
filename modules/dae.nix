@@ -163,7 +163,7 @@ in
           pname(gix, steam) -> direct(must)
 
           # 國內 DNS (阿里) 直連防回環
-          dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 1.1.1.1) -> direct
+          dip(223.5.5.5, 223.6.6.6, 119.29.29.29) -> direct
           pname(systemd-resolved, dnsmasq, NetworkManager, dae) -> direct(must)
 
           # ⭐️【防 GFW 投毒】：國外 DNS 查詢塞入代理隧道
