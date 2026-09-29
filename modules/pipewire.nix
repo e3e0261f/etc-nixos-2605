@@ -136,14 +136,14 @@ in
 
           actions = {
             update-props = {
-              "audio.channels" = 6;
+              "audio.channels" = 2;
               "audio.position" = [
                 "FL"
                 "FR"
-                # "RL"
-                # "RR"
-                # "FC"
-                # "LFE"
+                "RL"
+                "RR"
+                "FC"
+                "LFE"
               ];
             };
           };
