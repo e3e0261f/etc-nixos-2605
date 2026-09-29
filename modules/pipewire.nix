@@ -72,39 +72,12 @@ in
     
     wireplumber.extraConfig."10-pro-audio-profile" = {
       "monitor.alsa.rules" = [
-
-        # ============================================================
-        # Realtek ALC1150
-        # 固定使用 Pro Audio
-        # ============================================================
         {
-          matches = [
-            {
-              "device.name" = "alsa_card.pci-0000_00_1b.0";
-            }
-          ];
-
-          actions = {
-            update-props = {
-              "device.profile" = "pro-audio";
-
-              "api.alsa.use-acp" = true;
-              "api.acp.auto-profile" = false;
-              "api.acp.auto-port" = false;
-            };
-          };
+          matches = [ { "device.name" = "~alsa_card.*"; } ];
+          actions = { update-props = { "device.profile" = "pro-audio"; }; };
         }
-
-        # ============================================================
-        # ALSA 通用稳定参数
-        # ============================================================
         {
-          matches = [
-            {
-              "node.name" = "~alsa_.*";
-            }
-          ];
-
+          matches = [ { "node.name" = "~alsa_.*"; } ];
           actions = {
             update-props = {
               "session.suspend-timeout-seconds" = 0;
@@ -113,99 +86,12 @@ in
             };
           };
         }
-
-        # ============================================================
-        # ALC1150 Pro Audio 6 通道物理输出（绿、黑、蓝全开）
-        # 配合 channelmix.upmix = false 阻止浏览器/游戏胡乱往环绕孔乱跑
-        # ============================================================
         {
-          matches = [
-            {
-              "node.name" =
-                "alsa_output.pci-0000_00_1b.0.pro-output-0";
-            }
-          ];
-          #┌────────────────────────────────────────────────────────┐
-          #│                      R5E 后置音频面板                  │
-          #└────────────────────────────────────────────────────────┘
-          #    [ 1. 蓝色孔 ]  ──► Line In（线性输入：接外部音源、电吉他等）
-          #    [ 2. 绿色孔 ]  ──► "FL" "FR" Line Out / Front（前置主输出：接耳机、常规音箱）
-          #    [ 3. 粉红孔 ]  ──► Mic In（麦克风输入：接麦克风）
-          #    [ 4. 黑色孔 ]  ──► "RL" "RR" Rear（后置环绕音箱输出）
-          #    [ 5. 橘/蓝色孔]──► "FC" "LFE" Center / Subwoofer（中置 & 重低音输出）
-          #    [ 6. 方形口 ]  ──► Optical S/PDIF Out（光纤数字输出）
-          actions = {
-            update-props = {
-              "audio.channels" = 6;
-              # ⭐️ 嚴格對齊你 speaker-test 測出來的硬件真實物理索引順序：
-              # 0=FL, 1=FR, 2=RL, 3=RR, 4=FC, 5=LFE
-              "audio.position" = [  "FL" "FR" "RL" "RR" "FC" "LFE" ];
-              
-              # ⭐️ 核心防线：开启 6 声道但关闭自动上混，防止立体声源串到黑孔/蓝孔
-              "channelmix.upmix" = false;
-              "channelmix.stereo-widen" = 0.0;
-              "channelmix.downmix-lfe" = false;
-            };
-          };
-        }
-
-        # ============================================================
-        # 主板模拟输入
-        # ============================================================
-        {
-          matches = [
-            {
-              "node.name" =
-                "alsa_input.pci-0000_00_1b.0.pro-input-0";
-            }
-          ];
-
+          matches = [ { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; } ];
           actions = {
             update-props = {
               "priority.driver" = 2000;
               "priority.session" = 2000;
-            };
-          };
-        }
-
-        # ============================================================
-        # 保留你原来确认过的“无用节点”禁用列表
-        # ============================================================
-        {
-          matches = [
-            {
-              "node.name" =
-                "alsa_output.pci-0000_00_1b.0.pro-output-1";
-            }
-            {
-              "node.name" =
-                "alsa_output.pci-0000_04_00.1.pro-output-3";
-            }
-            {
-              "node.name" =
-                "alsa_output.pci-0000_04_00.1.pro-output-7";
-            }
-            {
-              "node.name" =
-                "alsa_output.pci-0000_04_00.1.pro-output-8";
-            }
-            {
-              "node.name" =
-                "alsa_output.pci-0000_04_00.1.pro-output-10";
-            }
-            {
-              "node.name" =
-                "alsa_output.pci-0000_04_00.1.pro-output-11";
-            }
-            {
-              "node.name" =
-                "alsa_input.pci-0000_00_1b.0.pro-input-2";
-            }
-          ];
-
-          actions = {
-            update-props = {
-              "node.disabled" = true;
             };
           };
         }
