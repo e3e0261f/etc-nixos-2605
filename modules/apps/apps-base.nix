@@ -6,7 +6,7 @@
     (discord.override {
       withOpenASAR = true;
     })
-    helix wget curl unzip gh
+    helix wget curl unzip gh pstree
     procps lvm2 p7zip unrar
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc
