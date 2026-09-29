@@ -61,7 +61,7 @@ in
             qtype(https) -> reject
             !qname(geosite:cn) -> cfdns
             qtype(aaaa) -> reject
-            fallback: ali_h3
+            fallback: alidns
           }
           response {
             upstream(googledns) -> accept
