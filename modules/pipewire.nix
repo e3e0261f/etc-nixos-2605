@@ -140,10 +140,10 @@ in
               "audio.position" = [
                 "FL"
                 "FR"
-                "RL"
-                "RR"
-                "FC"
-                "LFE"
+                # "RL"
+                # "RR"
+                # "FC"
+                # "LFE"
               ];
             };
           };
