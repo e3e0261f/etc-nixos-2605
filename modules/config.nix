@@ -169,12 +169,6 @@
   };
   programs.fish.enable = true;
   
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-    pinentryPackage = pkgs.pinentry-gnome3;
-  };
-
   services.udisks2.enable = true;
   services.printing.enable = true;
   # services.flatpak.enable = true;
