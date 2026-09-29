@@ -28,9 +28,11 @@
     ];
   # 平时不想常驻挂载
   security.polkit.extraConfig = ''
-    polkit.addRule((action, subject) =>
-      action.id.startsWith("org.freedesktop.udisks2.") && subject.isInGroup("wheel") ? polkit.Result.YES : null
-    );
+    polkit.addRule(function(action, subject) {
+      if (action.id.indexOf("org.freedesktop.udisks2.") === 0 && subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+      }
+    });
   '';
   # Wayland 截图
   xdg.portal = {
