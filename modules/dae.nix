@@ -52,8 +52,8 @@ in
 
       dns {
         upstream {
-          googledns: 'tcp+udp://dns.google:53'
-          alidns: 'udp://dns.alidns.com:53'
+          googledns: 'tcp+udp://8.8.8.8:53'
+          alidns: 'udp://223.5.5.5:53'
         }
         routing {
           request {
@@ -153,8 +153,7 @@ in
           pname(gix, steam) -> direct(must)
 
           # 國內 DNS (阿里) 直連防回環
-          dip(223.5.5.5, 223.6.6.6) -> direct(must)
-          domain(full: dns.alidns.com) -> direct(must)
+          dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 1.1.1.1) -> direct
           pname(systemd-resolved, dnsmasq, NetworkManager, dae) -> direct(must)
 
           # ⭐️【防 GFW 投毒】：國外 DNS 查詢塞入代理隧道
