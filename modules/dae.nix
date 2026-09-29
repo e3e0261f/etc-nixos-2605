@@ -23,21 +23,21 @@ in
 
     config = ''
       global {
-          allow_insecure: false
-          so_mark_from_dae: 0
-          lan_interface: auto
+          # allow_insecure: false
+          # so_mark_from_dae: 0
+          # lan_interface: auto
           # ⭐️ 核心修復 2：鎖定你的 Wi-Fi 網卡，加入快速重連自愈 (5s)，杜絕登出斷網！
-          wan_interface: wlp8s0, auto
-          # dial_mode: domain
+          # wan_interface: wlp8s0, auto
+          dial_mode: domain
           # # 必须配置可靠的直连 Bootstrap DNS，用于解析节点域名
-          dial_mode: ip
-          log_level: info
-          # log_level: warn
+          # dial_mode: ip
+          # log_level: info
+          log_level: warn
           # 
           # 节点健康检查间隔（建议 30 秒探测一次，防止节点假死）
-          check_interval: 30s
+          # check_interval: 30s
           
-          auto_config_kernel_parameter: true
+          # auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
       }
@@ -60,14 +60,15 @@ in
         upstream {
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
+          ali_h3: 'h3://223.5.5.5:443/dns-query'
+          cfdns: 'tcp+udp://1.1.1.1:53'
         }
         routing {
           request {
             qtype(https) -> reject
-            qname(geosite:cn) -> alidns
+            !qname(geosite:cn) -> cfdns
             qtype(aaaa) -> reject
-            # fallback: alidns
-            fallback: googledns
+            fallback: ali_h3
           }
           response {
             upstream(googledns) -> accept
