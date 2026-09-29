@@ -30,7 +30,7 @@
     
     # 圖形與音訊管理
     wl-clipboard grim slurp translate-shell
-    easyeffects pavucontrol qpwgraph crosspipe
+    easyeffects pwvucontrol qpwgraph crosspipe
     appimage-run
 
     # 解压缩
