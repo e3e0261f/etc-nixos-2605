@@ -16,28 +16,6 @@ let
   };
 in
 {
-  boot.kernel.sysctl = {
-    "net.ipv4.ip_forward" = 1;
-      # ⭐️ 核心修復：防止 MT7925 網卡 DMA 內存池打爆崩潰
-    "iommu" = "pt";          # 開啟 IOMMU 直通，大幅減輕 swiotlb 負擔
-    "swiotlb" = 131072;    # 將彈跳緩衝區從 64MB 強制擴容至 256MB，徹底杜絕 buffer full！
-    # 禁用 IPv6 的自动配置（Router Advertisement）
-    # "net.ipv6.conf.all.disable_ipv6" = 1;
-    # "net.ipv6.conf.default.disable_ipv6" = 1;
-    # "net.ipv6.conf.lo.disable_ipv6" = 1;
-    
-    # 确保 dae 绑定的接口能够识别 IPv6 地址结构，但系统不会主动使用
-    # 如果 dae 依然报错，你可以尝试只禁用 autoconf
-    # "net.ipv6.conf.all.autoconf" = 0;
-    # "net.ipv6.conf.all.accept_ra" = 0;
-  };
-  # 强制 NetworkManager 忽略 IPv6 设置
-  # （防止连接 Wi-Fi/有线网时依然从路由器获取 IPv6 SLAAC/DHCPv6 地址）
-  # environment.etc."NetworkManager/conf.d/00-disable-ipv6.conf".text = ''
-  #   [connection]
-  #   ipv6.method=ignore
-  # '';
-
 
   services.dae = {
     enable = true;
@@ -51,8 +29,8 @@ in
           # ⭐️ 核心修復 2：鎖定你的 Wi-Fi 網卡，加入快速重連自愈 (5s)，杜絕登出斷網！
           wan_interface: wlp8s0, auto
           dial_mode: domain
-          # log_level: info
-          log_level: warn
+          log_level: info
+          # log_level: warn
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
