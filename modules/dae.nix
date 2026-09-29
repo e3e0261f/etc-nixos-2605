@@ -36,7 +36,6 @@ in
           # 
           # 节点健康检查间隔（建议 30 秒探测一次，防止节点假死）
           check_interval: 30s
-          check_tolerance: 3
           
           auto_config_kernel_parameter: true
           tproxy_port: 7890
