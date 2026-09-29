@@ -350,50 +350,35 @@ in
         }
 
         # 5. 磚牆防爆限制器（LADSPA）
-        # {
-        #   name = "libpipewire-module-filter-chain";
-        #   flags = [ "ifexists" "nofail" ];
-        #   args = {
-        #     "node.description" = "FX · LIMITER · MASTER";
-        #     "media.name" = "Studio_Brickwall_Limiter";
-        #     "filter.graph" = {
-        #       nodes = [
-        #         {
-        #           type = "ladspa";
-        #           plugin = "fast_lookahead_limiter_1913";
-        #           label = "fastLookaheadLimiter";
-        #           name = "fastLookaheadLimiter";
-        #           control = {
-        #             "Input gain (dB)" = 0.0;
-        #             "Limit (dB)" = -0.5;
-        #             "Release time (s)" = 0.05;
-        #           };
-        #         }
-        #       ];
-        #       inputs = [ "fastLookaheadLimiter:Input 1" "fastLookaheadLimiter:Input 2" ];
-        #       outputs = [ "fastLookaheadLimiter:Output 1" "fastLookaheadLimiter:Output 2" ];
-        #     };
-        #     "audio.position" = [ "FL" "FR" ];
-        #     "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
-        #     "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
-        #   };
-        # }
-        #
-        # 6. SOFA 虛擬雙耳監聽音箱（使用你的 dtf_nh2.sofa）
-{
-        "filter.graph" = {
-  nodes = [
-    {
-      type = "builtin";
-      name = "limiter";
-      label = "linear";
-      control = {
-        "Mult" = 1.0;
-      };
-    }
-  ];
-};
-}
+         {
+           name = "libpipewire-module-filter-chain";
+           flags = [ "ifexists" "nofail" ];
+           args = {
+             "node.description" = "OUT · LIMITER · MASTER";
+             "media.name" = "Studio_Brickwall_Limiter";
+             "filter.graph" = {
+               nodes = [
+                 {
+                   type = "ladspa";
+                   plugin = "fast_lookahead_limiter_1913";
+                   label = "fastLookaheadLimiter";
+                   name = "fastLookaheadLimiter";
+                   control = {
+                     "Input gain (dB)" = 0.0;
+                     "Limit (dB)" = -0.5;
+                     "Release time (s)" = 0.05;
+                   };
+                 }
+               ];
+               inputs = [ "fastLookaheadLimiter:Input 1" "fastLookaheadLimiter:Input 2" ];
+               outputs = [ "fastLookaheadLimiter:Output 1" "fastLookaheadLimiter:Output 2" ];
+             };
+             "audio.position" = [ "FL" "FR" ];
+             "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
+             "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
+           };
+         }
+        
         
         # SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA
         {
