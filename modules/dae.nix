@@ -37,9 +37,9 @@ in
       }
 
       subscription {
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
-          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
+          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
           # 旧版clash订阅 (含ssr节点):
           my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
   
