@@ -26,6 +26,12 @@
       ./apps/apps-heavy.nix  # ⭐️ 第 2 步解封：裝上 Steam、VSCode 與 4K 桌布
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
+
+  fileSystems."/mnt/data" = {
+    device = "/dev/disk/by-partuuid/20260929-4034-71A7-84A7-731665C3557B";
+    fsType = "xfs";
+    options = [ "defaults" "noatime" "nofail" ]; # nofail 防止硬盘故障导致系统无法开机
+  };
   # Wayland 截图
   xdg.portal = {
     enable = true;
