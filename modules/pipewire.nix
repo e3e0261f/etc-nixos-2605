@@ -272,48 +272,20 @@ in
         # }
         #
         # 6. SOFA 虛擬雙耳監聽音箱（使用你的 dtf_nh2.sofa）
-
-
-        {
-          name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
-
-          args = {
-            "node.description" = "FX · LIMITER · MIC";
-            "media.name" = "FX_LIMITER_MIC";
-
-            "filter.graph" = {
-              nodes = [
-                {
-                  type = "builtin";
-                  name = "limiter";
-                  label = "clamp";
-
-                  control = {
-                    "Min" = -0.891251;
-                    "Max" = 0.891251;
-                  };
-                }
-              ];
-            };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "FX_LIMITER_MIC_INPUT";
-              "node.description" = "FX · LIMITER · MIC · INPUT";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "FX_LIMITER_MIC";
-              "node.description" = "FX · LIMITER · MIC";
-              "media.class" = "Audio/Source";
-              "node.passive" = true;
-            };
-          };
-        }
-
+{
+        "filter.graph" = {
+  nodes = [
+    {
+      type = "builtin";
+      name = "limiter";
+      label = "linear";
+      control = {
+        "Mult" = 1.0;
+      };
+    }
+  ];
+};
+}
         
         # SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA
         {
