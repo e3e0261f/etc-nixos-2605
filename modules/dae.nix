@@ -35,7 +35,7 @@ in
           # log_level: warn
           # 
           # 节点健康检查间隔（建议 30 秒探测一次，防止节点假死）
-          # check_interval: 30s
+          check_interval: 60s
           
           # auto_config_kernel_parameter: true
           tproxy_port: 7890
@@ -44,10 +44,10 @@ in
 
       subscription {
           my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
-          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
+          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
           # 旧版clash订阅 (含ssr节点):
-          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
+          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
   
       }
 
