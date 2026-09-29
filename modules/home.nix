@@ -98,19 +98,19 @@
     };
   };
 
-  # 💡 網路圖示託管
-  systemd.user.services.nm-applet = {
-    Unit = {
-      Description = "Network Manager Applet";
-      PartOf = [ "hyprland-session.target" ];
-      After = [ "hyprland-session.target" ];
-    };
-    Install = { WantedBy = [ "hyprland-session.target" ]; };
-    Service = {
-      ExecStart = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
-      Restart = "on-failure";
-    };
-  };
+  # # 💡 網路圖示託管
+  # systemd.user.services.nm-applet = {
+  #   Unit = {
+  #     Description = "Network Manager Applet";
+  #     PartOf = [ "hyprland-session.target" ];
+  #     After = [ "hyprland-session.target" ];
+  #   };
+  #   Install = { WantedBy = [ "hyprland-session.target" ]; };
+  #   Service = {
+  #     ExecStart = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
+  #     Restart = "on-failure";
+  #   };
+  # };
 
   services.hypridle = {
     enable = true;
