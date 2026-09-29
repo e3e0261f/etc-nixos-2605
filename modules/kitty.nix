@@ -8,7 +8,7 @@
     font = {
       # name = "JetBrainsMono Nerd Font";
       name = "SFMono Nerd Font";
-      size = 20; # 字體大小 24
+      size = 18; # 字體大小 24
     };
 
     settings = {

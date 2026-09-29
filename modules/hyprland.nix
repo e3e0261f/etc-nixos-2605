@@ -19,8 +19,6 @@
     '';
   };
 
-  
-
   # 2. default.lua 入口
   xdg.configFile."MYHYprLUa/default.lua".text = ''
     -- 基礎操作
