@@ -28,9 +28,16 @@ in
           lan_interface: auto
           # ⭐️ 核心修復 2：鎖定你的 Wi-Fi 網卡，加入快速重連自愈 (5s)，杜絕登出斷網！
           wan_interface: wlp8s0, auto
-          dial_mode: domain
-          log_level: info
-          # log_level: warn
+          # dial_mode: domain
+          # # 必须配置可靠的直连 Bootstrap DNS，用于解析节点域名
+          dial_mode: ip
+          # log_level: info
+          log_level: warn
+          # 
+          # 节点健康检查间隔（建议 30 秒探测一次，防止节点假死）
+          check_interval: 30s
+          check_tolerance: 3
+          
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
