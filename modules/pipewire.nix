@@ -71,12 +71,39 @@ in
 
     wireplumber.extraConfig."10-pro-audio-profile" = {
       "monitor.alsa.rules" = [
+
+        # ============================================================
+        # Realtek ALC1150
+        # 固定使用 Pro Audio
+        # ============================================================
         {
-          matches = [ { "device.name" = "~alsa_card.*"; } ];
-          actions = { update-props = { "device.profile" = "pro-audio"; }; };
+          matches = [
+            {
+              "device.name" = "alsa_card.pci-0000_00_1b.0";
+            }
+          ];
+
+          actions = {
+            update-props = {
+              "device.profile" = "pro-audio";
+
+              "api.alsa.use-acp" = true;
+              "api.acp.auto-profile" = false;
+              "api.acp.auto-port" = false;
+            };
+          };
         }
+
+        # ============================================================
+        # ALSA 通用稳定参数
+        # ============================================================
         {
-          matches = [ { "node.name" = "~alsa_.*"; } ];
+          matches = [
+            {
+              "node.name" = "~alsa_.*";
+            }
+          ];
+
           actions = {
             update-props = {
               "session.suspend-timeout-seconds" = 0;
@@ -85,8 +112,54 @@ in
             };
           };
         }
+
+        # ============================================================
+        # ALC1150 Pro Audio：
+        #
+        # AUX0 → FL
+        # AUX1 → FR
+        # AUX2 → RL
+        # AUX3 → RR
+        # AUX4 → FC
+        # AUX5 → LFE
+        #
+        # 绿色 = FL/FR
+        # 黑色 = RL/RR
+        # ============================================================
         {
-          matches = [ { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; } ];
+          matches = [
+            {
+              "node.name" =
+                "alsa_output.pci-0000_00_1b.0.pro-output-0";
+            }
+          ];
+
+          actions = {
+            update-props = {
+              "audio.channels" = 6;
+              "audio.position" = [
+                "FL"
+                "FR"
+                "RL"
+                "RR"
+                "FC"
+                "LFE"
+              ];
+            };
+          };
+        }
+
+        # ============================================================
+        # 主板模拟输入
+        # ============================================================
+        {
+          matches = [
+            {
+              "node.name" =
+                "alsa_input.pci-0000_00_1b.0.pro-input-0";
+            }
+          ];
+
           actions = {
             update-props = {
               "priority.driver" = 2000;
@@ -94,17 +167,52 @@ in
             };
           };
         }
+
+        # ============================================================
+        # 保留你原来确认过的“无用节点”禁用列表
+        #
+        # 注意：
+        # pro-output-9 不在这里，所以继续保留。
+        #
+        # pro-input-2 也继续保持禁用。
+        # ============================================================
         {
           matches = [
-            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-1"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-3"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-7"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-8"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-10"; }
-            { "node.name" = "alsa_output.pci-0000_04_00.1.pro-output-11"; }
-            # { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-2"; }
+            {
+              "node.name" =
+                "alsa_output.pci-0000_00_1b.0.pro-output-1";
+            }
+            {
+              "node.name" =
+                "alsa_output.pci-0000_04_00.1.pro-output-3";
+            }
+            {
+              "node.name" =
+                "alsa_output.pci-0000_04_00.1.pro-output-7";
+            }
+            {
+              "node.name" =
+                "alsa_output.pci-0000_04_00.1.pro-output-8";
+            }
+            {
+              "node.name" =
+                "alsa_output.pci-0000_04_00.1.pro-output-10";
+            }
+            {
+              "node.name" =
+                "alsa_output.pci-0000_04_00.1.pro-output-11";
+            }
+            {
+              "node.name" =
+                "alsa_input.pci-0000_00_1b.0.pro-input-2";
+            }
           ];
-          actions = { update-props = { "node.disabled" = true; }; };
+
+          actions = {
+            update-props = {
+              "node.disabled" = true;
+            };
+          };
         }
       ];
     };
