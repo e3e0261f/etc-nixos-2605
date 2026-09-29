@@ -271,6 +271,9 @@ in
         #   };
         # }
         #
+        # 6. SOFA 虛擬雙耳監聽音箱（使用你的 dtf_nh2.sofa）
+
+
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
@@ -282,17 +285,34 @@ in
             "filter.graph" = {
               nodes = [
                 {
-                  type = "ladspa";
-                  name = "limiter";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/fast_lookahead_limiter_1913.so";
-                  label = "fastLookaheadLimiter";
-
+                  type = "builtin";
+                  name = "limiter_l";
+                  label = "clamp";
                   control = {
-                    "Input gain (dB)" = 0.0;
-                    "Limit (dB)" = -1.0;
-                    "Release time (s)" = 0.30;
+                    "Min" = -0.891251;
+                    "Max" = 0.891251;
                   };
                 }
+
+                {
+                  type = "builtin";
+                  name = "limiter_r";
+                  label = "clamp";
+                  control = {
+                    "Min" = -0.891251;
+                    "Max" = 0.891251;
+                  };
+                }
+              ];
+
+              inputs = [
+                "limiter_l:In"
+                "limiter_r:In"
+              ];
+
+              outputs = [
+                "limiter_l:Out"
+                "limiter_r:Out"
               ];
             };
 
@@ -312,7 +332,9 @@ in
             };
           };
         }
-        # 6. SOFA 虛擬雙耳監聽音箱（使用你的 dtf_nh2.sofa）
+
+        
+        # SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA
         {
           name = "libpipewire-module-filter-chain";
           flags = [ "ifexists" "nofail" ];
