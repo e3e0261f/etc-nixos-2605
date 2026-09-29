@@ -7,7 +7,7 @@
       withOpenASAR = true;
     })
     helix gnupg wget curl unzip gh pstree
-    procps lvm2 p7zip unrar pinentry-curses
+    procps lvm2 p7zip unrar 
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc
     mpv cloudflared 

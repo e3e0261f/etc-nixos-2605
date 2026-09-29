@@ -4,6 +4,10 @@
   # 启用 Fish Shell 并在其中启用 Home Manager 管理
   programs.fish = {
     enable = true;
+    # 解决gpg 找不到tty
+    shellInit = ''
+      set -gx GPG_TTY (tty)
+    '';
   };
 
   # 启用并配置 Starship 提示符（彻底解决路径缩写问题）
