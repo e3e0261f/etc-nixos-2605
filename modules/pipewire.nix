@@ -125,13 +125,21 @@ in
                 "alsa_output.pci-0000_00_1b.0.pro-output-0";
             }
           ];
-
+          #┌────────────────────────────────────────────────────────┐
+          #│                      R5E 后置音频面板                  │
+          #└────────────────────────────────────────────────────────┘
+          #    [ 1. 蓝色孔 ]  ──► Line In（线性输入：接外部音源、电吉他等）
+          #    [ 2. 绿色孔 ]  ──► "FL" "FR" Line Out / Front（前置主输出：接耳机、常规音箱）
+          #    [ 3. 粉红孔 ]  ──► Mic In（麦克风输入：接麦克风）
+          #    [ 4. 黑色孔 ]  ──► "RL" "RR" Rear（后置环绕音箱输出）
+          #    [ 5. 橘/蓝色孔]──► "FC" "LFE" Center / Subwoofer（中置 & 重低音输出）
+          #    [ 6. 方形口 ]  ──► Optical S/PDIF Out（光纤数字输出）
           actions = {
             update-props = {
               "audio.channels" = 6;
               # ⭐️ 嚴格對齊你 speaker-test 測出來的硬件真實物理索引順序：
               # 0=FL, 1=FR, 2=RL, 3=RR, 4=FC, 5=LFE
-              "audio.position" = [  "FR" "FL" "RL" "RR" "FC" "LFE" ];
+              "audio.position" = [  "FL" "FR" "RL" "RR" "FC" "LFE" ];
               
               # ⭐️ 核心防线：开启 6 声道但关闭自动上混，防止立体声源串到黑孔/蓝孔
               "channelmix.upmix" = false;
