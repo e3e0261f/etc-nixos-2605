@@ -218,5 +218,5 @@
   # ⭐️ 開啟遊戲全速效能調度
   programs.gamemode.enable = true;
   # TAgs for start list
-  system.nixos.tags = [ "LOgin" ];
+  system.nixos.tags = [ "PIpewire" ];
 }
