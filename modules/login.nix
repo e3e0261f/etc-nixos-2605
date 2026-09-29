@@ -1,41 +1,47 @@
-
 { pkgs, ... }:
 
 {
   # --- 核心软件包 ---
-  # 这里的包是给登录管理器使用的，tuigreet 必须安装在这里
   environment.systemPackages = with pkgs; [
     tuigreet
-    # 如果你想尝试 wlgreet，也可以加在这里
-    # greetd.wlgreet 
   ];
 
-  # --- Greetd 配置 ---
+  # ============================================================
+  # 1. 静默引导与日志压制（彻底禁止 dae 等服务文字打乱屏幕）
+  # ============================================================
+  boot.consoleLogLevel = 3;
+  boot.kernelParams = [
+    "quiet"
+    "loglevel=3"
+    "systemd.show_status=auto"  # ⭐️ 核心：禁止 systemd 在控制台输出 [ OK ] Started dae.service
+    "rd.udev.log_level=3"
+  ];
+
+  # ============================================================
+  # 2. Greetd 配置（隔离到独立 TTY2）
+  # ============================================================
   services.greetd = {
     enable = true;
+    vt = 2; # ⭐️ 核心：将登录界面移到 TTY2，彻底隔离 TTY1 的开机日志通道
     settings = {
       default_session = {
-        # tuigreet 参数说明：
-        # -t: 显示时间
-        # -c Hyprland: 登录后直接启动 Hyprland
-        # --remember: 记住用户名
-        # --asterisks: 输入密码时显示星号
-        # --matrix-length MIN,MAX
-        # --doom-spread
-        # --doom-colors
-        # --doom-height
-        # --matrix-speed MIN,MAX
-        # --matrix-colors HEAD,BRIGHT,DIM
-        # 最标准的做法是使用 Hyprland 提供的启动入口
-        command = "${pkgs.tuigreet}/bin/tuigreet --background matrix --background-fps 30 --matrix-colors '#CCFFCC,#33FF66,#006622' --matrix-speed 1,2 --time --remember --asterisks --cmd start-hyprland wrapper";
-        # 注意这里改成了 uwsm start hyprland-session.target
-        # command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd 'uwsm start hyprland-session.target'";
+        # 保留你原本配置的 Matrix 炫酷黑客帝国背景动效与参数
+        command = "${pkgs.tuigreet}/bin/tuigreet --background matrix --background-fps 30 --matrix-colors '#CCFFCC,#33FF66,#006622' --matrix-speed 1,2 --time --remember --asterisks --cmd 'start-hyprland wrapper'";
         user = "greeter";
       };
     };
   };
 
+  # ============================================================
+  # 3. Greetd 服务时序与输出保护
+  # ============================================================
+  systemd.services.greetd.serviceConfig = {
+    Type = "idle"; # ⭐️ 等后台服务（如 dae）基本加载完毕后再优雅绘制界面，杜绝并发插播
+    StandardInput = "tty";
+    StandardOutput = "tty";
+    StandardError = "journal"; # 错误日志进系统后台，绝不直接喷到 TTY 屏幕上
+  };
+
   # --- 系统底层优化 ---
-  # 解决一些潜在的硬件/TTY问题
   services.getty.autologinUser = null; # 确保禁用自动登录，由 greetd 接管
 }
