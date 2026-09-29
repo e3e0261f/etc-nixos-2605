@@ -129,14 +129,9 @@ in
           actions = {
             update-props = {
               "audio.channels" = 6;
-              "audio.position" = [
-                "FL"
-                "FR"
-                "RL"
-                "RR"
-                "EL"
-                "ER"
-              ];
+              # ⭐️ 嚴格對齊你 speaker-test 測出來的硬件真實物理索引順序：
+              # 0=FL, 1=FR, 2=RL, 3=RR, 4=FC, 5=LFE
+              "audio.position" = [ "FL" "FR" "RL" "RR" "FC" "LFE" ];
               
               # ⭐️ 核心防线：开启 6 声道但关闭自动上混，防止立体声源串到黑孔/蓝孔
               "channelmix.upmix" = false;
