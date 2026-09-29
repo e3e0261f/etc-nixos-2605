@@ -69,6 +69,7 @@ in
       };
     };
 
+    
     wireplumber.extraConfig."10-pro-audio-profile" = {
       "monitor.alsa.rules" = [
 
@@ -114,17 +115,8 @@ in
         }
 
         # ============================================================
-        # ALC1150 Pro Audio：
-        #
-        # AUX0 → FL
-        # AUX1 → FR
-        # AUX2 → RL
-        # AUX3 → RR
-        # AUX4 → FC
-        # AUX5 → LFE
-        #
-        # 绿色 = FL/FR
-        # 黑色 = RL/RR
+        # ALC1150 Pro Audio 6 通道物理输出（绿、黑、蓝全开）
+        # 配合 channelmix.upmix = false 阻止浏览器/游戏胡乱往环绕孔乱跑
         # ============================================================
         {
           matches = [
@@ -134,22 +126,22 @@ in
             }
           ];
 
-            actions = {
+          actions = {
             update-props = {
-              # ⭐️ 恢复 6 声道，让你的所有物理孔重新上线
               "audio.channels" = 6;
               "audio.position" = [
                 "FL"
                 "FR"
                 "RL"
                 "RR"
-                "FC"
-                "LFE"
+                "EL"
+                "ER"
               ];
               
-              # ⭐️ 核心防线：启用通道适配，阻止普通立体声源乱串到环绕孔
-              "channelmix.upmix" = false;     # 关闭自动上混（防止立体声被强行扩音到 5.1）
+              # ⭐️ 核心防线：开启 6 声道但关闭自动上混，防止立体声源串到黑孔/蓝孔
+              "channelmix.upmix" = false;
               "channelmix.stereo-widen" = 0.0;
+              "channelmix.downmix-lfe" = false;
             };
           };
         }
@@ -175,11 +167,6 @@ in
 
         # ============================================================
         # 保留你原来确认过的“无用节点”禁用列表
-        #
-        # 注意：
-        # pro-output-9 不在这里，所以继续保留。
-        #
-        # pro-input-2 也继续保持禁用。
         # ============================================================
         {
           matches = [
