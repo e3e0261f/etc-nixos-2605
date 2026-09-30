@@ -70,28 +70,40 @@ in
     };
 
     
-    wireplumber.extraConfig."10-pro-audio-profile" = {
+    wireplumber.extraConfig."10-pro-audio-card" = {
       "monitor.alsa.rules" = [
+        # 1. 🎯 精確鎖定：只讓這張板載聲卡進入 Pro Audio 模式
         {
-          matches = [ { "device.name" = "~alsa_card.*"; } ];
-          actions = { update-props = { "device.profile" = "pro-audio"; }; };
-        }
-        {
-          matches = [ { "node.name" = "~alsa_.*"; } ];
+          matches = [
+            { "device.name" = "alsa_card.pci-0000_00_1b.0"; }
+          ];
           actions = {
             update-props = {
-              "session.suspend-timeout-seconds" = 0;
-              "api.alsa.period-size" = 256;
-              "api.alsa.headroom" = 64;
+              "device.profile" = "pro-audio";
             };
           };
         }
+
+        # 2. 🛡️ 防斷電爆音：防止該聲卡在無聲音時休眠
         {
-          matches = [ { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; } ];
+          matches = [
+            { "node.name" = "~alsa_.*pci-0000_00_1b.0.*"; }
+          ];
           actions = {
             update-props = {
-              "priority.driver" = 2000;
-              "priority.session" = 2000;
+              "session.suspend-timeout-seconds" = 0;
+            };
+          };
+        }
+
+        # 3. 🚫 屏蔽多餘接口：只留 pro-output-0，將 1 及以後的所有輸出接口全部徹底禁用
+        {
+          matches = [
+            { "node.name" = "~alsa_output.pci-0000_00_1b.0.pro-output-[1-9].*"; }
+          ];
+          actions = {
+            update-props = {
+              "node.disabled" = true;
             };
           };
         }
@@ -526,7 +538,7 @@ in
                 {
                   type = "ladspa";
                   name = "chorus_l";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/multivoice_chorus_1201.so";
+                  plugin = "multivoice_chorus_1201.so";
                   label = "multivoiceChorus";
 
                   control = {
@@ -542,7 +554,7 @@ in
                 {
                   type = "ladspa";
                   name = "chorus_r";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/multivoice_chorus_1201.so";
+                  plugin = "multivoice_chorus_1201.so";
                   label = "multivoiceChorus";
 
                   control = {
@@ -597,7 +609,7 @@ in
                 {
                   type = "ladspa";
                   name = "flanger_l";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/flanger_1191.so";
+                  plugin = "flanger_1191.so";
                   label = "flanger";
 
                   control = {
@@ -611,7 +623,7 @@ in
                 {
                   type = "ladspa";
                   name = "flanger_r";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/flanger_1191.so";
+                  plugin = "flanger_1191.so";
                   label = "flanger";
 
                   control = {
@@ -664,14 +676,14 @@ in
                 {
                   type = "ladspa";
                   name = "phaser_l";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/phasers_1217.so";
+                  plugin = "phasers_1217.so";
                   label = "lfoPhaser";
                 }
 
                 {
                   type = "ladspa";
                   name = "phaser_r";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/phasers_1217.so";
+                  plugin = "phasers_1217.so";
                   label = "lfoPhaser";
                 }
               ];
@@ -700,55 +712,6 @@ in
             };
           };
         }
-
-        # =======================================================
-        # FX · DE-ESSER · VOCAL
-        # Calf LV2 Deesser
-        # =======================================================
-        # {
-        #   name = "libpipewire-module-filter-chain";
-        #   flags = [ "ifexists" "nofail" ];
-        #   args = {
-        #     "node.description" = "FX · DE-ESSER · VOCAL";
-        #     "media.name" = "FX_DE_ESSER_VOCAL";
-
-        #     "filter.graph" = {
-        #       nodes = [
-        #         {
-        #           type = "lv2";
-        #           name = "deesser";
-        #           plugin = "http://calf.sourceforge.net/plugins/Deesser";
-
-        #           control = {
-        #             "threshold" = 0.009375;
-        #           };
-        #         }
-        #       ];
-
-        #       inputs = [
-        #         "deesser:In L"
-        #         "deesser:In R"
-        #       ];
-
-        #       outputs = [
-        #         "deesser:Out L"
-        #         "deesser:Out R"
-        #       ];
-        #     };
-
-        #     "audio.position" = [ "FL" "FR" ];
-
-        #     "capture.props" = {
-        #       "node.name" = "FX_DE_ESSER_VOCAL_In";
-        #       "media.class" = "Audio/Sink";
-        #     };
-
-        #     "playback.props" = {
-        #       "node.name" = "FX_DE_ESSER_VOCAL_Out";
-        #       "node.passive" = true;
-        #     };
-        #   };
-        # }
 
         # =======================================================
         # 🎸 破音模組 1：硬裁剪失真（Hard Clipper 立體聲版）
@@ -804,7 +767,7 @@ in
                 {
                   type = "ladspa";
                   name = "diode_l";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/diode_1185.so";
+                  plugin = "diode_1185.so";
                   label = "diode";
                   control = {
                     "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
@@ -815,7 +778,7 @@ in
                 {
                   type = "ladspa";
                   name = "diode_r";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/diode_1185.so";
+                  plugin = "diode_1185.so";
                   label = "diode";
                   control = {
                     "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
@@ -867,7 +830,7 @@ in
                 {
                   type = "ladspa";
                   name = "foverdrive_l";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/foverdrive_1196.so";
+                  plugin = "foverdrive_1196.so";
                   label = "foverdrive";
                   control = {
                     "Drive level" = 2.0;
@@ -878,7 +841,7 @@ in
                 {
                   type = "ladspa";
                   name = "foverdrive_r";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/foverdrive_1196.so";
+                  plugin = "foverdrive_1196.so";
                   label = "foverdrive";
                   control = {
                     "Drive level" = 2.0;
@@ -932,7 +895,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_l";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_1209.so";
+                  plugin = "valve_1209.so";
                   label = "valve";
                   control = {
                     "Distortion level" = 0.50;
@@ -944,7 +907,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_r";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_1209.so";
+                  plugin = "valve_1209.so";
                   label = "valve";
                   control = {
                     "Distortion level" = 0.50;
@@ -999,7 +962,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_rect_l";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_rect_1405.so";
+                  plugin = "valve_rect_1405.so";
                   label = "valveRect";
                   control = {
                     "Sag level" = 0.50;
@@ -1011,7 +974,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_rect_r";
-                  plugin = "/nix/store/w08qzpb0qqr5qxx0gkbwscar6y244k1n-pipewire-ladspa-plugins/lib/ladspa/valve_rect_1405.so";
+                  plugin = "valve_rect_1405.so";
                   label = "valveRect";
                   control = {
                     "Sag level" = 0.50;
