@@ -380,8 +380,8 @@ in
       StandardError = "journal";
     };
 
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
+    # Install = {
+    #   WantedBy = [ "graphical-session.target" ];
+    # };
   };
 }

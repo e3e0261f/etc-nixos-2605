@@ -13,7 +13,7 @@
   boot.kernelParams = [
     "quiet"
     "loglevel=3"
-    "systemd.show_status=auto" # ⭐️ 禁止 systemd 输出 [ OK ] Started dae.service
+    # "systemd.show_status=auto" # ⭐️ 禁止 systemd 输出 [ OK ] Started dae.service
     "rd.udev.log_level=3"
   ];
 

@@ -200,13 +200,13 @@ let
   '';
 in
 {
-  programs.waybar = {
-    enable = true;
-    systemd = {
-      enable = true;
-      targets = [ "graphical-session.target" ];
-    };
-  };
+  # programs.waybar = {
+  #   enable = true;
+  #   systemd = {
+  #     enable = true;
+  #     targets = [ "graphical-session.target" ];
+  #   };
+  # };
 
   # =======================================================
   # ⭐️ 1. 純淨標準的 config.jsonc（絕無混雜 CSS）

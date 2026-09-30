@@ -204,13 +204,20 @@
   # =======================================================
   xdg.configFile."MYHYprLUa/AUTOSTART.lua".text = ''
    hl.on("hyprland.start", function ()
-      hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
-      hl.exec_cmd("fcitx5 -d")
-      hl.exec_cmd("wpctl set-profile 122 1 && wpctl set-profile 122 16")
-      hl.exec_cmd("wall-random")
-      hl.exec_cmd("google-chrome")
-      hl.exec_cmd("qpwgraph")
-      hl.exec_cmd("discord")
+      -- 🟢 2. 音频控制和壁纸脚本（用 uwsm app -- 包裹）
+      hl.exec_cmd("uwsm app -- wpctl set-profile 122 1 && wpctl set-profile 122 16")
+      hl.exec_cmd("uwsm app -- wall-random")
+
+      -- 🟢 3. 图形客户端软件（用 uwsm app -- 包裹，确保能优雅退出、不丢失浏览器缓存）
+      hl.exec_cmd("uwsm app -- google-chrome")
+      hl.exec_cmd("uwsm app -- qpwgraph")
+      hl.exec_cmd("uwsm app -- discord")
+
+      -- 🟢 4. 唤醒你在 NixOS/Home Manager 里写好的 Systemd 专属服务名
+      hl.exec_cmd("uwsm app -s fcitx5")       -- 替代原先的 fcitx5 -d
+      hl.exec_cmd("uwsm app -s quickshell")   -- 启动你的 qs -c Kriti-shell
+      hl.exec_cmd("uwsm app -s waybar")
+      hl.exec_cmd("uwsm app -s ibus-daemon")  -- 如果你用了 ibus 
       
       -- ⭐️ 核心保險：等背景程式就位後，把視角強制拉回 1 號工作區！
       hl.exec_cmd("sleep 0.5 && hyprctl dispatch workspace 1")

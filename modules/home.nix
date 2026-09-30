@@ -85,20 +85,21 @@
   #   };
   # };
 
-  # 💡 IBus 服務託管
-  systemd.user.services.ibus-daemon = {
-    Unit = {
-      Description = "IBus Input Method Daemon";
-      PartOf = [ "hyprland-session.target" ];
-      After = [ "hyprland-session.target" ];
-    };
-    Install = { WantedBy = [ "hyprland-session.target" ]; };
-    Service = {
-      ExecStart = "${pkgs.ibus}/bin/ibus-daemon -drx --panel disable";
-      Restart = "on-failure";
-    };
-  };
-
+  # # 💡 IBus 服務託管
+  # systemd.user.services.ibus-daemon = {
+  #   Unit = {
+  #     Description = "IBus Input Method Daemon";
+  #     PartOf = [ "hyprland-session.target" ];
+  #     After = [ "hyprland-session.target" ];
+  #   };
+  #   Install = { WantedBy = [ "hyprland-session.target" ]; };
+  #   Service = {
+  #     ExecStart = "${pkgs.ibus}/bin/ibus-daemon -drx --panel disable";
+  #     Restart = "on-failure";
+  #   };
+  # };
+  #
+  # 💡 IBus 服務託管 (UWSM 規範版)
   services.hypridle = {
     enable = true;
     # 这里通过 settings 属性，Nix 会自动帮你生成 hypridle.conf

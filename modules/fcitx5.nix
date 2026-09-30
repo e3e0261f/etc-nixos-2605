@@ -83,9 +83,9 @@ in
       After = [ "graphical-session.target" ];
     };
 
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
+    # Install = {
+    #   WantedBy = [ "graphical-session.target" ];
+    # };
 
     Service = {
       ExecStart = "/run/current-system/sw/bin/fcitx5";

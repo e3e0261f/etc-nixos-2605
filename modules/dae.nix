@@ -16,7 +16,6 @@ let
   };
 in
 {
-
   services.dae = {
     enable = true;
     assets = [ my-dae-assets ];
