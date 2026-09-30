@@ -75,7 +75,7 @@ in
         # 1. 聲卡進入 Pro Audio 模式
         {
           matches = [
-            { "device.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; }
+            { "device.name" = "alsa_input.pci-0000_00_1b.0"; }
           ];
           actions = {
             update-props = {
@@ -87,6 +87,7 @@ in
         # 2. 通道映射為 FL / FR + 防休眠爆音
         {
           matches = [
+            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-0"; }
             { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; }
           ];
           actions = {
