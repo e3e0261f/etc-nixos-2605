@@ -61,44 +61,30 @@
   # =========================================================================
   # ⭐️ 核心修正：讓 Caelestia Shell 專屬於 Hyprland，進 KDE 時絕不啟動！
   # =========================================================================
-  # systemd.user.services.caelestia-shell = {
-  #   Unit = {
-  #     Description = "Caelestia Desktop Shell Daemon";
-  #     # ⭐️ 1. 改為只跟隨 Hyprland 會話生命週期
-  #     PartOf = [ "hyprland-session.target" ];
-  #     After = [ "hyprland-session.target" ];
-  #   };
+  systemd.user.services.caelestia-shell = {
+    Unit = {
+      Description = "Caelestia Desktop Shell Daemon";
+      # ⭐️ 1. 改為只跟隨 Hyprland 會話生命週期
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "hyprland-session.target" ];
+    };
 
-  #   Service = {
-  #     # ⭐️ 2. 雙重保險：只有桌面環境是 Hyprland 時才准運行，在 KDE 中直接靜默跳過！
-  #     ExecCondition = "${pkgs.bash}/bin/bash -c '[ \"$XDG_CURRENT_DESKTOP\" = \"Hyprland\" ]'";
+    Service = {
+      # ⭐️ 2. 雙重保險：只有桌面環境是 Hyprland 時才准運行，在 KDE 中直接靜默跳過！
+      ExecCondition = "${pkgs.bash}/bin/bash -c '[ \"$XDG_CURRENT_DESKTOP\" = \"Hyprland\" ]'";
 
-  #     Environment = [ "QS_ICON_THEME=Papirus-Dark" ];
-  #     ExecStart = "${inputs.caelestia-shell.packages.${pkgs.system}.with-cli}/bin/caelestia-shell";
-  #     Restart = "on-failure";
-  #     RestartSec = "1s";
-  #   };
+      Environment = [ "QS_ICON_THEME=Papirus-Dark" ];
+      ExecStart = "${inputs.caelestia-shell.packages.${pkgs.system}.with-cli}/bin/caelestia-shell";
+      Restart = "on-failure";
+      RestartSec = "1s";
+    };
 
-  #   Install = {
-  #     # ⭐️ 3. 只註冊給 Hyprland，不註冊給全局圖形會話
-  #     WantedBy = [ "hyprland-session.target" ];
-  #   };
-  # };
+    # Install = {
+    #   # ⭐️ 3. 只註冊給 Hyprland，不註冊給全局圖形會話
+    #   WantedBy = [ "hyprland-session.target" ];
+    # };
+  };
 
-  # # 💡 IBus 服務託管
-  # systemd.user.services.ibus-daemon = {
-  #   Unit = {
-  #     Description = "IBus Input Method Daemon";
-  #     PartOf = [ "hyprland-session.target" ];
-  #     After = [ "hyprland-session.target" ];
-  #   };
-  #   Install = { WantedBy = [ "hyprland-session.target" ]; };
-  #   Service = {
-  #     ExecStart = "${pkgs.ibus}/bin/ibus-daemon -drx --panel disable";
-  #     Restart = "on-failure";
-  #   };
-  # };
-  #
   # 💡 IBus 服務託管 (UWSM 規範版)
   services.hypridle = {
     enable = true;
