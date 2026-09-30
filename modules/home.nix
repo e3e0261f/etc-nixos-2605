@@ -13,6 +13,7 @@
     # ./mako.nix          # 🔔 輕量級桌面通知守護進程 (Mako Notification Daemon)
     ./dunst.nix          # 🔔 桌面通知守護進程
     ./fuzzel.nix        # 🔍 輕量 Wayland 應用程式搜尋與啟動器 (Fuzzel dmenu/rofi 替代品)
+    ./quickshell.nix    # rhys 主题
 
     # -----------------------------------------------------------------------
     # ⌨️ 2. 輸入法、終端機與主力編輯器 (Terminal & Productivity)

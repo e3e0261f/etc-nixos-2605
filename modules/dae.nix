@@ -29,7 +29,7 @@ in
           wan_interface: wlp8s0, auto
           dial_mode: domain
           log_level: info
-          check_interval: 60s
+          check_interval: 1800s
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
