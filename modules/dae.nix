@@ -59,7 +59,7 @@ in
         routing {
           request {
             qtype(https) -> reject
-            !qname(geosite:cn) -> cfdns
+            !qname(geosite:cn) -> googledns
             qtype(aaaa) -> reject
             fallback: alidns
           }
