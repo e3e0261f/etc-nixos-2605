@@ -379,9 +379,5 @@ in
       StandardOutput = "journal";
       StandardError = "journal";
     };
-
-    # Install = {
-    #   WantedBy = [ "graphical-session.target" ];
-    # };
   };
 }

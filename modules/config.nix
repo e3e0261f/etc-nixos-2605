@@ -74,10 +74,6 @@
     '';
   };
   
-  # --- 1. 核心與驅動 ---
-  # boot.kernelPackages = pkgs.linuxPackages_zen;
-  services.xserver.videoDrivers = [ "amdgpu" ];
-
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -223,6 +219,9 @@
     options snd_hda_codec_realtek model=alc1150
   '';
 
+  # --- 1. 核心與驅動 ---
+  # boot.kernelPackages = pkgs.linuxPackages_zen;
+  services.xserver.videoDrivers = [ "amdgpu" ];
   # 全面禁止IPV6 
   networking.enableIPv6 = false;
   # 3. 启用 LVM 支持（确保开机自动激活卷组）

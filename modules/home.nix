@@ -78,11 +78,6 @@
       Restart = "on-failure";
       RestartSec = "1s";
     };
-
-    # Install = {
-    #   # ⭐️ 3. 只註冊給 Hyprland，不註冊給全局圖形會話
-    #   WantedBy = [ "hyprland-session.target" ];
-    # };
   };
 
   # 💡 IBus 服務託管 (UWSM 規範版)

@@ -1,64 +1,52 @@
-{ pkgs, ... }:
+        { pkgs, ... }:
 
 {
-  # --- 核心软件包 ---
+  # --- 核心軟體包 ---
   environment.systemPackages = with pkgs; [
     tuigreet
   ];
 
   # ============================================================
-  # 1. 静默引导与日志压制（合并重复属性，为 Plymouth 铺平道路）
+  # 1. 靜默引導與日誌壓制（禁止開機服務向螢幕亂打狀態）
   # ============================================================
   boot.consoleLogLevel = 3;
-  
-  # 🟢 核心修复 1：将所有内核参数干净地合并为一行，彻底消除编译报错
-  boot.kernelParams = [ "quiet" "splash" "loglevel=3" "rd.udev.log_level=3" ]; 
+  # boot.kernelParams = [
+  #   # "quiet"
+  #   # "loglevel=5"
+  #   # "systemd.show_status=auto" # ⭐️ 禁止 systemd 輸出 [ OK ] Started dae.service
+  #   # "rd.udev.log_level=3"
+  # ];
 
   # ============================================================
-  # 🟢 填补画面空缺：开启官方开机动画 (Plymouth 完整增强版)
-  # ============================================================
-  boot.plymouth = {
-    enable = true;
-    theme = "bgrt"; # 显示主板厂商原厂 Logo，提供无缝一体化开机视觉
-    
-    # 🟢 核心修复 2：必须引入系统主题包，确保 bgrt 的转圈动画资源被正确加载
-    themePackages = with pkgs; [ 
-      (kdePackages.plymouth-kcm or plymouth) 
-    ];
-  };
-
-  # ============================================================
-  # 2. Greetd 配置 (完美拥抱现代 UWSM 图形架构)
+  # 2. Greetd 配置
   # ============================================================
   services.greetd = {
     enable = true;
     settings = {
       default_session = {
-        # 保留你的 Matrix 绿雨动效，并通过 UWSM 后台模式纳管整个桌面会话
-        # 🟢 终极正确命令：让 uwsm 自动去拉起默认/已选的合成器（default），完美避开所有 command not found 报错！
-        command = "stty sane && stty flush && \${pkgs.tuigreet}/bin/tuigreet --background matrix --background-fps 30 --matrix-colors '#CCFFCC,#33FF66,#006622' --matrix-speed 1,2 --time --remember --asterisks --cmd 'uwsm start default'";
+        # 保留你的 Matrix 綠雨動效與啟動命令
+        command = "${pkgs.tuigreet}/bin/tuigreet --background matrix --background-fps 30 --matrix-colors '#CCFFCC,#33FF66,#006622' --matrix-speed 1,2 --time --remember --asterisks --cmd 'uwsm start default'";
         user = "greeter";
       };
     };
   };
 
-  # ============================================================
-  # 3. 核心修复：彻底清空 VT1 屏幕，杜绝任何文字干扰
-  # ============================================================
-  systemd.services.greetd.serviceConfig = {
-    # 🟢 核心修复 3：维持 simple 模式，让 tuigreet 立即供电，终结显示器掉电噩梦
-    # Type = "simple"; 
-    Type = "idle"; 
-    StandardInput = "tty";
-    StandardOutput = "tty";
-    StandardError = "journal"; # 错误信息进 journal 日志，绝不喷到屏幕
+  # # ============================================================
+  # # 3. 核心修復：徹底清空 VT1 螢幕，杜絕任何文字干擾
+  # # ============================================================
+  # systemd.services.greetd.serviceConfig = {
+  #   # Type = "idle"; # ⭐️ 等後台服務（如 dae）就緒後再繪製介面
+  #   StandardInput = "tty";
+  #   StandardOutput = "tty";
+  #   StandardError = "journal"; # 錯誤訊息進 journal 日誌，絕不噴到螢幕
 
-    # ⭐️ 核心三件套：启动 tuigreet 前瞬间清空 VT1 屏幕上的所有残留文字
-    TTYReset = true;
-    TTYVHangup = true;
-    TTYVTDisallocate = true;
-  };
+  #   # ⭐️ 核心三件套：啟動 tuigreet 前瞬間清空 VT1 螢幕上的所有殘留文字
+  #   TTYReset = true;
+  #   TTYVHangup = true;
+  #   TTYVTDisallocate = true;
+  # };
 
-  # --- 系统底层优化 ---
-  services.getty.autologinUser = null; # 确保禁用自动登录，由 greetd 接管
+  # --- 系統底層優化 ---
+  # services.getty.autologinUser = null; # 確保禁用自動登錄，由 greetd 接管
 }
+
