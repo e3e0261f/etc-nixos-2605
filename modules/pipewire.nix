@@ -72,10 +72,10 @@ in
     
     wireplumber.extraConfig."10-pro-audio-card" = {
       "monitor.alsa.rules" = [
-        # 1. 🎯 精確鎖定：只讓這張板載聲卡進入 Pro Audio 模式
+        # 1. 聲卡進入 Pro Audio 模式
         {
           matches = [
-            { "device.name" = "alsa_card.pci-0000_00_1b.0"; }
+            { "device.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; }
           ];
           actions = {
             update-props = {
@@ -84,22 +84,23 @@ in
           };
         }
 
-        # 2. 🛡️ 防斷電爆音：防止該聲卡在無聲音時休眠
+        # 2. 通道映射為 FL / FR + 防休眠爆音
         {
           matches = [
-            { "node.name" = "~alsa_.*pci-0000_00_1b.0.*"; }
+            { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; }
           ];
           actions = {
             update-props = {
               "session.suspend-timeout-seconds" = 0;
+              "audio.position" = [ "FL" "FR" ];
             };
           };
         }
 
-        # 3. 🚫 屏蔽多餘接口：只留 pro-output-0，將 1 及以後的所有輸出接口全部徹底禁用
+        # 3. 🎯 精確屏蔽那個多餘的輸入端口
         {
           matches = [
-            { "node.name" = "~alsa_output.pci-0000_00_1b.0.pro-output-[1-9].*"; }
+            { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-2"; }
           ];
           actions = {
             update-props = {
