@@ -7,7 +7,7 @@
   environment.systemPackages = with pkgs; [
     # a command install
     inputs.a-cli.packages.${pkgs.system}.default
-    helix git dae fish kitty
+    helix git dae fish kitty git-crypt
   ];
   imports =
     [ # Include the results of the hardware scan.
