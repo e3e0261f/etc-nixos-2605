@@ -24,6 +24,7 @@
     wl-kbptr
     reaper
     pcmanfm-qt
+    losslesscut
   ];
 
   # HYprland 
