@@ -1,6 +1,7 @@
 # /etc/nixos/modules/pipewire.nix
 { config, pkgs, ... }:
 let
+  ladspaDir = "${pkgs.ladspaPlugins}/lib/ladspa";
   # 📁 指向你的寶庫基礎路徑：
   irDir = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane";
   # hallIrFile = "/home/rhys/DOwn/EAsyeffects-main/6Spaces13Hillside48K.wav";
@@ -540,10 +541,10 @@ in
                 {
                   type = "ladspa";
                   name = "chorus_l";
-                  plugin = "multivoice_chorus_1201.so";
+                  plugin = "${ladspaDir}/multivoice_chorus_1201.so";
                   label = "multivoiceChorus";
 
-                  control = {
+                 control = {
                     "Number of voices" = 3.0;
                     "Delay base (ms)" = 20.0;
                     "Voice separation (ms)" = 0.5;
@@ -611,7 +612,7 @@ in
                 {
                   type = "ladspa";
                   name = "flanger_l";
-                  plugin = "flanger_1191.so";
+                  plugin = "${ladspaDir}/flanger_1191.so";
                   label = "flanger";
 
                   control = {
@@ -625,7 +626,7 @@ in
                 {
                   type = "ladspa";
                   name = "flanger_r";
-                  plugin = "flanger_1191.so";
+                  plugin = "${ladspaDir}/flanger_1191.so";
                   label = "flanger";
 
                   control = {
@@ -678,14 +679,14 @@ in
                 {
                   type = "ladspa";
                   name = "phaser_l";
-                  plugin = "phasers_1217.so";
+                  plugin = "${ladspaDir}/phasers_1217.so";
                   label = "lfoPhaser";
                 }
 
                 {
                   type = "ladspa";
                   name = "phaser_r";
-                  plugin = "phasers_1217.so";
+                  plugin = "${ladspaDir}/phasers_1217.so";
                   label = "lfoPhaser";
                 }
               ];
@@ -769,7 +770,7 @@ in
                 {
                   type = "ladspa";
                   name = "diode_l";
-                  plugin = "diode_1185.so";
+                  plugin = "${ladspaDir}/diode_1185.so";
                   label = "diode";
                   control = {
                     "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
@@ -780,7 +781,7 @@ in
                 {
                   type = "ladspa";
                   name = "diode_r";
-                  plugin = "diode_1185.so";
+                  plugin = "${ladspaDir}/diode_1185.so";
                   label = "diode";
                   control = {
                     "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
@@ -832,7 +833,7 @@ in
                 {
                   type = "ladspa";
                   name = "foverdrive_l";
-                  plugin = "foverdrive_1196.so";
+                  plugin = "${ladspaDir}/foverdrive_1196.so";
                   label = "foverdrive";
                   control = {
                     "Drive level" = 2.0;
@@ -843,7 +844,7 @@ in
                 {
                   type = "ladspa";
                   name = "foverdrive_r";
-                  plugin = "foverdrive_1196.so";
+                  plugin = "${ladspaDir}/foverdrive_1196.so";
                   label = "foverdrive";
                   control = {
                     "Drive level" = 2.0;
@@ -897,7 +898,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_l";
-                  plugin = "valve_1209.so";
+                  plugin = "${ladspaDir}/valve_1209.so";
                   label = "valve";
                   control = {
                     "Distortion level" = 0.50;
@@ -909,7 +910,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_r";
-                  plugin = "valve_1209.so";
+                  plugin = "${ladspaDir}/valve_1209.so";
                   label = "valve";
                   control = {
                     "Distortion level" = 0.50;
@@ -964,7 +965,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_rect_l";
-                  plugin = "valve_rect_1405.so";
+                  plugin = "${ladspaDir}/valve_rect_1405.so";
                   label = "valveRect";
                   control = {
                     "Sag level" = 0.50;
@@ -976,7 +977,7 @@ in
                 {
                   type = "ladspa";
                   name = "valve_rect_r";
-                  plugin = "valve_rect_1405.so";
+                  plugin = "${ladspaDir}/valve_rect_1405.so";
                   label = "valveRect";
                   control = {
                     "Sag level" = 0.50;
