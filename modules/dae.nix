@@ -55,11 +55,12 @@ in
           alidns: 'udp://223.5.5.5:53'
           ali_h3: 'h3://223.5.5.5:443/dns-query'
           cfdns: 'tcp+udp://1.1.1.1:53'
+          cf_doh3: 'https://cloudflare-dns.com/dns-query'
         }
         routing {
           request {
             qtype(https) -> reject
-            !qname(geosite:cn) -> googledns
+            !qname(geosite:cn) -> cf_doh3
             qtype(aaaa) -> reject
             fallback: alidns
           }
