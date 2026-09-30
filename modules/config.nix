@@ -222,6 +222,7 @@
     options snd_hda_intel power_save=0 power_save_controller=N
     options snd_hda_codec_realtek model=alc1150
   '';
+
   # 全面禁止IPV6 
   networking.enableIPv6 = false;
   # 3. 启用 LVM 支持（确保开机自动激活卷组）

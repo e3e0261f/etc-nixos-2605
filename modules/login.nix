@@ -35,7 +35,8 @@
     settings = {
       default_session = {
         # 保留你的 Matrix 绿雨动效，并通过 UWSM 后台模式纳管整个桌面会话
-        command = "${pkgs.tuigreet}/bin/tuigreet --background matrix --background-fps 30 --matrix-colors '#CCFFCC,#33FF66,#006622' --matrix-speed 1,2 --time --remember --asterisks --cmd 'uwsm start -b hyprland'";
+        # 🟢 终极正确命令：让 uwsm 自动去拉起默认/已选的合成器（default），完美避开所有 command not found 报错！
+        command = "stty sane && stty flush && \${pkgs.tuigreet}/bin/tuigreet --background matrix --background-fps 30 --matrix-colors '#CCFFCC,#33FF66,#006622' --matrix-speed 1,2 --time --remember --asterisks --cmd 'uwsm start default'";
         user = "greeter";
       };
     };
