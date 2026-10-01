@@ -152,15 +152,16 @@ in
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
           domain(suffix: albiononline.com) -> direct(must)
-
-          # 內網 / 本機 IP 直連
-          dip(192.168.0.0/16, 127.0.0.0/8) && dport(22) -> direct
-          dip(127.0.0.0/8, 192.168.0.0/16) -> direct
           pname(gix, steam) -> direct(must)
+
+          # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
+          pname(NetworkManager, systemd-resolved, systemd-networkd, dhcpcd, dae, dnsmasq, smartdns) -> direct
+          # 4. 强制排除局域网和 DHCP 自动分配的本地子网（防止握手流量被代理）
+          dip(224.0.0.0/24, 239.0.0.0/8) -> direct
+          dip(192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12) -> direct
 
           # 國內 DNS (阿里) 直連防回環
           dip(223.5.5.5, 223.6.6.6, 119.29.29.29) -> direct
-          pname(systemd-resolved, dnsmasq, NetworkManager, dae) -> direct(must)
 
           # ⭐️【防 GFW 投毒】：國外 DNS 查詢塞入代理隧道
           dip(8.8.8.8, 8.8.4.4) -> for1
