@@ -1070,12 +1070,21 @@ in
       RemainAfterExit = true;
     };
     script = ''
-      # 1. 物理輸出解鎖：耳機 100%、取消靜音、禁用腦殘 Auto-Mute
+      # ⭐️ 防搶跑：開機時等待 PCH 聲卡註冊完成（最多等 3 秒）
+      for i in $(seq 1 6); do
+        if ${pkgs.alsa-utils}/bin/amixer -c PCH info >/dev/null 2>&1; then
+          break
+        fi
+        sleep 0.5
+      done
+
+      # ⭐️ 1. 優先嘗試讀取 asound.state 存檔
+      ${pkgs.alsa-utils}/bin/alsactl restore || true
+
+      # ⭐️ 2. 強制物理線路通電（音量鎖定 10%）
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Master' 100% unmute || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Headphone' 100% unmute || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Auto-Mute Mode' 'Disabled' || true
-
-      # 2. 物理輸入通電：訊號源切換至 Line、開啟 CAPTURE、音量設為 80%
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Input Source' 'Line' || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Capture' 10% cap || true
     '';
