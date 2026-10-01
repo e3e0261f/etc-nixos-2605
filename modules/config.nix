@@ -190,11 +190,15 @@
   networking.hostName = "nixos";
   networking.networkmanager = {
     enable = true;
-    # connectionConfig = {
-      # "ipv4.route-metric" = 100;
-      # "ipv6.route-metric" = 100;
-    # };
+    insertNameservers = [ "223.5.5.5" ]; 
+    connectionConfig = {
+    "ipv4.route-metric" = 100;
+    "ipv6.route-metric" = 100;
+    };
   };
+
+    # ⭐️ 强行给系统指定静态保底 DNS，确保 resolv.conf 永远有服务器可用
+  networking.nameservers = [ "223.5.5.5" "1.1.1.1" ];
 
   # oOPen FLack on my nixos
   # nix.settings.experimental-features = [ "nix-command" "flakes" ];
