@@ -10,12 +10,12 @@
   # 1. 靜默引導與日誌壓制（禁止開機服務向螢幕亂打狀態）
   # ============================================================
   boot.consoleLogLevel = 3;
-  # boot.kernelParams = [
-  #   # "quiet"
-  #   # "loglevel=5"
-  #   # "systemd.show_status=auto" # ⭐️ 禁止 systemd 輸出 [ OK ] Started dae.service
-  #   # "rd.udev.log_level=3"
-  # ];
+  boot.kernelParams = [
+    # "quiet"
+    "loglevel=4"
+    # "systemd.show_status=auto" # ⭐️ 禁止 systemd 輸出 [ OK ] Started dae.service
+    # "rd.udev.log_level=3"
+  ];
 
   # ============================================================
   # 2. Greetd 配置

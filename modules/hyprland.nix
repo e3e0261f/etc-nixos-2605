@@ -210,7 +210,7 @@
 
       -- 🟢 3. 图形客户端软件（用 uwsm app -- 包裹，确保能优雅退出、不丢失浏览器缓存）
       hl.exec_cmd("uwsm app -- google-chrome")
-      --hl.exec_cmd("uwsm app -- qpwgraph")
+      hl.exec_cmd("uwsm app -- qpwgraph")
       hl.exec_cmd("uwsm app -- discord")
 
       -- 🟢 4. 唤醒你在 NixOS/Home Manager 里写好的 Systemd 专属服务名
