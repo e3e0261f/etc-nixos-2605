@@ -4,9 +4,10 @@
   # 启用 Fish Shell 并在其中启用 Home Manager 管理
   programs.fish = {
     enable = true;
-    # 解决gpg 找不到tty
+    # 解决 gpg 找不到 tty，并注入全局本地 bin 路径
     shellInit = ''
       set -gx GPG_TTY (tty)
+      fish_add_path $HOME/.local/bin
     '';
   };
 
@@ -27,4 +28,3 @@
     };
   };
 }
-
