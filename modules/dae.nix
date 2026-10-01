@@ -25,7 +25,7 @@ in
           allow_insecure: false
           so_mark_from_dae: 0
           lan_interface: auto
-          # wan_interface: wlp8s0, auto
+          wan_interface: auto
           dial_mode: domain
           log_level: info
           check_interval: 1800s

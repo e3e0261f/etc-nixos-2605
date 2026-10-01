@@ -21,7 +21,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-      # 添加 quickshell 官方 flake
+    # 添加 quickshell 官方 flake
     quickshell = {
       # 网址与官网最新规范保持一致
       url = "git+https://git.outfoxxed.me/quickshell/quickshell";
@@ -36,10 +36,22 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-      # 1. 引入 Caelestia Shell
+    # 1. 引入 Caelestia Shell
     caelestia-shell = {
       url = "github:caelestia-dots/shell";
       inputs.nixpkgs.follows = "nixpkgs"; # 保证与系统 Qt 库版本一致
+    };
+
+    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=hl0.55.4";
+    # where {version} is the hyprland release version
+    # or "github:hyprwm/Hyprland?submodules=1" to follow the development branch
+
+    # ⭐️ 修正後的 hy3 配置：鎖定 hl0.55.4 分支
+    hy3 = {
+      url = "github:outfoxxed/hy3"; # where {version} is the hyprland release version
+      # or "github:outfoxxed/hy3" to follow the development branch.
+      # (you may encounter issues if you dont do the same for hyprland)
+      # inputs.hyprland.follows = "hyprland";
     };
 
     # 如果以後有真正的 cool-config 再打開這裡
