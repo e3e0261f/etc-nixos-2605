@@ -85,16 +85,16 @@ in
           };
         }
 
-        # 2. 通道映射為 FL / FR + 防休眠爆音
+        # 2. 通道映射 防休眠爆音
         {
           matches = [
-            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-0"; }
+            # { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-0"; }
             { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; }
           ];
           actions = {
             update-props = {
               "session.suspend-timeout-seconds" = 0;
-              "audio.position" = [ "FL" "FR" ];
+              # "audio.position" = [ "FL" "FR" ];
             };
           };
         }
@@ -102,6 +102,7 @@ in
         # 3. 🎯 精確屏蔽那個多餘的輸入端口
         {
           matches = [
+            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-1"; }
             { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-2"; }
           ];
           actions = {
