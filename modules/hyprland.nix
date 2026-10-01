@@ -206,6 +206,7 @@
    hl.on("hyprland.start", function ()
       -- 🟢 2. 音频控制和壁纸脚本（用 uwsm app -- 包裹）
       hl.exec_cmd("wpctl set-profile 122 1 && wpctl set-profile 122 16")
+      hl.exec_cmd("uwsm app -- caelestia shell -d")
       hl.exec_cmd("uwsm app -- wall-random")
 
       -- 🟢 3. 图形客户端软件（用 uwsm app -- 包裹，确保能优雅退出、不丢失浏览器缓存）
