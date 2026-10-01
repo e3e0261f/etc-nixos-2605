@@ -36,7 +36,7 @@
       commit.gpgsign = true;
 
       # 🚀【讀加速】：只要你 clone 或 fetch "https://github.com/"，自動換成 gh-proxy 加速節點
-      url."https://v4.gh-proxy.org/https://github.com/".insteadOf = "https://github.com/";
+      # url."https://v4.gh-proxy.org/https://github.com/".insteadOf = "https://github.com/";
 
       # 🔐【寫安全】：一旦觸發 git push，自動攔截並轉換為 SSH 協議推送
       # 無論本地 Remote 記錄的是原版 URL 還是被替換後的加速站 URL，均轉回 SSH 走 443 埠
