@@ -94,7 +94,8 @@ in
           actions = {
             update-props = {
               "session.suspend-timeout-seconds" = 0;
-              # "audio.position" = [ "FL" "FR" ];
+              # 🎯 定義這 6 個孔的標準環繞聲位置
+              "audio.position" = [ "FL" "FR" "RL" "RR" "FC" "LFE" ];
             };
           };
         }
