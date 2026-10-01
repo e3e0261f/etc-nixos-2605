@@ -25,11 +25,11 @@ in
           allow_insecure: false
           so_mark_from_dae: 0
           lan_interface: auto
-          wan_interface: wlp8s0, auto
+          # wan_interface: wlp8s0, auto
           dial_mode: domain
           log_level: info
           check_interval: 1800s
-          auto_config_kernel_parameter: true
+          # auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
       }
