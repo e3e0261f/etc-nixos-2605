@@ -53,8 +53,8 @@
 
   # 1. 軟體包清單：引入 Caelestia Shell 與 CLI
   home.packages = with pkgs; [
-    # inputs.caelestia-shell.packages.${pkgs.system}.with-cli # ⭐️ 改為 with-cli
-    # inputs.caelestia-cli.packages.${pkgs.system}.default    # ⭐️ 終端直接可用的 caelestia 命令
+    inputs.caelestia-shell.packages.${pkgs.system}.with-cli # ⭐️ 改為 with-cli
+    inputs.caelestia-cli.packages.${pkgs.system}.default    # ⭐️ 終端直接可用的 caelestia 命令
     inputs.quickshell.packages.${pkgs.system}.default
   ];
 

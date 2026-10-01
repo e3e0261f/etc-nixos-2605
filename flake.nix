@@ -14,11 +14,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    caelestia-cli = {
-      url = "github:caelestia-dots/cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # 1. 引入 Home Manager
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05"; 
@@ -33,6 +28,11 @@
   
       # ⚠️ 这一行非常重要！
       # 强制让 QuickShell 使用与你系统完全相同的 nixpkgs，防止 Qt 库版本冲突闪退
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    caelestia-cli = {
+      url = "github:caelestia-dots/cli";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
