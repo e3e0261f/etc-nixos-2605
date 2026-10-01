@@ -29,7 +29,7 @@ in
           dial_mode: domain
           log_level: info
           check_interval: 1800s
-          # auto_config_kernel_parameter: true
+          auto_config_kernel_parameter: true
           tproxy_port: 7890
           tproxy_port_protect: true
       }
