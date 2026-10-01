@@ -88,7 +88,7 @@ in
         # 2. 通道映射 防休眠爆音
         {
           matches = [
-            # { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-0"; }
+            { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-0"; }
             { "node.name" = "alsa_input.pci-0000_00_1b.0.pro-input-0"; }
           ];
           actions = {
@@ -1049,6 +1049,38 @@ in
 # Chorus	加宽、复制/调制声音	FX · CHORUS · STUDIO
 # Flanger	金属扫频、特殊空间感	FX · FLANGER · STUDIO
 # Phaser	相位旋转效果	FX · PHASER · STUDIO
+
+
+# =======================================================
+  # 🛡️ 1. 宣告式防呆：確保 /var/lib/alsa 目錄永遠存在
+  # =======================================================
+  systemd.tmpfiles.rules = [
+    "d /var/lib/alsa 0755 root root -"
+  ];
+
+  # =======================================================
+  # 🚀 2. 開機硬體電路自動通電服務（開機自動解鎖 Pro Audio 物理硬體）
+  # =======================================================
+  systemd.services.init-pro-audio-hardware = {
+    description = "Initialize ALC1150 Codec for Pro Audio (Unmute & Line-In)";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "sound.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      # 1. 物理輸出解鎖：耳機 100%、取消靜音、禁用腦殘 Auto-Mute
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Master' 100% unmute || true
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Headphone' 100% unmute || true
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Auto-Mute Mode' 'Disabled' || true
+
+      # 2. 物理輸入通電：訊號源切換至 Line、開啟 CAPTURE、音量設為 80%
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Input Source' 'Line' || true
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Capture' 10% cap || true
+    '';
+  };
+
 
   # 3. 系統工具
   environment.systemPackages = with pkgs; [
