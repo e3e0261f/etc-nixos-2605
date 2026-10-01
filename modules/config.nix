@@ -224,6 +224,7 @@
   '';
 
   # --- 1. 核心與驅動 ---
+  services.gnome.gnome-keyring.enable = true;
   # boot.kernelPackages = pkgs.linuxPackages_zen;
   services.xserver.videoDrivers = [ "amdgpu" ];
   # 全面禁止IPV6 
