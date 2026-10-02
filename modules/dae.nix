@@ -154,9 +154,10 @@ in
           domain(suffix: albiononline.com) -> direct(must)
           pname(gix, steam) -> direct(must)
           # wow
+          domain(suffix: blizzard.com, suffix: battle.net, suffix: battle.net.cn) -> direct
           domain(keyword: blizzard, keyword: "battle.net") -> direct
+          pname(Proton, "Z:\home\rhys\.st") -> direct
           pname(Battle.net.exe, Agent.exe, Wow.exe, "World of Warcraft.exe") -> direct
-          # 规则 2（备用/更保险）：将 Linux 侧启动它们的 wine 进程也加入直连
           pname(wine, wineserver, winedevice.exe) -> direct
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
