@@ -36,10 +36,10 @@ in
 
       subscription {
           my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
-          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
+          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
           # 旧版clash订阅 (含ssr节点):
-          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
+          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
   
       }
 
@@ -153,6 +153,9 @@ in
           domain(keyword: "cloudflare.com") -> direct
           domain(suffix: albiononline.com) -> direct(must)
           pname(gix, steam) -> direct(must)
+          pname(Battle.net.exe, Agent.exe, Wow.exe, "World of Warcraft.exe") -> direct
+          # 规则 2（备用/更保险）：将 Linux 侧启动它们的 wine 进程也加入直连
+          pname(wine, wineserver, winedevice.exe) -> direct
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct

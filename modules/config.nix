@@ -223,6 +223,11 @@
     options snd_hda_codec_realtek model=alc1150
   '';
 
+  # 挂载 swap 文件
+  swapDevices = [ { device = "/swapfile"; } ];
+  # 开启休眠支持
+  boot.resumeDevice = "/dev/nvme0n1p2"; # 这里的设备名要对应你挂载 / 的分区
+  boot.kernelParams = [ "resume=/dev/nvme0n1p2" ];
   # --- 1. 核心與驅動 ---
   services.gnome.gnome-keyring.enable = true;
   # boot.kernelPackages = pkgs.linuxPackages_zen;
