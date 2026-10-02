@@ -154,10 +154,9 @@ in
           domain(suffix: albiononline.com) -> direct(must)
           pname(gix, steam) -> direct(must)
           # wow
-          domain(suffix: blizzard.com, suffix: battle.net, suffix: battle.net.cn) -> direct
-          domain(keyword: blizzard, keyword: "battle.net") -> direct
-          pname(Proton, "Z:\home\rhys\.st") -> direct
-          pname(Battle.net.exe, Agent.exe, Wow.exe, "World of Warcraft.exe") -> direct
+          domain(suffix: blizzard.com, battle.net, battle.net.cn) -> direct
+          domain(keyword: blizzard, "battle.net") -> direct
+          pname(Battle.net.exe, Agent.exe, Wow.exe) -> direct
           pname(wine, wineserver, winedevice.exe) -> direct
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
