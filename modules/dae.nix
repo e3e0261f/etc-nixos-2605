@@ -153,6 +153,8 @@ in
           domain(keyword: "cloudflare.com") -> direct
           domain(suffix: albiononline.com) -> direct(must)
           pname(gix, steam) -> direct(must)
+          # wow
+          domain(keyword: blizzard, keyword: "battle.net") -> direct
           pname(Battle.net.exe, Agent.exe, Wow.exe, "World of Warcraft.exe") -> direct
           # 规则 2（备用/更保险）：将 Linux 侧启动它们的 wine 进程也加入直连
           pname(wine, wineserver, winedevice.exe) -> direct
