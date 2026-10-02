@@ -132,7 +132,7 @@
     --hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
     hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
     hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-    hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
+    hl.bind(mainMod .. " + H", hl.dsp.layout("togglesplit"))
 
     hl.bind(mainMod .. " + F", hl.dsp.window.float({ action = "toggle" }))
     hl.bind(mainMod .. " + ALT + F", hl.dsp.exec_cmd("hypr-remember-float"))
@@ -159,7 +159,7 @@
     hl.bind(mainMod .. " + CTRL + S", hl.dsp.exec_cmd("hyprshot -m region --freeze -o ~/Pictures/Screenshots"))
 
     -- 2. 全螢幕定格秒截：Super + Print
-    hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("hyprshot -m output --freeze -o ~/Pictures/Screenshots"))
+    -- hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("hyprshot -m output --freeze -o ~/Pictures/Screenshots"))
 
     -- 3. 當前單一視窗截圖（可選）：Super + Alt + S
     hl.bind(mainMod .. " + ALT + S", hl.dsp.exec_cmd("hyprshot -m window --freeze -o ~/Pictures/Screenshots"))
@@ -195,6 +195,15 @@
     hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
     hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
     hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+
+    -- =======================================================
+    -- ⌨️ 純鍵盤視窗大小調整模態 (Resize Mode)
+    -- =======================================================
+    -- 按住 Super + Alt + 方向鍵，就能直接朝對應方向拉伸或縮小視窗
+    hl.bind(mainMod .. " + ALT + right", hl.dsp.window.resize({ x = 40,  y = 0 }))
+    hl.bind(mainMod .. " + ALT + left",  hl.dsp.window.resize({ x = -40, y = 0 }))
+    hl.bind(mainMod .. " + ALT + up",    hl.dsp.window.resize({ x = 0,   y = -40 }))
+    hl.bind(mainMod .. " + ALT + down",  hl.dsp.window.resize({ x = 0,   y = 40 }))
   '';
 
   xdg.configFile."MYHYprLUa/MONITORS.lua".text = '''';
