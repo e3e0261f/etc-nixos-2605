@@ -154,7 +154,7 @@ in
           domain(suffix: albiononline.com) -> direct(must)
           pname(gix, steam) -> direct(must)
           # wow
-          domain(suffix: battle) -> direct
+          domain(suffix: battle.net) -> direct
           domain(keyword: blizzard, "battle.net") -> direct
           pname(Battle.net.exe, Agent.exe, Wow.exe) -> direct
           pname(wine, wineserver, winedevice.exe) -> direct
