@@ -16,6 +16,20 @@ let
   };
 in
 {
+
+  # 放在 configuration.nix 的顶层，或者合适的位置
+  systemd.services.dae = {
+    # 把 after 和 wants 放在这里，这才是 systemd 服务层面的配置
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    
+    # 你的重启策略也应该放在这里
+    serviceConfig = {
+      Restart = "on-failure";
+      RestartSec = "2";
+    };
+  };
+
   services.dae = {
     enable = true;
     assets = [ my-dae-assets ];
