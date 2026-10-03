@@ -24,7 +24,7 @@ in
       global {
           allow_insecure: false
           so_mark_from_dae: 0
-          lan_interface: auto
+          # lan_interface: auto
           wan_interface: wlp8s0, auto
           dial_mode: domain
           log_level: info
@@ -166,6 +166,8 @@ in
           # 排除局域网和网关
           dip(192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 224.0.0.0/24, 239.0.0.0/8) -> direct(must)
           # port(53) -> direct
+          # c8:a3:e8:71:df:bb
+          mac(mac: "c8:a3:e8:71:df:bb") -> direct(must)
 
           # DNS直連防回環
           dip(223.5.5.5, 223.6.6.6, 119.29.29.29) -> direct
@@ -214,6 +216,7 @@ in
           # 这进一步打烂Wi-Fi 吞吐，导致 dae 的后台探测包彻底发不出去。
           pname(aria2c) && !domain(geosite:cn) -> for1
 
+          dip(geoip:private) -> direct(must)
           # ⭐️【終極兜底】：國外未知流量走 1倍 for1 省錢池！
           fallback: for1
       }
