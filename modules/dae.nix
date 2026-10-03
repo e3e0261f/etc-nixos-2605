@@ -16,20 +16,6 @@ let
   };
 in
 {
-
-  # 放在 configuration.nix 的顶层，或者合适的位置
-  systemd.services.dae = {
-    # 把 after 和 wants 放在这里，这才是 systemd 服务层面的配置
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    
-    # 你的重启策略也应该放在这里
-    serviceConfig = {
-      Restart = "on-failure";
-      RestartSec = "2";
-    };
-  };
-
   services.dae = {
     enable = true;
     assets = [ my-dae-assets ];
@@ -39,12 +25,14 @@ in
           allow_insecure: false
           so_mark_from_dae: 0
           lan_interface: auto
-          wan_interface: auto
+          wan_interface: wlp8s0, auto
           dial_mode: domain
           log_level: info
           check_interval: 1800s
           auto_config_kernel_parameter: true
           tproxy_port: 7890
+          # 尝试把 DNS 监听绑定到本地回环地址
+          # dns_listen: 127.0.0.1:53 
           tproxy_port_protect: true
       }
 
@@ -175,17 +163,17 @@ in
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
-          # 4. 强制排除局域网和 DHCP 自动分配的本地子网（防止握手流量被代理）
-          dip(224.0.0.0/24, 239.0.0.0/8) -> direct
-          dip(192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12) -> direct
-          port(53) -> direct
+          # 排除局域网和网关
+          dip(192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 224.0.0.0/24, 239.0.0.0/8) -> direct(must)
+          # port(53) -> direct
 
-          # 國內 DNS (阿里) 直連防回環
+          # DNS直連防回環
           dip(223.5.5.5, 223.6.6.6, 119.29.29.29) -> direct
-
-          # ⭐️【防 GFW 投毒】：國外 DNS 查詢塞入代理隧道
           dip(8.8.8.8, 8.8.4.4) -> for1
+          
+          # 22 port
           dip(192.168.2.0/24) && dport(22) -> google_ai
+          dport(22) -> for1
 
           # ⭐️【第 1 級：核心修復 3】正式加入 Geo 國內流量全直連！
           # （不管台灣節點卡死成什麼樣，所有國內網站 100% 走本機千兆直連，絕不掉線！）
@@ -193,7 +181,6 @@ in
           dip(geoip:cn) -> direct
 
           # 補充特定直連域名
-          domain(suffix: miwifi.com, suffix: xiaomi.com, suffix: mi.com) -> direct(must)
           domain(suffix: z.luxury, suffix: rockey-repo.org) -> direct(must)
           domain(suffix: edu.cn) -> direct(must)
 
@@ -222,7 +209,6 @@ in
           # 修正筆誤：google-chrome 是進程名 (pname)，不是 domain
           pname(google-chrome, chrome, discord) -> for1
           domain(suffix: mega.nz) -> for1
-          dport(22) -> for1
           domain(suffix:discord) -> for146
           # 直连下载会遭遇严重的GFW丢包、连接重置和反复重试。
           # 这进一步打烂Wi-Fi 吞吐，导致 dae 的后台探测包彻底发不出去。
