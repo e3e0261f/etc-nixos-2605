@@ -154,7 +154,7 @@ in
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
           domain(suffix: albiononline.com) -> direct(must)
-          pname(gix, steam, Counter-Strike, Team) -> direct(must)
+          pname(gix, steam, Counter-Strike, tf_linux64) -> direct(must)
           # wow
           domain(suffix: battle.net) -> direct
           domain(keyword: blizzard, "battle.net") -> direct
@@ -180,6 +180,7 @@ in
           # 補充特定直連域名
           domain(suffix: z.luxury, suffix: rockey-repo.org) -> direct(must)
           domain(suffix: edu.cn) -> direct(must)
+          domain(suffix: valve.net) -> direct(must)
 
           # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
           domain(suffix: discord.gg) -> for146
