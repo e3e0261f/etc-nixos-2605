@@ -55,9 +55,9 @@ in
       "context.properties" = {
         "default.clock.rate" = 48000;
         "default.clock.allowed-rates" = [ 48000 ];
-        "default.clock.quantum" = 256;
+        "default.clock.quantum" = 512;
         "default.clock.min-quantum" = 256;
-        "default.clock.max-quantum" = 512;
+        "default.clock.max-quantum" = 4096;
         "default.clock.quantum-limit" = 512;
         "resample.quality" = 4;
       };
@@ -65,7 +65,8 @@ in
 
     extraConfig.pipewire-pulse."99-studio-pulse" = {
       "pulse.properties" = {
-        "pulse.min.req" = "256/48000";
+        "pulse.min.req" = "512/48000";
+        "pulse.default.req" = "1024/48000";
         "pulse.min.quantum" = "256/48000";
       };
     };
