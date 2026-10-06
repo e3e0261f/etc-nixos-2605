@@ -166,7 +166,7 @@ in
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
 
           # DNS直連防回環
-          dip(223.5.5.5, 223.6.6.6, 119.29.29.29) -> direct
+          dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 192.168.1.0/24, 192.168.99.0/24) -> direct
           dip(8.8.8.8, 8.8.4.4) -> for1
           
           # 22 port

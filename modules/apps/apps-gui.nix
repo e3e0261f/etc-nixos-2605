@@ -25,6 +25,7 @@
     reaper
     pcmanfm-qt
     losslesscut
+    steam-run
   ];
 
   # HYprland 
