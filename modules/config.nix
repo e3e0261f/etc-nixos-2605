@@ -223,6 +223,7 @@
     options snd_hda_codec_realtek model=alc1150
   '';
 
+  services.dbus.enable = true;
   # 挂载 swap 文件
   swapDevices = [ { device = "/swapfile"; } ];
   # 开启休眠支持

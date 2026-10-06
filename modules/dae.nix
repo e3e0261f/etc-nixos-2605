@@ -154,8 +154,8 @@ in
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
           domain(suffix: albiononline.com) -> direct(must)
-          pname(gix, steam, Counter-Strike, tf_linux64) -> direct(must)
-          pname(Team) -> direct
+          pname(gix, steam, Counter-Strike) -> direct(must)
+          pname(Team, tf_linux64) -> direct
           # wow
           domain(suffix: battle.net) -> direct
           domain(keyword: blizzard, "battle.net") -> direct
