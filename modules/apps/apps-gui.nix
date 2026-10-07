@@ -26,6 +26,7 @@
     pcmanfm-qt
     losslesscut
     steam-run
+    # itch
   ];
 
   # HYprland 
