@@ -26,7 +26,7 @@
     pcmanfm-qt
     losslesscut
     steam-run
-    # itch
+    tiled # Free, easy to use and flexible tile map editor
   ];
 
   # HYprland 
