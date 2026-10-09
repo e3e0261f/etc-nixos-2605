@@ -26,6 +26,12 @@
       ./apps/apps-heavy.nix  # ⭐️ 第 2 步解封：裝上 Steam、VSCode 與 4K 桌布
       ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透與編譯套件
     ];
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    icu
+    stdenv.cc.cc
+    zlib
+  ];
 
   # 1. 挂载 585G 合并 SSD 存储池
   fileSystems."/mnt/ssd" = {
@@ -252,8 +258,6 @@
   boot.loader.systemd-boot.graceful = true;
   # ⭐️ 為 Chromium 啟用 Widevine DRM 模組
   nixpkgs.config.chromium.enableWideVine = true;
-  # ⭐️ 讓 NixOS 完美相容並執行通用二進位程式與遊戲
-  programs.nix-ld.enable = true;
   # ⭐️ 開啟遊戲全速效能調度
   programs.gamemode.enable = true;
   # TAgs for start list
