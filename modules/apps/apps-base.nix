@@ -11,6 +11,28 @@
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc
     mpv cloudflared killall
+              # Rust 开发工具链
+          rustc
+          cargo
+          clippy
+          rustfmt
+          
+          # 网页编译目标 (WebAssembly)
+          wasm-bindgen-cli
+          
+          # 项目构建工具
+          trunk
+          
+          # 系统依赖
+          pkg-config
+          libxkbcommon
+          libGL
+          wayland
+          xorg.libX11
+          xorg.libXcursor
+          xorg.libXi
+          xorg.libXrandr
+
     
     # 桌面與視窗管理器核心組件
     hyprlauncher hyprshutdown wlogout
