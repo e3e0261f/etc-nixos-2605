@@ -78,6 +78,8 @@
       # ⭐️ 核心解藥：網卡重載完成後，立即命令 dae 重新掛載 eBPF 探針！
       /run/current-system/sw/bin/systemctl stop dae || true
       /run/current-system/sw/bin/systemctl start dae || true
+      /run/current-system/sw/bin/systemctl start dae || true
+      /etc/profiles/per-user/rhys/bin/caelestia shell -d || true
     '';
   };
   
