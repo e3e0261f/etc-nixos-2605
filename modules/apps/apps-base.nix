@@ -10,7 +10,7 @@
     procps lvm2 p7zip unrar parted gptfdisk
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc
-    mpv cloudflared 
+    mpv cloudflared killall
     
     # 桌面與視窗管理器核心組件
     hyprlauncher hyprshutdown wlogout
