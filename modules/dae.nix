@@ -130,7 +130,7 @@ in
           google_ai {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|BGP')
+              filter: subtag(my_sub)  && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期')
           }
 
           for4 {
