@@ -28,7 +28,7 @@ in
           wan_interface: auto
           dial_mode: domain
           log_level: info
-          check_interval: 1800s
+          check_interval: 180s
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           # 尝试把 DNS 监听绑定到本地回环地址
@@ -61,13 +61,14 @@ in
         routing {
           request {
             qtype(https) -> reject
-            !qname(geosite:cn) -> cf_doh3
+            # !qname(geosite:cn) -> cf_doh3
+            !qname(geosite:cn) -> googledns
             qtype(aaaa) -> reject
             fallback: alidns
           }
           response {
-            # upstream(googledns) -> accept
-            upstream(cf_doh3) -> accept
+            upstream(googledns) -> accept
+            # upstream(cf_doh3) -> accept
             ip(geoip:private) && !qname(geosite:cn) -> googledns
             # ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
             fallback: accept
@@ -132,12 +133,14 @@ in
           }
 
           for4 {
-              policy: min_moving_avg
+              # policy: min_moving_avg
+              policy: random
               filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: '剩余|到期')
           }
           
           for46 {
-              policy: min_moving_avg
+              # policy: min_moving_avg
+              policy: random
               filter: subtag(my_sub) && name(regex: '4倍|6倍') && !name(regex: '剩余|到期')
           }
       }
@@ -184,12 +187,12 @@ in
           domain(suffix: valve.net) -> direct(must)
 
           # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
-          domain(suffix: discord.gg) -> for146
-          domain(suffix: discord.com) -> for146
-          domain(suffix: discordapp.com) -> for146
-          domain(suffix: discordapp.net) -> for146
-          domain(suffix: discord.media) -> for146
-          domain(suffix: gateway.discord.gg) -> for146
+          domain(suffix: discord.gg) -> for46
+          domain(suffix: discord.com) -> for46
+          domain(suffix: discordapp.com) -> for46
+          domain(suffix: discordapp.net) -> for46
+          domain(suffix: discord.media) -> for46
+          domain(suffix: gateway.discord.gg) -> for46
 
           # ⭐️【第 2 級】：Google AI 專屬池
           domain(suffix: aistudio.google.com) -> google_ai
