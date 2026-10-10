@@ -68,8 +68,8 @@ in
           response {
             # upstream(googledns) -> accept
             upstream(cf_doh3) -> accept
-            # ip(geoip:private) && !qname(geosite:cn) -> googledns
-            ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
+            ip(geoip:private) && !qname(geosite:cn) -> googledns
+            # ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
             fallback: accept
           }
         }
@@ -193,7 +193,7 @@ in
 
           # ⭐️【第 2 級】：Google AI 專屬池
           domain(suffix: aistudio.google.com) -> google_ai
-          domain(suffix: google.dev, suffix: ai.google.dev) -> google_ai
+          domain(suffix: google, suffix: google.dev, suffix: ai.google.dev) -> google_ai
           domain(suffix: gstatic.com, suffix: googleapis.com) -> google_ai
           domain(suffix: googleusercontent.com, suffix: gemini.google.com) -> google_ai
           domain(suffix: makersuite.google.com, suffix: alkalimakersuite.googleapis.com) -> google_ai
