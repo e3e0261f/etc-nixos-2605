@@ -176,8 +176,8 @@
     hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
     -- 滾輪切換工作區
-    hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-    hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+    -- hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+    -- hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
     -- 滑鼠拖曳與縮放
     hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
