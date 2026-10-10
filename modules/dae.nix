@@ -141,7 +141,7 @@ in
           for46 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && name(regex: '4倍|6倍') && !name(regex: '剩余|到期')
+              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: '剩余|到期')
           }
       }
 
