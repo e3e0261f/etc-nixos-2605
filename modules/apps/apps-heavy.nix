@@ -26,6 +26,8 @@
     eza
     android-tools 
     peazip  p7zip unzip unrar
+    # 计算器
+    sc-im sc bc calc 
     # 你自訂的 FHS 環境
     (let base = pkgs.appimageTools.defaultFhsEnvArgs; in
       pkgs.buildFHSEnv (base // {
