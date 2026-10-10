@@ -28,10 +28,10 @@
           libxkbcommon
           libGL
           wayland
-          xorg.libX11
-          xorg.libXcursor
-          xorg.libXi
-          xorg.libXrandr
+          libX11
+          libXcursor
+          libXi
+          libXrandr
 
     
     # 桌面與視窗管理器核心組件

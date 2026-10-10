@@ -61,16 +61,16 @@ in
         routing {
           request {
             qtype(https) -> reject
-            # !qname(geosite:cn) -> cf_doh3
-            !qname(geosite:cn) -> googledns
+            !qname(geosite:cn) -> cf_doh3
+            # !qname(geosite:cn) -> googledns
             qtype(aaaa) -> reject
             fallback: alidns
           }
           response {
             upstream(googledns) -> accept
             # upstream(cf_doh3) -> accept
-            ip(geoip:private) && !qname(geosite:cn) -> googledns
-            # ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
+            # ip(geoip:private) && !qname(geosite:cn) -> googledns
+            ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
             fallback: accept
           }
         }
