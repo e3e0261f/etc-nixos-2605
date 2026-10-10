@@ -128,8 +128,9 @@ in
           }
 
           google_ai {
-              policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: 'HK|香港|广州|剩余|到期|4倍|6倍|BGP')
+              # policy: min_moving_avg
+              policy: random
+              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|BGP')
           }
 
           for4 {
