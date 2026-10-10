@@ -28,7 +28,7 @@ in
           wan_interface: auto
           dial_mode: domain
           log_level: info
-          check_interval: 180s
+          check_interval: 1800s
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           # 尝试把 DNS 监听绑定到本地回环地址
@@ -50,68 +50,70 @@ in
       # =======================================================
       #
 
-      dns {
-        upstream {
-          googledns: 'tcp+udp://8.8.8.8:53'
-          alidns: 'udp://223.5.5.5:53'
-          ali_h3: 'h3://223.5.5.5:443/dns-query'
-          cfdns: 'tcp+udp://1.1.1.1:53'
-          cf_doh3: 'https://1.1.1.1/dns-query'
-        }
-        routing {
-          request {
-            qtype(https) -> reject
-            !qname(geosite:cn) -> cf_doh3
-            # !qname(geosite:cn) -> googledns
-            qtype(aaaa) -> reject
-            fallback: alidns
-          }
-          response {
-            upstream(googledns) -> accept
-            # upstream(cf_doh3) -> accept
-            # ip(geoip:private) && !qname(geosite:cn) -> googledns
-            ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
-            fallback: accept
-          }
-        }
-      }
-
       # dns {
       #   upstream {
-      #     ali_h3: 'h3://223.5.5.5:443/dns-query'
-      #     alidns: 'udp://223.5.5.5:53'
       #     googledns: 'tcp+udp://8.8.8.8:53'
-      #     cf_doh3: 'https://cloudflare-dns.com/dns-query'
+      #     alidns: 'udp://223.5.5.5:53'
+      #     ali_h3: 'h3://223.5.5.5:443/dns-query'
       #     cfdns: 'tcp+udp://1.1.1.1:53'
-      #     # alih3: 'h3://dns.alidns.com:443'
-      #     # alih3_path: 'h3://dns.alidns.com:443/dns-query'
-      #     # alihttp3: 'http3://dns.alidns.com:443'
-      #     # alihttp3_path: 'http3://dns.alidns.com:443/dns-query'
-      #     # ali_quic: 'quic://dns.alidns.com:853'
-
-      #     # h3_custom_path: 'h3://dns.example.com:443/custom-path'
-      #     # http3_custom_path: 'http3://dns.example.com:443/custom-path'
-
-      #     # ali_doh: 'https://dns.alidns.com:443'
-      #     # ali_dot: 'tls://dns.alidns.com:853'
-
-      #     # doh_custom_path: 'https://dns.example.com:443/custom-path'
-      #     # udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
-      #     # check_interval: 30s
-      #     # 
+      #     cf_doh3: 'https://1.1.1.1/dns-query'
       #   }
       #   routing {
       #     request {
-      #       !qname(geosite:cn) -> cfdns
-
-      #       fallback: ali_h3
+      #       qtype(https) -> reject
+      #       # !qname(geosite:cn) -> cf_doh3
+      #       !qname(geosite:cn) -> googledns
+      #       qtype(aaaa) -> reject
+      #       fallback: alidns
       #     }
       #     response {
-      #       upstream(cfdns) -> accept
+      #       upstream(googledns) -> accept
+      #       # upstream(cf_doh3) -> accept
+      #       ip(geoip:private) && !qname(geosite:cn) -> googledns
+      #       # ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
       #       fallback: accept
       #     }
       #   }
       # }
+
+      dns {
+        upstream {
+          ali_h3: 'h3://223.5.5.5:443/dns-query'
+          alidns: 'udp://223.5.5.5:53'
+          googledns: 'tcp+udp://8.8.8.8:53'
+          cf_doh3: 'https://1.1.1.1/dns-query'
+          cfdns: 'tcp+udp://1.1.1.1:53'
+          # alih3: 'h3://dns.alidns.com:443'
+          # alih3_path: 'h3://dns.alidns.com:443/dns-query'
+          # alihttp3: 'http3://dns.alidns.com:443'
+          # alihttp3_path: 'http3://dns.alidns.com:443/dns-query'
+          # ali_quic: 'quic://dns.alidns.com:853'
+
+          # h3_custom_path: 'h3://dns.example.com:443/custom-path'
+          # http3_custom_path: 'http3://dns.example.com:443/custom-path'
+
+          # ali_doh: 'https://dns.alidns.com:443'
+          # ali_dot: 'tls://dns.alidns.com:853'
+
+          # doh_custom_path: 'https://dns.example.com:443/custom-path'
+          # udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
+          # check_interval: 30s
+          # 
+        }
+        routing {
+          request {
+            # !qname(geosite:cn) -> cfdns
+            !qname(geosite:cn) -> googledns
+
+            fallback: ali_h3
+          }
+          response {
+            upstream(cfdns) -> accept
+            upstream(googledns) -> accept
+            fallback: accept
+          }
+        }
+      }
 
       # =======================================================
       # ⭐️ 核心節點池
@@ -120,17 +122,6 @@ in
           for1 {
               policy: min_moving_avg
               filter: subtag(my_sub) && !name(regex: '4倍|6倍|剩余|到期')
-          }
-
-          for146 {
-              policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: '剩余|到期')
-          }
-
-          google_ai {
-              # policy: min_moving_avg
-              policy: random
-              filter: subtag(my_sub)  && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期')
           }
 
           for4 {
@@ -144,6 +135,18 @@ in
               policy: random
               filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: '剩余|到期')
           }
+
+          for146 {
+              policy: min_moving_avg
+              filter: subtag(my_sub) && !name(regex: '剩余|到期')
+          }
+
+          google_ai {
+              # policy: min_moving_avg
+              policy: random
+              filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期')
+          }
+
       }
 
       # =======================================================
