@@ -181,7 +181,7 @@ in
           domain(suffix: github.com, suffix: gitlab.com, suffix: githubusercontent.com) -> for1
           domain(suffix: gitee.com) -> direct
           domain(suffix: itch.io) -> google_ai
-          pname(nix-daemon, nix, curl, wget) -> for1
+          pname(curl, wget) -> for1
           # 修正筆誤：google-chrome 是進程名 (pname)，不是 domain
           pname(google-chrome, chrome, discord) -> for1
           domain(suffix: mega.nz) -> for1
