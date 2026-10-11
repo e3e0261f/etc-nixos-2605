@@ -292,12 +292,12 @@ hl.window_rule({
       hl.exec_cmd("uwsm app -- google-chrome")
       hl.exec_cmd("uwsm app -- qpwgraph")
       hl.exec_cmd("uwsm app -- discord")
-      hl.exec_cmd("kitty --title magic_bot;sleep(0.06)")
-      hl.exec_cmd("kitty --title magic_top;sleep(0.12)")
-      hl.exec_cmd("kitty --title magic_bot;sleep(0.06)")
-      hl.exec_cmd("kitty --title magic_top;sleep(0.12)")
-      hl.exec_cmd("kitty --title magic_bot;sleep(0.06)")
-      hl.exec_cmd("kitty --title magic_top;sleep(0.12)")
+      hl.exec_cmd("kitty --title magic_bot && sleep(0.06)")
+      hl.exec_cmd("kitty --title magic_top && sleep(0.12)")
+      hl.exec_cmd("kitty --title magic_bot && sleep(0.06)")
+      hl.exec_cmd("kitty --title magic_top && sleep(0.12)")
+      hl.exec_cmd("kitty --title magic_bot && sleep(0.06)")
+      hl.exec_cmd("kitty --title magic_top && sleep(0.12)")
 
       -- 🟢 4. 唤醒你在 NixOS/Home Manager 里写好的 Systemd 专属服务名
       hl.exec_cmd("systemctl --user start app-org.fcitx.Fcitx5@autostart.service")       -- 替代原先的 fcitx5 -d
