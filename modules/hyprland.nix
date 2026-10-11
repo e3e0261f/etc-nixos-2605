@@ -87,6 +87,68 @@
     -- 🗂️ 6. 【常駐社交軟體靜音分流】
     hl.window_rule({ name = "discord_ws3",  match = { class = "discord" }, workspace = "3 silent" })
     hl.window_rule({ name = "spotify_ws3",  match = { class = "^(spotify|Spotify)$" }, workspace = "3 silent" })
+
+    -- Magic 暂存区：上/下 kitty
+hl.window_rule({
+  name = "magic_kitty_top",
+  match = { class = "kitty", title = "^magic_top$" },
+  workspace = "special:magic",
+  -- 顶部占 80% 高，从窗口顶部开始（move 假定 "0 0"）
+  float = true,
+  center = false,
+  size = "100% 80%",
+  move = "0 0"
+})
+
+hl.window_rule({
+  name = "magic_kitty_bot",
+  match = { class = "kitty", title = "^magic_bot$" },
+  workspace = "special:magic",
+  -- 底部占 20% 高，放在底部 80% 开始处
+  float = true,
+  center = false,
+  size = "100% 20%",
+  move = "0 80%"
+})
+
+-- TOol 暂存区
+hl.window_rule({
+  name = "tool_kitty_top",
+  match = { class = "kitty", title = "^tool_top$" },
+  workspace = "special:TOol",
+  float = true,
+  size = "100% 80%",
+  move = "0 0"
+})
+
+hl.window_rule({
+  name = "tool_kitty_bot",
+  match = { class = "kitty", title = "^tool_bot$" },
+  workspace = "special:TOol",
+  float = true,
+  size = "100% 20%",
+  move = "0 80%"
+})
+
+-- MUsic 暂存区
+hl.window_rule({
+  name = "music_kitty_top",
+  match = { class = "kitty", title = "^music_top$" },
+  workspace = "special:MUsic",
+  float = true,
+  size = "100% 80%",
+  move = "0 0"
+})
+
+hl.window_rule({
+  name = "music_kitty_bot",
+  match = { class = "kitty", title = "^music_bot$" },
+  workspace = "special:MUsic",
+  float = true,
+  size = "100% 20%",
+  move = "0 80%"
+})
+
   '';
 
   # =======================================================
@@ -172,16 +234,16 @@
     end
 
     -- 暫存空間 Magic
-    hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
-    hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
-
-    -- 暫存空間 MUsic
-    hl.bind(mainMod .. " + A",         hl.dsp.workspace.toggle_special("MUsic"))
-    hl.bind(mainMod .. " + SHIFT + A", hl.dsp.window.move({ workspace = "special:MUsic" }))
+    hl.bind(mainMod .. " + A",         hl.dsp.workspace.toggle_special("magic"))
+    hl.bind(mainMod .. " + SHIFT + A", hl.dsp.window.move({ workspace = "special:magic" }))
 
     -- 暫存空間 TOol
-    hl.bind(mainMod .. " + D",         hl.dsp.workspace.toggle_special("TOol"))
-    hl.bind(mainMod .. " + SHIFT + D", hl.dsp.window.move({ workspace = "special:TOol" }))
+    hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("TOol"))
+    hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:TOol" }))
+    
+    -- 暫存空間 MUsic
+    hl.bind(mainMod .. " + D",         hl.dsp.workspace.toggle_special("MUsic"))
+    hl.bind(mainMod .. " + SHIFT + D", hl.dsp.window.move({ workspace = "special:MUsic" }))
 
     -- 滾輪切換工作區
     -- hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
@@ -230,6 +292,12 @@
       hl.exec_cmd("uwsm app -- google-chrome")
       hl.exec_cmd("uwsm app -- qpwgraph")
       hl.exec_cmd("uwsm app -- discord")
+      hl.exec_cmd("kitty --title magic_bot;sleep(0.06)")
+      hl.exec_cmd("kitty --title magic_top;sleep(0.12)")
+      hl.exec_cmd("kitty --title magic_bot;sleep(0.06)")
+      hl.exec_cmd("kitty --title magic_top;sleep(0.12)")
+      hl.exec_cmd("kitty --title magic_bot;sleep(0.06)")
+      hl.exec_cmd("kitty --title magic_top;sleep(0.12)")
 
       -- 🟢 4. 唤醒你在 NixOS/Home Manager 里写好的 Systemd 专属服务名
       hl.exec_cmd("systemctl --user start app-org.fcitx.Fcitx5@autostart.service")       -- 替代原先的 fcitx5 -d
