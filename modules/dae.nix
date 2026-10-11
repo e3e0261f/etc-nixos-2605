@@ -35,9 +35,9 @@ in
           tproxy_port_protect: true
           # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
           # 預設 1800s 太久了！改成 30 秒探測一次，一旦節點死掉立刻剔除
-          check_interval: 30s
+          check_interval: 1300s
           # 探測超時時間縮短到 2 秒（原本預設太長，導致系統一直在死等超時）
-          check_tolerance: 2000ms
+          check_tolerance: 13s
       }
 
       subscription {
@@ -58,8 +58,8 @@ in
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
           ali_h3: 'h3://223.5.5.5:443/dns-query'
-          # cfdns: 'tcp+udp://1.1.1.1:53'
-          cfdns: 'tcp+udp://1.0.0.1:53'
+          cfdns: 'tcp+udp://1.1.1.1:53'
+          # cfdns: 'tcp+udp://1.0.0.1:53'
           cf_doh3: 'https://1.1.1.1/dns-query'
         }
         routing {
@@ -143,7 +143,7 @@ in
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
 
           # DNS直連防回環
-           dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 1.1.1.1, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
+           dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
           
           # 22 port
           dip(192.168.2.0/24) && dport(22) -> google_ai
