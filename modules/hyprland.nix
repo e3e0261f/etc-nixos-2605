@@ -175,6 +175,14 @@
     hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
     hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
+    -- 暫存空間 MUsic
+    hl.bind(mainMod .. " + A",         hl.dsp.workspace.toggle_special("MUsic"))
+    hl.bind(mainMod .. " + SHIFT + A", hl.dsp.window.move({ workspace = "special:MUsic" }))
+
+    -- 暫存空間 TOol
+    hl.bind(mainMod .. " + D",         hl.dsp.workspace.toggle_special("TOol"))
+    hl.bind(mainMod .. " + SHIFT + D", hl.dsp.window.move({ workspace = "special:TOol" }))
+
     -- 滾輪切換工作區
     -- hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
     -- hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
