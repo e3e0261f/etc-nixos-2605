@@ -10,7 +10,7 @@
     procps lvm2 p7zip unrar parted gptfdisk
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc
-    mpv cloudflared killall mtr
+    mpv cloudflared killall mtr wrk
               # Rust 开发工具链
           rustc
           cargo
