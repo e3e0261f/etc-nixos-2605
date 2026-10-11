@@ -28,12 +28,16 @@ in
           wan_interface: auto
           dial_mode: domain
           log_level: info
-          check_interval: 1800s
           auto_config_kernel_parameter: true
           tproxy_port: 7890
           # 尝试把 DNS 监听绑定到本地回环地址
           # dns_listen: 127.0.0.1:53 
           tproxy_port_protect: true
+          # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
+          # 預設 1800s 太久了！改成 30 秒探測一次，一旦節點死掉立刻剔除
+          check_interval: 30s
+          # 探測超時時間縮短到 2 秒（原本預設太長，導致系統一直在死等超時）
+          check_tolerance: 2000ms
       }
 
       subscription {
@@ -49,72 +53,38 @@ in
       # ⭐️ 穩定極速 DNS 解析
       # =======================================================
       #
-
-      # dns {
-      #   upstream {
-      #     googledns: 'tcp+udp://8.8.8.8:53'
-      #     alidns: 'udp://223.5.5.5:53'
-      #     ali_h3: 'h3://223.5.5.5:443/dns-query'
-      #     cfdns: 'tcp+udp://1.1.1.1:53'
-      #     cf_doh3: 'https://1.1.1.1/dns-query'
-      #   }
-      #   routing {
-      #     request {
-      #       qtype(https) -> reject
-      #       # !qname(geosite:cn) -> cf_doh3
-      #       !qname(geosite:cn) -> googledns
-      #       qtype(aaaa) -> reject
-      #       fallback: alidns
-      #     }
-      #     response {
-      #       upstream(googledns) -> accept
-      #       # upstream(cf_doh3) -> accept
-      #       ip(geoip:private) && !qname(geosite:cn) -> googledns
-      #       # ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
-      #       fallback: accept
-      #     }
-      #   }
-      # }
-
       dns {
         upstream {
-          ali_h3: 'h3://223.5.5.5:443/dns-query'
-          alidns: 'udp://223.5.5.5:53'
           googledns: 'tcp+udp://8.8.8.8:53'
+          alidns: 'udp://223.5.5.5:53'
+          ali_h3: 'h3://223.5.5.5:443/dns-query'
+          # cfdns: 'tcp+udp://1.1.1.1:53'
+          cfdns: 'tcp+udp://1.0.0.1:53'
           cf_doh3: 'https://1.1.1.1/dns-query'
-          cfdns: 'tcp+udp://1.1.1.1:53'
-          # alih3: 'h3://dns.alidns.com:443'
-          # alih3_path: 'h3://dns.alidns.com:443/dns-query'
-          # alihttp3: 'http3://dns.alidns.com:443'
-          # alihttp3_path: 'http3://dns.alidns.com:443/dns-query'
-          # ali_quic: 'quic://dns.alidns.com:853'
-
-          # h3_custom_path: 'h3://dns.example.com:443/custom-path'
-          # http3_custom_path: 'http3://dns.example.com:443/custom-path'
-
-          # ali_doh: 'https://dns.alidns.com:443'
-          # ali_dot: 'tls://dns.alidns.com:853'
-
-          # doh_custom_path: 'https://dns.example.com:443/custom-path'
-          # udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
-          # check_interval: 30s
-          # 
         }
         routing {
           request {
-            !qname(geosite:cn) -> cf_doh3
-            # !qname(geosite:cn) -> googledns
+            qtype(https) -> reject
+            qtype(aaaa) -> reject
+            
+            # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
+            qname(geosite:google) -> googledns
+
+            # 3. ✨【您的指定】除了 Google 以外的其他國外網域，走 cf_doh3
+            !qname(geosite:cn) -> cfdns
+
             fallback: ali_h3
           }
           response {
-            upstream(cf_doh3) -> accept
-            upstream(cfdns) -> accept
+            # 信任我們啟用的安全上游
             upstream(googledns) -> accept
+            upstream(cfdns) -> accept
+            upstream(ali_h3) -> accept
+            ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
             fallback: accept
           }
         }
       }
-
       # =======================================================
       # ⭐️ 核心節點池
       # =======================================================
@@ -173,8 +143,7 @@ in
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
 
           # DNS直連防回環
-          dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
-          dip(8.8.8.8, 8.8.4.4) -> for1
+           dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 1.1.1.1, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
           
           # 22 port
           dip(192.168.2.0/24) && dport(22) -> google_ai
