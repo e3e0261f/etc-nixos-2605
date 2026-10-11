@@ -102,12 +102,12 @@ in
         }
         routing {
           request {
-            # !qname(geosite:cn) -> cfdns
-            !qname(geosite:cn) -> googledns
-
+            !qname(geosite:cn) -> cf_doh3
+            # !qname(geosite:cn) -> googledns
             fallback: ali_h3
           }
           response {
+            upstream(cf_doh3) -> accept
             upstream(cfdns) -> accept
             upstream(googledns) -> accept
             fallback: accept
