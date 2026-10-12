@@ -98,7 +98,7 @@
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 
-  # # 啟用智慧卡支援
+  # # 啟用智慧卡支援; 只要开启了它，一碰到 GPG 2.4+，它就只会让你的系统硬生生卡在那里 5 秒钟，除了制造高血压之外没有任何贡献。
   # services.pcscd.enable = true;
   # hardware.gpgSmartcards.enable = true;
 
@@ -114,7 +114,11 @@
 
   # --- 3. 系統核心與 Nix 設定 ---
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command" 
+      "flakes" 
+      "ca-derivations" # 👈 就是这一行！开启基于内容的寻址
+    ];
     substituters = [ 
       "https://mirrors.cernet.edu.cn/nix-channels/store" 
       "https://mirrors.ustc.edu.cn/nix-channels/store"
