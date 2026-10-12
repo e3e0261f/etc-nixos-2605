@@ -6,7 +6,7 @@
     (discord.override {
       withOpenASAR = true;
     })
-    helix gnupg wget curl unzip gh pstree
+    helix gnupg wget curl unzip gh pstree iw
     procps lvm2 p7zip unrar parted gptfdisk
     dust pciutils scanmem alsa-utils keyd
     usbutils esptool espflash tio opensc

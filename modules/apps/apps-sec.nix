@@ -27,6 +27,6 @@
     perf bpftrace
 
     # 8. attack kitool
-    thc-ipv6 yt-dlp
+    thc-ipv6 yt-dlp wifite2
   ];
 }
