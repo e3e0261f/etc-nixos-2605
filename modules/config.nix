@@ -231,6 +231,8 @@
     options snd_hda_codec_realtek model=alc1150
   '';
 
+  # 这一行告诉 NixOS：“把用户家目录下的 ~/.local/bin 自动加入全局命令（PATH）”
+  environment.localBinInPath = true;
   services.dbus.enable = true;
   # 挂载 swap 文件
   swapDevices = [ { device = "/swapfile"; } ];
