@@ -25,5 +25,8 @@
 
     # 7. 逆向 与 CPU探针
     perf bpftrace
+
+    # 8. attack kitool
+    thc-ipv6
   ];
 }
