@@ -5,7 +5,7 @@
   environment.systemPackages = with pkgs; [
     # 1. 開發編譯套件
     cargo rustc devbox glib
-    gcc gnumake libtool jq
+    gcc gnumake libtool jq libpcap  
     luajit wev socat opencc ffmpeg gitoxide
 
     # 2. 取證與底層除錯工具
@@ -15,7 +15,7 @@
     cewl crunch hydra medusa
 
     # 4. Web 滲透與掃描
-    httpx whatweb wpscan ffuf nikto sqlmap oha
+    httpx whatweb wpscan ffuf nikto sqlmap oha masscan zmap nmap  
 
     # 5. 網路流量與封包分析 (IDS/嗅探)
     suricata mitmproxy ngrep dsniff bettercap tcpdump traceroute
