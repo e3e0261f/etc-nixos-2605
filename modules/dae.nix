@@ -178,7 +178,7 @@ in
           
           # 22 port
           dip(192.168.2.0/24) && dport(22) -> google_ai
-          dport(22) -> for1
+          # dport(22) -> for1
 
           # ⭐️【第 1 級：核心修復 3】正式加入 Geo 國內流量全直連！
           # （不管台灣節點卡死成什麼樣，所有國內網站 100% 走本機千兆直連，絕不掉線！）
@@ -220,6 +220,7 @@ in
           # 直连下载会遭遇严重的GFW丢包、连接重置和反复重试。
           # 这进一步打烂Wi-Fi 吞吐，导致 dae 的后台探测包彻底发不出去。
           pname(aria2c) && !domain(geosite:cn) -> for1
+          pname(fi6s) -> for1
 
           dip(geoip:private) -> direct(must)
           # ⭐️【終極兜底】：國外未知流量走 1倍 for1 省錢池！
