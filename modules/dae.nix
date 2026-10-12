@@ -131,13 +131,31 @@ in
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
           domain(suffix: albiononline.com) -> direct(must)
-          pname(gix, steam, Counter-Strike) -> direct(must)
+          pname(gix, Counter-Strike) -> direct(must)
           pname(Team, tf_linux64) -> direct
           # wow
           domain(suffix: battle.net) -> direct
           domain(keyword: blizzard, "battle.net") -> direct
           # pname(Battle.net.exe, Agent.exe, Wow.exe) -> direct
           # pname(wine, wineserver, winedevice.exe) -> direct
+          
+           # 2. Steam 流量精準分流
+    # 下載伺服器域名字尾匹配（直連）
+    domain(suffix: steamcontent.com) -> direct
+    domain(suffix: steampipe.akamaized.net) -> direct
+    domain(suffix: steam4shared.com) -> direct
+    
+    # 【修正】Steam 國內下載/語音直連
+    domain(geosite: steam@cn) -> direct
+
+    # 【修正】Steam 商店、社群、圖片 CDN 強制走代理
+    domain(geosite: steam) -> for1
+    domain(suffix: steamstatic.com) -> for1
+    domain(suffix: steampowered.com) -> for1
+    domain(suffix: steamcommunity.com) -> for1
+    domain(suffix: steamusercontent.com) -> for1
+    domain(suffix: akamaized.net) -> for1
+    domain(suffix: fastly.net) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct

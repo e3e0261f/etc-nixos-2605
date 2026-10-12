@@ -39,6 +39,12 @@ in
   users.users.rhys.extraGroups = [ "audio" ];
   services.pulseaudio.enable = false;
 
+        # 2. 如果要設定全域環境變數，必須寫在外部的 environment.variables
+  environment.variables = {
+    SPA_SUPPORT_IO_URING = "true";
+  };
+
+  
   # 2. PipeWire 核心服務
   services.pipewire = {
     enable = true;
@@ -47,6 +53,17 @@ in
     pulse.enable = true;
     jack.enable = true;
     wireplumber.enable = true;
+
+        # 1. 專治破音的黃金優先權與快取塊大小
+    extraConfig.pipewire."92-low-latency" = {
+      "context.properties" = {
+        "core.daemon" = true;
+        "cpu.max-align" = 64;
+        # 🏎️ 這是 PipeWire 官方支援的強制開 io_uring 屬性
+        "support.io-uring" = true; 
+      };
+    };
+    
 
     # ⭐️ 官方正統宣告：自動合成 pipewire-ladspa-plugins 並注入後台服務！
     extraLadspaPackages = [ pkgs.ladspaPlugins ];
