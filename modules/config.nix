@@ -98,9 +98,9 @@
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 
-  # 啟用智慧卡支援
-  services.pcscd.enable = true;
-  hardware.gpgSmartcards.enable = true;
+  # # 啟用智慧卡支援
+  # services.pcscd.enable = true;
+  # hardware.gpgSmartcards.enable = true;
 
   # ⭐️ 啟用純記憶體壓縮 Swap (zram)
   zramSwap = {
