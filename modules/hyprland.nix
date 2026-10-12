@@ -233,14 +233,14 @@ hl.window_rule({
         hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
     end
 
-    -- 暫存空間 Magic
-    hl.bind(mainMod .. " + A",         hl.dsp.workspace.toggle_special("magic"))
-    hl.bind(mainMod .. " + SHIFT + A", hl.dsp.window.move({ workspace = "special:magic" }))
-
     -- 暫存空間 TOol
-    hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("TOol"))
-    hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:TOol" }))
+    hl.bind(mainMod .. " + A",         hl.dsp.workspace.toggle_special("TOol"))
+    hl.bind(mainMod .. " + SHIFT + A", hl.dsp.window.move({ workspace = "special:TOol" }))
     
+    -- 暫存空間 Magic
+    hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
+    hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+
     -- 暫存空間 MUsic
     hl.bind(mainMod .. " + D",         hl.dsp.workspace.toggle_special("MUsic"))
     hl.bind(mainMod .. " + SHIFT + D", hl.dsp.window.move({ workspace = "special:MUsic" }))
@@ -292,12 +292,8 @@ hl.window_rule({
       hl.exec_cmd("uwsm app -- google-chrome")
       hl.exec_cmd("uwsm app -- qpwgraph")
       hl.exec_cmd("uwsm app -- discord")
-      hl.exec_cmd("kitty --title magic_bot && sleep(0.06)")
-      hl.exec_cmd("kitty --title magic_top && sleep(0.12)")
-      hl.exec_cmd("kitty --title magic_bot && sleep(0.06)")
-      hl.exec_cmd("kitty --title magic_top && sleep(0.12)")
-      hl.exec_cmd("kitty --title magic_bot && sleep(0.06)")
-      hl.exec_cmd("kitty --title magic_top && sleep(0.12)")
+      hl.exec_cmd("kitty --title magic_bot")
+      hl.exec_cmd("kitty --title magic_top")
 
       -- 🟢 4. 唤醒你在 NixOS/Home Manager 里写好的 Systemd 专属服务名
       hl.exec_cmd("systemctl --user start app-org.fcitx.Fcitx5@autostart.service")       -- 替代原先的 fcitx5 -d

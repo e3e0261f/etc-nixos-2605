@@ -66,7 +66,7 @@ in
           request {
             qtype(https) -> reject
             qtype(aaaa) -> reject
-            
+
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
             qname(geosite:google) -> googledns
 
@@ -124,7 +124,7 @@ in
       # =======================================================
       routing {
           # dport(443) && l4proto(udp) -> block
-          ipversion(6) -> block
+          # ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
@@ -139,23 +139,23 @@ in
           # pname(Battle.net.exe, Agent.exe, Wow.exe) -> direct
           # pname(wine, wineserver, winedevice.exe) -> direct
           
-           # 2. Steam 流量精準分流
-    # 下載伺服器域名字尾匹配（直連）
-    domain(suffix: steamcontent.com) -> direct
-    domain(suffix: steampipe.akamaized.net) -> direct
-    domain(suffix: steam4shared.com) -> direct
+          # 2. Steam 流量精準分流
+          # 下載伺服器域名字尾匹配（直連）
+          domain(suffix: steamcontent.com) -> direct
+          domain(suffix: steampipe.akamaized.net) -> direct
+          domain(suffix: steam4shared.com) -> direct
     
-    # 【修正】Steam 國內下載/語音直連
-    domain(geosite: steam@cn) -> direct
+          # 【修正】Steam 國內下載/語音直連
+          domain(geosite: steam@cn) -> direct
 
-    # 【修正】Steam 商店、社群、圖片 CDN 強制走代理
-    domain(geosite: steam) -> for1
-    domain(suffix: steamstatic.com) -> for1
-    domain(suffix: steampowered.com) -> for1
-    domain(suffix: steamcommunity.com) -> for1
-    domain(suffix: steamusercontent.com) -> for1
-    domain(suffix: akamaized.net) -> for1
-    domain(suffix: fastly.net) -> for1
+          # 【修正】Steam 商店、社群、圖片 CDN 強制走代理
+          domain(geosite: steam) -> for1
+          domain(suffix: steamstatic.com) -> for1
+          domain(suffix: steampowered.com) -> for1
+          domain(suffix: steamcommunity.com) -> for1
+          domain(suffix: steamusercontent.com) -> for1
+          domain(suffix: akamaized.net) -> for1
+          domain(suffix: fastly.net) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
@@ -164,8 +164,8 @@ in
            dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
           
           # 22 port
-          dip(192.168.2.0/24) && dport(22) -> google_ai
-          dport(22) -> for1
+          # dip(192.168.2.0/24) && dport(22) -> google_ai
+          # dport(22) -> for1
 
           # ⭐️【第 1 級：核心修復 3】正式加入 Geo 國內流量全直連！
           # （不管台灣節點卡死成什麼樣，所有國內網站 100% 走本機千兆直連，絕不掉線！）
