@@ -75,6 +75,11 @@ let
       echo -e "     ''${C_GREEN}sudo nixos-rebuild test --flake /etc/nixos --offline --option substitute false''${C_RESET}"
       echo -e "  ''${C_YELLOW}2. 純離線正式構建並生效:''${C_RESET}"
       echo -e "     ''${C_GREEN}sudo nixos-rebuild switch --flake /etc/nixos --offline --option substitute false''${C_RESET}"
+      echo -e "  ''${C_YELLOW}3. 恢复网卡为管理模式:''${C_RESET}"
+      echo -e "     ''${C_GREEN}sudo ip link set wlp8s0mon down''${C_RESET}"
+      echo -e "     ''${C_GREEN}sudo iw dev wlp8s0mon set type managed''${C_RESET}"
+      echo -e "     ''${C_GREEN}sudo modprobe -r mt7925e && sudo modprobe mt7925e''${C_RESET}"
+      echo -e "     ''${C_GREEN}sudo ip link wlp8s0 up''${C_RESET}"
 
       echo -e "\n''${C_PURPLE}🛠️  【情境三：磁碟爆滿 / Git 鎖死 / 衝突報錯救急】''${C_RESET}"
       echo -e "  ''${C_YELLOW}1. 磁碟 100% 寫入失敗 (緊急清空歷史世代垃圾釋放空間):''${C_RESET}"
