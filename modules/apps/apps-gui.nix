@@ -29,6 +29,8 @@
     tiled # Free, easy to use and flexible tile map editor
     ldtk
     tor
+    metasploit
+    audacity
   ];
 
   # HYprland 

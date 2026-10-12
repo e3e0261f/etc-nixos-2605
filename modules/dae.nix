@@ -16,6 +16,19 @@ let
   };
 in
 {
+  # 开启自定义地址排序配置
+  networking.getaddrinfo.enable = true;
+
+  # 通过调整 precedence（优先级）表，让系统内核在解析域名时
+  # 优先选择 IPv4-mapped  地址（即优先走 IPv4），而不是盲目冲向 IPv6
+  networking.getaddrinfo.precedence = {
+    "::1/128" = 50;
+    "::/0" = 40;
+    "2002::/16" = 30;
+    "::/96" = 20;
+    "::ffff:0:0/96" = 100; # 🌟 核心：把 IPv4 的优先级设为 100（最高），压过原本的 IPv6
+  };
+
   services.dae = {
     enable = true;
     assets = [ my-dae-assets ];
@@ -65,7 +78,7 @@ in
         routing {
           request {
             qtype(https) -> reject
-            qtype(aaaa) -> reject
+            # qtype(aaaa) -> reject
 
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
             qname(geosite:google) -> googledns
