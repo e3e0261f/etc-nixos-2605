@@ -72,7 +72,7 @@ in
     EnumerateSkipFirst=False
 
     [Hotkey/TriggerKeys]
-    0=Super+space
+    0=Alt+space
   '';
 
   # 6. Fcitx5 守護服務
