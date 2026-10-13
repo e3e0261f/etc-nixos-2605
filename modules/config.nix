@@ -235,7 +235,14 @@
     options snd_hda_codec_realtek model=alc1150
   '';
 
-
+  # 开启容器基础支持
+  virtualisation.containers.enable = true;
+  virtualisation.podman = {
+    enable = true;
+    # 自动创建一个名为 docker 的软链接/兼容别名，这样你敲 docker 命令其实跑的是 podman
+    dockerCompat = true; 
+    defaultNetwork.settings.dns_enabled = true;
+  };
   # 启用 COSMIC 登录管理器
   services.displayManager.cosmic-greeter.enable = true;
   # 启用 COSMIC 桌面环境
