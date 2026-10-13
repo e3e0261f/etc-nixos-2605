@@ -238,9 +238,8 @@
 
   # 启用 COSMIC 登录管理器
   services.displayManager.cosmic-greeter.enable = true;
-
   # 启用 COSMIC 桌面环境
-  services.desktopManager.cosmic.enable = true;
+  # services.desktopManager.cosmic.enable = true;
   # 这一行告诉 NixOS：“把用户家目录下的 ~/.local/bin 自动加入全局命令（PATH）”
   environment.localBinInPath = true;
   services.dbus.enable = true;
