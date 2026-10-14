@@ -71,31 +71,31 @@ in
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
           ali_h3: 'h3://223.5.5.5:443/dns-query'
-          cfdns: 'tcp+udp://1.1.1.1:53'
-          # cfdns: 'tcp+udp://1.0.0.1:53'
-          cf_doh3: 'https://1.1.1.1/dns-query'
-          # cf_doh3: 'h3://dns.cloudflare.com/dns-query'
+          # Cloudflare: 'tcp+udp://1.1.1.1:53'
+          # Cloudflare: 'tcp+udp://1.0.0.1:53'
+          # Cloudflare: 'https://1.1.1.1/dns-query'
+          # Cloudflare: 'h3://dns.cloudflare.com/dns-query'
+          Cloudflare: 'h3://1.1.1.1/dns-query'
         }
         routing {
           request {
-            qtype(https) -> reject
+            # qtype(https) -> reject
             qtype(aaaa) -> reject
 
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
             qname(geosite:google) -> googledns
 
-            # 3. ✨【您的指定】除了 Google 以外的其他國外網域，走 cf_doh3
-            !qname(geosite:cn) -> cfdns
+            # 3. ✨【您的指定】除了 Google 以外的其他國外網域走Cloudflare DoH3
+            !qname(geosite:cn) -> Cloudflare
 
             fallback: ali_h3
           }
           response {
             # 信任我們啟用的安全上游
             upstream(googledns) -> accept
-            upstream(cfdns) -> accept
-            upstream(cf_doh3) -> accept
+            upstream(Cloudflare) -> accept
             upstream(ali_h3) -> accept
-            ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
+            ip(geoip:private) && !qname(geosite:cn) -> Cloudflare
             fallback: accept
           }
         }
