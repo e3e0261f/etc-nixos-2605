@@ -74,6 +74,7 @@ in
           cfdns: 'tcp+udp://1.1.1.1:53'
           # cfdns: 'tcp+udp://1.0.0.1:53'
           cf_doh3: 'https://1.1.1.1/dns-query'
+          # cf_doh3: 'h3://dns.cloudflare.com/dns-query'
         }
         routing {
           request {
@@ -105,24 +106,24 @@ in
       group {
           for1 {
               policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: '4倍|6倍|剩余|到期')
+              filter: subtag(my_sub) && !name(regex: '4倍|6倍|HK|广州|剩余|到期')
           }
 
           for4 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: '剩余|到期')
+              filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期')
           }
           
           for46 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: '剩余|到期')
+              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期')
           }
 
           for146 {
               policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: '剩余|到期')
+              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期')
           }
 
           google_ai {
