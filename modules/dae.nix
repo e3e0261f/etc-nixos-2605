@@ -85,7 +85,7 @@ in
             qname(geosite:google) -> googledns
 
             # 3. ✨【您的指定】除了 Google 以外的其他國外網域，走 cf_doh3
-            !qname(geosite:cn) -> cf_doh3
+            !qname(geosite:cn) -> cfdns
 
             fallback: ali_h3
           }
