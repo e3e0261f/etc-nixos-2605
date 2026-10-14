@@ -27,6 +27,9 @@
     perf bpftrace
 
     # 8. attack kitool
-    thc-ipv6 yt-dlp wifite2 torque openssl openssh exploitdb 
+    thc-ipv6 yt-dlp wifite2 torque openssl openssh exploitdb
+    weechat  # 强大的终端文本 IRC 客户端
+    irssi  # 如果你更喜欢传统的终端客户端，可以选这个
+    hexchat # 如果你有桌面环境，喜欢图形界面，可以选这个
   ];
 }
