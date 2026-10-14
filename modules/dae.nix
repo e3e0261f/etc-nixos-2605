@@ -107,30 +107,30 @@ in
       group {
           for1 {
               policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: '4倍|6倍|HK|广州|剩余|到期|3x')
+              filter: subtag(my_sub) && !name(regex: '4倍|6倍|HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           for4 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期|3x')
+              filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
           
           for46 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期|3x')
+              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           for146 {
               policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|3x')
+              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           google_ai {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期|3x')
+              filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
       }
