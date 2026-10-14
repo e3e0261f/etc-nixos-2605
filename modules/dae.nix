@@ -60,6 +60,7 @@ in
           my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=2'
           my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=1'
           my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          my_sub: 'https://api0.bigmelook.com/BigME/Subscription/api/v1/client/subscribe?token=d2ecd2c553222f8b8df5347c8224976b'
       }
 
       # =======================================================
@@ -106,30 +107,30 @@ in
       group {
           for1 {
               policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: '4倍|6倍|HK|广州|剩余|到期')
+              filter: subtag(my_sub) && !name(regex: '4倍|6倍|HK|广州|剩余|到期|3x')
           }
 
           for4 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期')
+              filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期|3x')
           }
           
           for46 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期')
+              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期|3x')
           }
 
           for146 {
               policy: min_moving_avg
-              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期')
+              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|3x')
           }
 
           google_ai {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期')
+              filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期|3x')
           }
 
       }
