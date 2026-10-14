@@ -84,7 +84,7 @@ in
             qname(geosite:google) -> googledns
 
             # 3. ✨【您的指定】除了 Google 以外的其他國外網域，走 cf_doh3
-            !qname(geosite:cn) -> cfdns
+            !qname(geosite:cn) -> cf_doh3
 
             fallback: ali_h3
           }
@@ -92,6 +92,7 @@ in
             # 信任我們啟用的安全上游
             upstream(googledns) -> accept
             upstream(cfdns) -> accept
+            upstream(cf_doh3) -> accept
             upstream(ali_h3) -> accept
             ip(geoip:private) && !qname(geosite:cn) -> cf_doh3
             fallback: accept
