@@ -83,7 +83,7 @@ in
             qtype(aaaa) -> reject
 
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
-            qname(geosite:google) -> googledns
+            !qname(geosite:cn) && qname(geosite:google) -> googledns
 
             # 3. ✨【您的指定】除了 Google 以外的其他國外網域走Cloudflare DoH3
             !qname(geosite:cn) -> Cloudflare
