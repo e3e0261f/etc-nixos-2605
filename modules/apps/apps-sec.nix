@@ -27,6 +27,6 @@
     perf bpftrace
 
     # 8. attack kitool
-    thc-ipv6 yt-dlp wifite2
+    thc-ipv6 yt-dlp wifite2 torque openssl
   ];
 }
