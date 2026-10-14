@@ -188,7 +188,7 @@
   users.users."rhys" = {
     isNormalUser = true;
     description = "Rhys";
-    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" "input" "podman" ];
+    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" "input" "podman" "bluetooth" ];
     shell = pkgs.fish;
   };
   programs.fish.enable = true;
