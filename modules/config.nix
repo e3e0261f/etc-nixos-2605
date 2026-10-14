@@ -154,6 +154,9 @@
     "net.core.wmem_max" = 16777216;
     "net.ipv4.tcp_rmem" = "4096 87380 16777216";
     "net.ipv4.tcp_wmem" = "4096 65536 16777216";
+    "net.ipv4.ip_default_ttl" = 128;
+    "net.ipv6.conf.all.hop_limit" = 128;
+    "net.ipv6.conf.default.hop_limit" = 128;
   };
   
   environment.sessionVariables = {
