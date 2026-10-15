@@ -20,8 +20,8 @@
       # 窗口大小建议让它动态保存（force = false），或者像下面这样直接锁死
       IS_MINIMIZED = false;
       WINDOW_BOUNDS = {
-        x = 16;
-        y = 10;
+        # x = 16;
+        # y = 10;
         width = 1312;
         height = 726;
       };
