@@ -196,7 +196,6 @@
   
   services.udisks2.enable = true;
   services.printing.enable = true;
-  # services.flatpak.enable = true;
   services.gvfs.enable = true; 
   
   # --- 網路與系統服務 ---
@@ -256,7 +255,8 @@
 
   # 开启 USB 设备重定向支持（对鼠标/键盘直通非常关键！）
   virtualisation.spiceUSBRedirection.enable = true;
-
+  # FlatPak
+  services.flatpak.enable = true;
   # 启用 COSMIC 登录管理器
   services.displayManager.cosmic-greeter.enable = true;
   # 启用 COSMIC 桌面环境
