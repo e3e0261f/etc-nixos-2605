@@ -40,6 +40,7 @@
       aa    = "a -a";
       as    = "a -s";
       cf    = "copyfile";
+      audacity = "tenacity";
     };
 
     # === ⭐️ 轉換為標準 Fish 語法的自訂函數庫 ===
