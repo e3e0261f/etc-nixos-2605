@@ -30,7 +30,8 @@
     ldtk
     tor
     metasploit
-    audacity
+    # audacity
+    # ocenaudio
 
       # 安装管理工具和远程桌面协议支持
     virt-manager
