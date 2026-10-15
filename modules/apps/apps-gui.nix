@@ -31,6 +31,15 @@
     tor
     metasploit
     audacity
+
+      # 安装管理工具和远程桌面协议支持
+    virt-manager
+    virt-viewer
+    spice
+    spice-gtk
+    freerdp  # 以后如果想玩 winapps 投影随时可以用
+
+
   ];
 
   # HYprland 

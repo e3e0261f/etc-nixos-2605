@@ -154,9 +154,6 @@
     "net.core.wmem_max" = 16777216;
     "net.ipv4.tcp_rmem" = "4096 87380 16777216";
     "net.ipv4.tcp_wmem" = "4096 65536 16777216";
-    "net.ipv4.ip_default_ttl" = 128;
-    "net.ipv6.conf.all.hop_limit" = 128;
-    "net.ipv6.conf.default.hop_limit" = 128;
   };
   
   environment.sessionVariables = {
@@ -247,6 +244,19 @@
     dockerCompat = true; 
     defaultNetwork.settings.dns_enabled = true;
   };
+  # 开启 libvirtd 和 KVM 虚拟化底层
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = true;
+      swtpm.enable = true;  # Win11 需要的 TPM
+    };
+  };
+
+  # 开启 USB 设备重定向支持（对鼠标/键盘直通非常关键！）
+  virtualisation.spiceUSBRedirection.enable = true;
+
   # 启用 COSMIC 登录管理器
   services.displayManager.cosmic-greeter.enable = true;
   # 启用 COSMIC 桌面环境
