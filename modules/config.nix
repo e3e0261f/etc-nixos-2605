@@ -162,6 +162,8 @@
       "/etc/profiles/per-user/rhys/share"
       "/home/rhys/.nix-profile/share"
       "/home/rhys/.local/share"
+      "/var/lib/flatpak/exports/share"
+      "$HOME/.local/share/flatpak/exports/share"
     ];
     LANGUAGE = "zh_TW:zh_CN:zh:en";
     QT_QPA_PLATFORM = "wayland;xcb";
