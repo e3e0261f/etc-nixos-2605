@@ -30,7 +30,7 @@
     ldtk
     tor
     metasploit
-    # audacity
+    tenacity # audacity 已死
     # ocenaudio
 
       # 安装管理工具和远程桌面协议支持
