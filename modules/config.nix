@@ -23,10 +23,10 @@
       # ⭐️ 軟體安裝分層控制中心（在新電腦上裝機時由上往下解封）
       # =======================================================
       ./apps/apps-base.nix
-      ./apps/apps-gui.nix    # ⭐️ 第 1 步解封：裝上瀏覽器與日常軟體
-      ./apps/apps-heavy.nix  # ⭐️ 第 2 步解封：裝上 Steam、VSCode 與 4K 桌布
-      ./apps/apps-sec.nix    # ⭐️ 第 3 步解封：後台慢慢拉取 40+ 滲透套件
-      ./apps/apps-dev.nix    # ⭐️ 第 4 步解封：編譯套件
+      ./apps/apps-dev.nix    # ⭐️ 第 2 步解封：編譯套件
+      ./apps/apps-gui.nix    # ⭐️ 第 3 步解封：裝上瀏覽器與日常軟體
+      ./apps/apps-heavy.nix  # ⭐️ 第 4 步解封：裝上 Steam、VSCode 與 4K 桌布
+      # ./apps/apps-sec.nix    # ⭐️ 第 5 步解封：後台慢慢拉取 40+ 滲透套件
     ];
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [

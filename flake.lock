@@ -620,11 +620,11 @@
         "lastModified": 315532800,
         "narHash": "sha256-MdqpFMXQX2Vz1KgQ516wgEo4eiFzm3rEMyE3Qh4wyLA=",
         "type": "tarball",
-        "url": "https://mirrors.sustech.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
+        "url": "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://mirrors.sustech.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
+        "url": "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
       }
     },
     "pre-commit-hooks": {

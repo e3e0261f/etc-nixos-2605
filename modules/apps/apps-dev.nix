@@ -31,7 +31,7 @@
     # --- 4. 系統底層圖形與輸入協議依賴 (GUI 開發必備) ---
     libxkbcommon              # 鍵盤按鍵映射與合成解析庫
     libGL                     # OpenGL 核心渲染規範支援庫
-    wayland                   # Wayland 通訊協定底層核心庫
+    # wayland                   # Wayland 通訊協定底層核心庫
     libX11                    # X11 基礎協議客戶端庫
     libXcursor                # X11 游標管理庫
     libXi                     # X11 輸入擴展庫 (XInput)
@@ -39,8 +39,8 @@
     glib                      # GNOME 跨平台底層核心 C 函數庫
 
     # --- 5. 嵌入式硬體開發燒錄套裝 ---
-    esptool                   # 樂鑫 ESP8266/ESP32 系列晶片 ROM 燒錄工具
-    espflash                  # 現代 Rust 撰寫的 ESP32 高速燒錄器
-    tio                       # 專注於硬體除錯的終端序列埠 (Serial) 工具
+    # esptool                   # 樂鑫 ESP8266/ESP32 系列晶片 ROM 燒錄工具
+    # espflash                  # 現代 Rust 撰寫的 ESP32 高速燒錄器
+    # tio                       # 專注於硬體除錯的終端序列埠 (Serial) 工具
   ];
 }

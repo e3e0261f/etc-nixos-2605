@@ -10,7 +10,6 @@
     # --- 2. 系統安全審計、底層跟蹤與逆向工程 ---
     lynis                     # Linux 系統深度合規性與安全性自動審計工具
     ltrace                    # 攔截並記錄進程動態呼叫的共享庫函數
-    strace                    # 追蹤程式向 Linux 核心發起的所有系統呼叫 (syscall)
     checksec                  # 檢查二進位檔案編譯安全屬性 (RELRO, Canaries, NX, PIE)
     gdb                       # GNU 原生底層除錯器
     radare2                   # 極度強大的開源逆向工程框架與十六進位分析器
