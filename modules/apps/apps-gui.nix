@@ -8,9 +8,8 @@
       withOpenASAR = true;
     })                        # 注入 OpenASAR 輕量優化補丁的 Discord 客戶端
 
-    # --- 2. 密碼、隱私與安全 ---
+    # --- 2. 密碼與代理圖形端 ---
     keepassxc                 # 本地強加密密碼管理器
-    tor                       # 洋蔥路由暗網與匿名代理伺服器
     clash-verge-rev           # 基於 Tauri 的現代代理核心圖形客戶端
 
     # --- 3. 專業音訊、剪輯與創作工作站 ---
@@ -18,6 +17,12 @@
     tenacity                  # 乾淨無隱私追蹤的 Audacity 純開源繼承者
     losslesscut               # 基於 FFmpeg 的無損音視頻極速剪切工具
     gimp                      # GNU 旗艦級開源點陣圖像處理軟體
+    pwvucontrol               # 基於 GTK 的 PipeWire 音量混音器
+    qpwgraph                  # 節點式 PipeWire 音訊/MIDI 補丁連接圖
+    crosspipe                 # PipeWire 跨設備音訊橋接轉發工具
+    easyeffects               # PipeWire 系統級音效等化器與降噪處理器
+    libcava                   # 音訊可視化 CAVA 核心共享庫
+    aubio                     # 音訊特徵提取與音高/節拍分析庫
 
     # --- 4. 遊戲設計、地圖編輯與娛樂 ---
     tiled                     # 經典靈活的 2D 瓦片地圖編輯器

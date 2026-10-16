@@ -31,11 +31,10 @@
     ffuf                      # 極速現代 Go 撰寫的 Web 路徑與參數 Fuzzing 工具
     nikto                     # 經典 Web 伺服器存在已知風險與危險檔案掃描器
     sqlmap                    # 自動化 SQL 注入偵測與資料庫權限接管神兵
-    oha                       # 終端 HTTP 請求壓測與回應時間分佈可視化工具 (wrk 現代替代)
+    oha                       # 終端 HTTP 請求壓測與回應時間分佈可視化工具
 
     # --- 5. 網路流量嗅探、劫持與中間人攻擊 (MITM) ---
     tcpdump                   # 原始網路封包抓取與過濾器
-    wireshark-cli             # (如需命令行可用 tshark) 封包剖析庫
     libpcap                   # 封包捕獲系統底層核心庫
     ngrep                     # 配合正則表達式網路封包 Grep 搜尋器
     dsniff                    # 專門用於監聽網路明文口令與敏感資訊工具套裝
@@ -53,16 +52,13 @@
     traceroute                # 經典路由路徑逐跳檢測工具
     socat                     # 雙向資料串流轉發與端口重定向多功能工具
     netcat                    # 經典網路連線瑞士軍刀 (nc)
-    cloudflared               # Cloudflare 穿透與安全隧道客戶端
 
     # --- 7. 無線網路安全與專用攻擊套件 ---
     wifite2                   # 自動化無線 Wi-Fi (WPA/WPA2/WPS) 滲透測試工具
     thc-ipv6                  # 專門用於攻擊、測試與診斷 IPv6 協定棧安全缺陷的工具套件
     torque                    # 批量作業與分散式運算管理支援工具
 
-    # --- 8. 加密連線、安全通訊與終端 IRC ---
-    openssl                   # SSL/TLS 協議與通用密碼學工具箱
-    openssh                   # SSH 安全遠端連接與金鑰認證客戶端
+    # --- 8. 安全通訊與終端 IRC ---
     weechat                   # 模組化終端輕量 IRC / 矩陣聊天客戶端
     irssi                     # 經典文本終端 IRC 客戶端
     hexchat                   # GTK 圖形化多伺服器 IRC 客戶端
