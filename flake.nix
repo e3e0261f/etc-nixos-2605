@@ -4,15 +4,19 @@
     # nixpkgs.url = "git+https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git";
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-    nixpkgs.url = "tarball+https://mirrors.ustc.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz";
+    # nixpkgs.url = "git+https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git?ref=nixos-26.05";
+    nixpkgs.url = "tarball+https://mirrors.sustech.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz";
+    # nixpkgs.url = "tarball+https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz";
+    # nixpkgs.url = "git+https://mirror.sjtu.edu.cn/git/nixpkgs.git?ref=nixos-26.05";
+    # nixpkgs.url = "tarball+https://mirrors.ustc.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz";
     # nixpkgs.url = "git+https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git?ref=nixos-26.05&shallow=1";
     my-rules.url = "github:e3e0261f/GEoIP-GEoSITE";
     my-rules.flake = false;
 
-    a-cli = {
-      url = "github:e3e0261f/a";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # a-cli = {
+    #   url = "github:e3e0261f/a";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     
     # 1. 引入 Home Manager
     home-manager = {

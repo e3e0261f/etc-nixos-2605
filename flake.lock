@@ -1,27 +1,5 @@
 {
   "nodes": {
-    "a-cli": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1790325919,
-        "narHash": "sha256-8rlf38C4USZuZ7G7Q/Yl+Wm/Rwn7MYP35wwEbw0LN7k=",
-        "owner": "e3e0261f",
-        "repo": "a",
-        "rev": "5f3bde81f08e9702ff7fb7118fc9f2166c1324cf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "e3e0261f",
-        "repo": "a",
-        "type": "github"
-      }
-    },
     "aquamarine": {
       "inputs": {
         "hyprutils": [
@@ -169,24 +147,6 @@
         "type": "github"
       }
     },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -303,7 +263,7 @@
         "hyprwire": "hyprwire",
         "nixpkgs": "nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks",
-        "systems": "systems_2",
+        "systems": "systems",
         "xdph": "xdph"
       },
       "locked": {
@@ -658,13 +618,13 @@
     "nixpkgs_2": {
       "locked": {
         "lastModified": 315532800,
-        "narHash": "sha256-qdM4Skrqq9Xps3OPNi9PWC6/hrWK9eDx5DUAUUaoz+o=",
+        "narHash": "sha256-MdqpFMXQX2Vz1KgQ516wgEo4eiFzm3rEMyE3Qh4wyLA=",
         "type": "tarball",
-        "url": "https://mirrors.ustc.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
+        "url": "https://mirrors.sustech.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://mirrors.ustc.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
+        "url": "https://mirrors.sustech.edu.cn/nix-channels/nixos-26.05/nixexprs.tar.xz"
       }
     },
     "pre-commit-hooks": {
@@ -755,7 +715,6 @@
     },
     "root": {
       "inputs": {
-        "a-cli": "a-cli",
         "caelestia-cli": "caelestia-cli",
         "caelestia-shell": "caelestia-shell_2",
         "home-manager": "home-manager",
@@ -765,43 +724,7 @@
         "quickshell": "quickshell_3"
       }
     },
-    "rust-overlay": {
-      "inputs": {
-        "nixpkgs": [
-          "a-cli",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1790321428,
-        "narHash": "sha256-JQBGEZDY6up5yu0ehQeDDnjvsw7MP8d4AlaBd9RxZVI=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "84fb3c79e477d5e7ec4eff9c24dbc5d5c99b0fd1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
     "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_2": {
       "locked": {
         "lastModified": 1689347949,
         "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",

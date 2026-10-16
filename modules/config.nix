@@ -6,7 +6,7 @@
 {
   environment.systemPackages = with pkgs; [
     # a command install
-    inputs.a-cli.packages.${pkgs.system}.default
+    # inputs.a-cli.packages.${pkgs.system}.default
     helix git dae fish kitty git-crypt
   ];
   imports =
@@ -16,7 +16,7 @@
       ./dae.nix
       ./pipewire.nix
       ./fonts.nix
-      ./login.nix
+      # ./login.nix
       ./auth.nix
       ./openssh.nix
       # =======================================================
@@ -259,6 +259,8 @@
   virtualisation.spiceUSBRedirection.enable = true;
   # FlatPak
   services.flatpak.enable = true;
+  services.displayManager.ly.enable = true;
+  # services.displayManager.lemurs.enable = true;
   # 启用 COSMIC 登录管理器
   # services.displayManager.cosmic-greeter.enable = true;
   # 启用 COSMIC 桌面环境
