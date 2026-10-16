@@ -48,9 +48,9 @@ in
           tproxy_port_protect: true
           # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
           # 預設 1800s 太久了！改成 30 秒探測一次，一旦節點死掉立刻剔除
-          check_interval: 1300s
+          check_interval: 130s
           # 探測超時時間縮短到 2 秒（原本預設太長，導致系統一直在死等超時）
-          check_tolerance: 13s
+          check_tolerance: 3s
       }
 
       subscription {
@@ -140,7 +140,7 @@ in
       # =======================================================
       routing {
           # dport(443) && l4proto(udp) -> block
-          # ipversion(6) -> block
+          ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
