@@ -74,13 +74,13 @@ in
           ali_h3: 'h3://223.5.5.5:443/dns-query'
           # Cloudflare: 'tcp+udp://1.1.1.1:53'
           # Cloudflare: 'tcp+udp://1.0.0.1:53'
-          # Cloudflare: 'https://1.1.1.1/dns-query'
+          Cloudflare: 'https://1.1.1.1/dns-query'
           # Cloudflare: 'h3://dns.cloudflare.com/dns-query'
-          Cloudflare: 'h3://1.1.1.1/dns-query'
+          # Cloudflare: 'h3://1.1.1.1/dns-query'
         }
         routing {
           request {
-            # qtype(https) -> reject
+            qtype(https) -> reject
             qtype(aaaa) -> reject
 
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
