@@ -259,6 +259,7 @@
   virtualisation.spiceUSBRedirection.enable = true;
   # FlatPak
   services.flatpak.enable = true;
+  # 桌面管理器
   services.displayManager.ly.enable = true;
   # services.displayManager.lemurs.enable = true;
   # 启用 COSMIC 登录管理器

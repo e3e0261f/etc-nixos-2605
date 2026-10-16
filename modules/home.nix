@@ -109,8 +109,7 @@
   xdg.userDirs = {
     enable = true;
     createDirectories = true; # 自动创建英文目录
-
-    desktop = "${config.home.homeDirectory}/Desktop";
+      desktop = "${config.home.homeDirectory}/Desktop";
     download = "${config.home.homeDirectory}/Downloads";
     documents = "${config.home.homeDirectory}/Documents";
     pictures = "${config.home.homeDirectory}/Pictures";
@@ -120,6 +119,8 @@
     publicShare = "${config.home.homeDirectory}/Public";
   };
 
+  # aria2 下载器
+    programs.aria2.systemd.enable = true;
   xdg.userDirs.setSessionVariables = true;
   # 只有版本號留在此處
   home.stateVersion = "24.11";
