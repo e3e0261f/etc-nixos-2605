@@ -113,8 +113,8 @@ in
         }
         routing {
           request {
-            qtype(https) -> reject
-            qtype(aaaa) -> reject
+            # qtype(https) -> reject
+            # qtype(aaaa) -> reject
 
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
             # !qname(geosite:cn) && qname(geosite:google) -> googledns
