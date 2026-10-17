@@ -33,7 +33,8 @@ in
   # 补丁 1: 禁用 Caps_Lock 切换中英文状态 (让 CapsLock 变纯粹)
   xdg.configFile."fcitx5/rime/default.custom.yaml".text = ''
     patch:
-      "ascii_composer/switch_key/Caps_Lock": clear      # 彻底解绑 CapsLock，禁止其切换中英文！
+      # "ascii_composer/switch_key/Caps_Lock": commit_code # 让 CapsLock 成为完美的双向开关（按一下切大写/英文，再按一下必定切回中文！）
+      "ascii_composer/switch_key/Caps_Lock": noop # 如果你希望 CapsLock 完全不影响输入法（纯大写）：请把上面改成 noop
       "ascii_composer/switch_key/Shift_L": commit_code  # 仅保留左 Shift 切换，或者也可以换成 noop 完全不切换
       "ascii_composer/switch_key/Shift_R": noop
   '';
