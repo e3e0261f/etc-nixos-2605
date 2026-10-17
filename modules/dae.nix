@@ -84,10 +84,11 @@ in
             qtype(aaaa) -> reject
 
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
-            !qname(geosite:cn) && qname(geosite:google) -> googledns
+            # !qname(geosite:cn) && qname(geosite:google) -> googledns
+            !qname(geosite:cn)  -> googledns
 
             # 3. ✨【您的指定】除了 Google 以外的其他國外網域走Cloudflare DoH3
-            !qname(geosite:cn) -> Cloudflare
+            # !qname(geosite:cn) -> Cloudflare
 
             fallback: ali_h3
           }
@@ -96,6 +97,7 @@ in
             upstream(googledns) -> accept
             upstream(Cloudflare) -> accept
             upstream(ali_h3) -> accept
+            ip(geoip:private) && !qname(geosite:cn) -> googledns
             ip(geoip:private) && !qname(geosite:cn) -> Cloudflare
             fallback: accept
           }
