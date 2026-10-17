@@ -65,7 +65,7 @@ in
           tcp_check_http_method: HEAD
           # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
           # 配置刷新时间
-          check_interval: 1300s
+          check_interval: 130s
           # 探測超時時間
           check_tolerance: 5s
           # Timeout to waiting for first data sending for sniffing. It is always 0 if dial_mode is ip. Set it higher is useful
