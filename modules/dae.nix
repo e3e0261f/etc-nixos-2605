@@ -37,29 +37,62 @@ in
       global {
           allow_insecure: false
           so_mark_from_dae: 0
-          lan_interface: wlp8s0, auto
-          wan_interface: auto
           dial_mode: domain
           log_level: info
-          auto_config_kernel_parameter: true
           tproxy_port: 7890
+          # Enable fast redirect for local TCP connections. There is a known kernel issue that breaks certain clients/proxies, such as nadoo/glider. Users may enable this experimental option at their own risks.
+          enable_local_tcp_fast_redirect: true
+          # The LAN interface to bind. Use it if you want to proxy LAN.
+          # Multiple interfaces split by ",".
+          lan_interface: wlp8s0, auto
+          # The WAN interface to bind. Use it if you want to proxy localhost.
+          # Multiple interfaces split by ",". Use "auto" to auto detect.
+          wan_interface: auto
+          # Automatically configure Linux kernel parameters like ip_forward and send_redirects. Check out
+          # https://github.com/daeuniverse/dae/blob/main/docs/en/user-guide/kernel-parameters.md to see what will dae do.
+          auto_config_kernel_parameter: true
           # 尝试把 DNS 监听绑定到本地回环地址
           # dns_listen: 127.0.0.1:53 
           tproxy_port_protect: true
+          # This DNS will be used to check UDP connectivity of nodes. And if dns_upstream below contains tcp, it also be used to check
+          # TCP DNS connectivity of nodes.
+          # First is URL, others are IP addresses if given.
+          # This DNS should have both IPv4 and IPv6 if you have double stack in local.
+          #udp_check_dns: 'dns.google:53'
+          udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
+          # The HTTP request method to `tcp_check_url`. Use 'HEAD' by default because some server implementations bypass
+          # accounting for this kind of traffic.
+          tcp_check_http_method: HEAD
           # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
           # 配置刷新时间
           check_interval: 1300s
           # 探測超時時間
-          check_tolerance: 59s
+          check_tolerance: 5s
+          # Timeout to waiting for first data sending for sniffing. It is always 0 if dial_mode is ip. Set it higher is useful
+          # in high latency LAN network.
+          sniffing_timeout: 100ms
+          # TLS implementation. tls is to use Go's crypto/tls. utls is to use uTLS, which can imitate browser's Client Hello.
+          tls_implementation: utls
+          # The Client Hello ID for uTLS to imitate. This takes effect only if tls_implementation is utls.
+          # See more: https://github.com/daeuniverse/dae/blob/331fa23c16/component/outbound/transport/tls/utls.go#L17
+          utls_imitate: chrome_auto
+          # Multipath TCP (MPTCP) support. If is true, dae will try to use MPTCP to connect all nodes, but it will only take
+          # effects when the node supports MPTCP. It can use for load balance and failover to multiple interfaces and IPs.
+          mptcp: false
+          # The maximum bandwidth for accessing the Internet. It is useful for some specific protocols (e.g., Hysteria2),
+          # which will perform better with bandwith information provided. The unit can be b, kb, mb, gb, tb or bytes per second.
+          # supported formats: https://v2.hysteria.network/docs/advanced/Full-Client-Config/#bandwidth
+          bandwidth_max_tx: '50 mbps' # uplink, or '200 m' or '200 mb' or '200 mbps' or 25000000(which is 200/8*1000*1000)
+          bandwidth_max_rx: '1 gbps' # downlink, or '1 g' or '1 gb' or '1 gbps' or 125000000(which is 1000/8*1000*1000)
       }
 
       subscription {
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=3'
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=2'
-          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=1'
-          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=3'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=2'
+          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=1'
+          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
           my_sub: 'https://api0.bigmelook.com/BigME/Subscription/api/v1/client/subscribe?token=d2ecd2c553222f8b8df5347c8224976b'
       }
 
@@ -74,9 +107,9 @@ in
           ali_h3: 'h3://223.5.5.5:443/dns-query'
           # Cloudflare: 'tcp+udp://1.1.1.1:53'
           # Cloudflare: 'tcp+udp://1.0.0.1:53'
-          Cloudflare: 'https://1.1.1.1/dns-query'
+          # Cloudflare: 'https://1.1.1.1/dns-query'
           # Cloudflare: 'h3://dns.cloudflare.com/dns-query'
-          # Cloudflare: 'h3://1.1.1.1/dns-query'
+          Cloudflare: 'h3://1.1.1.1/dns-query'
         }
         routing {
           request {
@@ -88,7 +121,7 @@ in
             !qname(geosite:cn)  -> googledns
 
             # 3. ✨【您的指定】除了 Google 以外的其他國外網域走Cloudflare DoH3
-            # !qname(geosite:cn) -> Cloudflare
+            !qname(geosite:cn) -> Cloudflare
 
             fallback: ali_h3
           }
@@ -106,32 +139,36 @@ in
       # =======================================================
       # ⭐️ 核心節點池
       # =======================================================
-      group {
+      group { # 在这里替换你想要的策略，如 random, min, fixed(0), min_avg10
           for1 {
-              policy: min_moving_avg
+              policy: min_avg10
               filter: subtag(my_sub) && !name(regex: '4倍|6倍|HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           for4 {
               # policy: min_moving_avg
-              policy: random
+              policy: min_avg10
+              # policy: random
               filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
           
           for46 {
-              # policy: min_moving_avg
+              policy: min_moving_avg
+              policy: min_avg10
               policy: random
               filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           for146 {
-              policy: min_moving_avg
+              # policy: min_moving_avg
+              policy: min_avg10
               filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           google_ai {
               # policy: min_moving_avg
-              policy: random
+              # policy: random
+              policy: min_avg10
               filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
