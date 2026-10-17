@@ -2,39 +2,44 @@
 
 {
   services.keyd = {
-  enable = true;
-  keyboards = {
-    default = {
-      ids = [ "*" ];
-      settings = {
-        main = {
-          capslock = "overload(caps_mod, capslock)";
-          
-          # 按一下 Scroll Lock 鍵，在日常模式與遊戲模式之間切換
-          # （也可以改成 pause = "toggle(game)" 或其他平時不用的鍵）
-          # scrolllock = "toggle(game)";
-          "C-A-g" = "toggle(game)";
-          insert = "toggle(game)";
-        };
+    enable = true;
+    keyboards = {
+      default = {
+        ids = [ "*" ];
+        settings = {
+          main = {
+            # ⭐️ 1. 让 CapsLock 彻底变成 Insert 键！
+            # 无论按物理 CapsLock 还是物理 Insert，统统都是 overload(ins_mod, insert)
+            capslock = "overload(ins_mod, insert)";
+            insert = "overload(ins_mod, insert)";
 
-        caps_mod = {
-          space = "enter";
-          w = "up";
-          a = "left";
-          s = "down";
-          d = "right";
-          h = "left";
-          j = "down";
-          k = "up";
-          l = "right";
-        };
+            # 保留备用的快捷键
+            "C-A-g" = "toggle(game)";
+          };
 
-        # 遊戲模式層：把 capslock 還原為原本純粹的鍵，不做任何攔截
-        game = {
-          capslock = "capslock";
+          # ⭐️ 2. 核心层：按住这个键（Insert / 原Caps）时的所有动作
+          ins_mod = {
+            # 💡 按住它 + 空格 = 直接触发回车 (Enter)！
+            space = "enter";
+
+            # 按住它 + WASD / HJKL = 方向键
+            w = "up";
+            a = "left";
+            s = "down";
+            d = "right";
+            h = "left";
+            j = "down";
+            k = "up";
+            l = "right";
+          };
+
+          # 游戏模式层（纯备用）
+          game = {
+            capslock = "insert";
+            insert = "insert";
+          };
         };
       };
     };
   };
-};
 }

@@ -47,19 +47,19 @@ in
           # dns_listen: 127.0.0.1:53 
           tproxy_port_protect: true
           # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
-          # 預設 1800s 太久了！改成 30 秒探測一次，一旦節點死掉立刻剔除
-          check_interval: 130s
-          # 探測超時時間縮短到 2 秒（原本預設太長，導致系統一直在死等超時）
-          check_tolerance: 3s
+          # 配置刷新时间
+          check_interval: 1300s
+          # 探測超時時間
+          check_tolerance: 59s
       }
 
       subscription {
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=3'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=2'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=1'
-          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
+          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
+          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=3'
+          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=2'
+          # my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=1'
+          # my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
           my_sub: 'https://api0.bigmelook.com/BigME/Subscription/api/v1/client/subscribe?token=d2ecd2c553222f8b8df5347c8224976b'
       }
 
