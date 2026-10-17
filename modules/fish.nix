@@ -2,14 +2,32 @@
 
 {
   # 启用 Fish Shell 并在其中启用 Home Manager 管理
-  programs.fish = {
+    programs.fish = {
     enable = true;
-    # 解决 gpg 找不到 tty，并注入全局本地 bin 路径
-    shellInit = ''
-      set -gx GPG_TTY (tty)
-      fish_add_path $HOME/.local/bin
-    '';
-  };
+
+    # ⭐️ 必须套在 functions 这一层里面！
+    functions = {
+      cd = {
+        description = "智能 cd：如果目標是檔案，自動進入其所在目錄";
+        body = ''
+          if test (count $argv) -eq 0
+              builtin cd ~
+              return
+          end
+
+          set -l target $argv[1]
+          set target (string replace -r '^~' "$HOME" $target)
+
+          if test -f "$target"
+              builtin cd (path dirname "$target")
+          else
+              builtin cd $argv
+          end
+        '';
+      };
+    };
+    };
+
 
   # 启用并配置 Starship 提示符（彻底解决路径缩写问题）
   programs.starship = {

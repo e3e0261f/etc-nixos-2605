@@ -2,7 +2,6 @@
 { pkgs, lib, ... }:
 
 let
-  # ⭐️ 1. 直接從你自己的 GitHub 倉庫拉取全部 29 個方案、詞庫與八股文模型！
   rime-clover-src = pkgs.fetchFromGitHub {
     owner = "e3e0261f";
     repo = "NIxos-RIme-GRam";
@@ -16,7 +15,7 @@ in
   ];
 
   # =======================================================
-  # ⭐️ 2. 直接一次性完整部署你的專屬 Rime 倉庫
+  # ⭐️ 1. 一次性完整部署你的專屬 Rime 倉庫
   # =======================================================
   home.activation.setupRime = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     RIME_DIR="$HOME/.local/share/fcitx5/rime"
@@ -28,14 +27,31 @@ in
     fi
   '';
 
+  # =======================================================
+  # ⭐️ 2. Rime 全局补丁：锁定英文标点 & 禁用 CapsLock 切换
+  # =======================================================
+  # 补丁 1: 禁用 Caps_Lock 切换中英文状态 (让 CapsLock 变纯粹)
+  xdg.configFile."fcitx5/rime/default.custom.yaml".text = ''
+    patch:
+      "ascii_composer/switch_key/Caps_Lock": clear      # 彻底解绑 CapsLock，禁止其切换中英文！
+      "ascii_composer/switch_key/Shift_L": commit_code  # 仅保留左 Shift 切换，或者也可以换成 noop 完全不切换
+      "ascii_composer/switch_key/Shift_R": noop
+  '';
+
+  # 补丁 2: 标点符号映射覆盖，将句号强制固定为半角英文 "."
+  xdg.configFile."fcitx5/rime/punctuation.custom.yaml".text = ''
+    patch:
+      "punctuator/half_shape/.": "."                   # 半角状态下句号输出英文 "."
+      "punctuator/full_shape/.": "."                   # 全角状态下句号也强行输出英文 "."
+  '';
+
   home.sessionVariables = {
     XMODIFIERS = "@im=fcitx";
-    # GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
-    SDL_IM_MODULE = "fcitx"; # 确保支持 SDL2 的游戏内也能打字
+    SDL_IM_MODULE = "fcitx";
   };
 
-  # 3. 外觀配置：橫排選詞、大字體、Nord-Dark 皮膚
+  # 3. 外觀配置
   xdg.configFile."fcitx5/conf/classicui.conf".text = ''
     Font="Noto Sans CJK TC 18"
     MenuFont="Noto Sans CJK TC 16"
@@ -62,7 +78,7 @@ in
     0=Default
   '';
 
-  # 5. 行為與熱鍵配置 (Super + Space 切換)
+  # 5. 行為與熱鍵配置 (Alt + Space 切換)
   xdg.configFile."fcitx5/config".text = ''
     [Behavior]
     ShareInputState=No
