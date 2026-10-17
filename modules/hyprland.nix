@@ -176,6 +176,9 @@ hl.window_rule({
       hl.dispatch(hl.dsp.window.cycle_next({ next = false }))
       hl.dispatch(hl.dsp.window.bring_to_top())
     end)
+    
+    -- 3. mainMod + Tab: 开关/盲切魔术暂存桌面
+    hl.bind(mainMod .. " + Tab", hl.dsp.workspace.toggle_special("magic"))
 
     -- ⭐️ 2. Ctrl + Super + W：隨機抽取一張 2K 高畫質桌布（8大轉場特效全隨機！）
     hl.bind(mainMod .. " + CTRL + R", hl.dsp.exec_cmd("wall-random"))
