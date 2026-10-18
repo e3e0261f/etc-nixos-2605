@@ -58,8 +58,8 @@ in
           # TCP DNS connectivity of nodes.
           # First is URL, others are IP addresses if given.
           # This DNS should have both IPv4 and IPv6 if you have double stack in local.
-          #udp_check_dns: 'dns.google:53'
-          udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
+          udp_check_dns: 'dns.google:53'
+          # udp_check_dns: 'dns.google:53,8.8.8.8,2001:4860:4860::8888'
           # The HTTP request method to `tcp_check_url`. Use 'HEAD' by default because some server implementations bypass
           # accounting for this kind of traffic.
           tcp_check_http_method: HEAD
@@ -178,7 +178,7 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
-          dport(443) && l4proto(udp) -> block
+          # dport(443) && l4proto(udp) -> block
           # ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
@@ -220,7 +220,7 @@ in
           
           # 22 port
           dip(192.168.2.0/24) && dport(22) -> google_ai
-          dport(22) -> for1
+          # dport(22) -> for1
 
           # ⭐️【第 1 級：核心修復 3】正式加入 Geo 國內流量全直連！
           # （不管台灣節點卡死成什麼樣，所有國內網站 100% 走本機千兆直連，絕不掉線！）
