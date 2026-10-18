@@ -1,10 +1,11 @@
-# /etc/nixos/modules/fcitx.nix
 { pkgs, lib, ... }:
 
 let
   rime-clover-src = pkgs.fetchFromGitHub {
-    owner = "e3e0261f";
-    repo = "NIxos-RIme-GRam";
+    # owner = "e3e0261f";
+    # repo = "NIxos-RIme-GRam";
+    owner = "gaboolic";
+    repo = "rime-frost";
     rev = "main";
     hash = "sha256-A3CY9wwMEKmaaNWFKTEQGT9nS6CUnrnwFaxKaRn4mJs=";
   };
@@ -15,11 +16,14 @@ in
   ];
 
   # =======================================================
-  # ⭐️ 1. 一次性完整部署你的專屬 Rime 倉庫
+  # ⭐️ 1. 增量部署保護（只要有舊目錄，編譯時絕對不覆蓋，保證記憶不丟）
   # =======================================================
   home.activation.setupRime = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     RIME_DIR="$HOME/.local/share/fcitx5/rime"
-    if [ ! -f "$RIME_DIR/zh-hans-t-essay-bgw.gram" ]; then
+    
+    # 🛡️ 安全防火牆：只有首次裝系統、文件徹底不存在時才執行複製
+    # 只要資料夾在，每次編譯直接跳過（SKIP），絕不沖刷你辛苦攢下的詞頻歷史！
+    if [ ! -d "$RIME_DIR" ] || [ ! -f "$RIME_DIR/rime_frost.schema.yaml" ]; then
       $DRY_RUN_CMD mkdir -p "$RIME_DIR"
       $DRY_RUN_CMD cp -rfL ${rime-clover-src}/* "$RIME_DIR/"
       $DRY_RUN_CMD chmod -R u+w "$RIME_DIR"
@@ -28,22 +32,46 @@ in
   '';
 
   # =======================================================
-  # ⭐️ 2. Rime 全局补丁：锁定英文标点 & 禁用 CapsLock 切换
+  # ⭐️ 2. Rime 配置補丁（純本地配置，不下載任何外部文件，100%免疫斷網）
   # =======================================================
-  # 补丁 1: 禁用 Caps_Lock 切换中英文状态 (让 CapsLock 变纯粹)
   xdg.configFile."fcitx5/rime/default.custom.yaml".text = ''
     patch:
-      # "ascii_composer/switch_key/Caps_Lock": commit_code # 让 CapsLock 成为完美的双向开关（按一下切大写/英文，再按一下必定切回中文！）
-      # "ascii_composer/switch_key/Caps_Lock": noop # 如果你希望 CapsLock 完全不影响输入法（纯大写）：请把上面改成 noop
-      "ascii_composer/switch_key/Shift_L": commit_code  # 仅保留左 Shift 切换，或者也可以换成 noop 完全不切换
+      "ascii_composer/switch_key/Shift_L": commit_code
       "ascii_composer/switch_key/Shift_R": noop
+      
+      # 🎯 鎖定繁體/正體輸出（不破壞記憶，僅規範後續輸出方向）
+      "switches/@next":
+        name: simplification
+        reset: 0
   '';
 
-  # 补丁 2: 标点符号映射覆盖，将句号强制固定为半角英文 "."
+  # 🎯 核心核心：通过纯本地配置把小鶴雙拼裡的簡體八股文模型給拔掉！并挂载本地英文
+  xdg.configFile."fcitx5/rime/double_pinyin_flypy.custom.yaml".text = ''
+    patch:
+      "schema/language": zh-hant
+      
+      # 🛑 徹底切斷跟任何簡體 .gram 模型的關聯！
+      # 這行配置會覆蓋掉你 Git 倉庫裡的默認路徑，強行將其重定向為空值。
+      # 文件雖然還在硬盤裡，但 Rime 引擎會當它不存在，不再受它干擾！
+      "grammar/language_model": __none__
+      
+      # 🇺🇸 熔接 Rime 內置的本地純英文翻譯器（不再需要從 github 下载任何 easy_en 文件）
+      "engine/translators/@next": table_translator@english
+      
+      # 注入本地純英文習慣配置
+      english:
+        dictionary: english
+        spelling_hints: true
+        enable_completion: true   # 開啟英文單詞自動補全
+        enable_sentence: false     # 禁用英文自動造句（不允許瞎猜）
+        initial_quality: 0.6       # 中英權重完美平衡
+  '';
+
+  # 標點符號映射：句號強制固定為半角 "."
   xdg.configFile."fcitx5/rime/punctuation.custom.yaml".text = ''
     patch:
-      "punctuator/half_shape/.": "."                   # 半角状态下句号输出英文 "."
-      "punctuator/full_shape/.": "."                   # 全角状态下句号也强行输出英文 "."
+      "punctuator/half_shape/.": "."
+      "punctuator/full_shape/.": "."
   '';
 
   home.sessionVariables = {
@@ -79,7 +107,7 @@ in
     0=Default
   '';
 
-  # 5. 行為與熱鍵配置 (Alt + Space 切換)
+  # 5. 行為與熱鍵配置
   xdg.configFile."fcitx5/config".text = ''
     [Behavior]
     ShareInputState=No

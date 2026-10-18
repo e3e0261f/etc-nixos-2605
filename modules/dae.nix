@@ -65,7 +65,7 @@ in
           tcp_check_http_method: HEAD
           # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
           # 配置刷新时间
-          check_interval: 130s
+          check_interval: 1310s
           # 探測超時時間
           check_tolerance: 5s
           # Timeout to waiting for first data sending for sniffing. It is always 0 if dial_mode is ip. Set it higher is useful
@@ -109,7 +109,7 @@ in
           # Cloudflare: 'tcp+udp://1.0.0.1:53'
           # Cloudflare: 'https://1.1.1.1/dns-query'
           # Cloudflare: 'h3://dns.cloudflare.com/dns-query'
-          Cloudflare: 'h3://1.1.1.1/dns-query'
+          # Cloudflare: 'h3://1.1.1.1/dns-query'
         }
         routing {
           request {
@@ -121,17 +121,17 @@ in
             !qname(geosite:cn)  -> googledns
 
             # 3. ✨【您的指定】除了 Google 以外的其他國外網域走Cloudflare DoH3
-            !qname(geosite:cn) -> Cloudflare
+            # !qname(geosite:cn) -> Cloudflare
 
             fallback: ali_h3
           }
           response {
             # 信任我們啟用的安全上游
             upstream(googledns) -> accept
-            upstream(Cloudflare) -> accept
+            # upstream(Cloudflare) -> accept
             upstream(ali_h3) -> accept
             ip(geoip:private) && !qname(geosite:cn) -> googledns
-            ip(geoip:private) && !qname(geosite:cn) -> Cloudflare
+            # ip(geoip:private) && !qname(geosite:cn) -> Cloudflare
             fallback: accept
           }
         }
@@ -146,29 +146,29 @@ in
           }
 
           for4 {
-              # policy: min_moving_avg
-              policy: min_avg10
+              policy: min_moving_avg
+              # policy: min_avg10
               # policy: random
               filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
           
           for46 {
               policy: min_moving_avg
-              policy: min_avg10
-              policy: random
+              # policy: min_avg10
+              # policy: random
               filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           for146 {
-              # policy: min_moving_avg
-              policy: min_avg10
+              policy: min_moving_avg
+              # policy: min_avg10
               filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           google_ai {
-              # policy: min_moving_avg
+              policy: min_moving_avg
               # policy: random
-              policy: min_avg10
+              # policy: min_avg10
               filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
@@ -179,7 +179,7 @@ in
       # =======================================================
       routing {
           # dport(443) && l4proto(udp) -> block
-          ipversion(6) -> block
+          # ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
