@@ -18,7 +18,7 @@
     # -----------------------------------------------------------------------
     # ⌨️ 2. 輸入法、終端機與主力編輯器 (Terminal & Productivity)
     # -----------------------------------------------------------------------
-    ./fcitx5.nix        # ⌨️ Fcitx5 輸入法 (Rime 中州韻 + 小鶴雙拼 + 四葉草詞庫 + 八股文語意模型)
+    # ./fcitx5.nix        # ⌨️ Fcitx5 輸入法 (Rime 中州韻 + 小鶴雙拼 + 四葉草詞庫 + 八股文語意模型)
     ./kitty.nix         # 🐱 Kitty GPU 加速終端機 (JetBrainsMono 字體、透明背景、按鍵穿透)
     ./helix.nix         # 🧬 Helix 現代模態編輯器 (Space+w 存檔 | Space+Space 搜檔 | LSP 自動補全)
     ./yazi.nix          # 📁 Yazi 終端檔案管理器 (g D 一秒跳 ~/DOwn，Enter 直連 Helix，極速預覽)
