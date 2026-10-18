@@ -121,9 +121,9 @@
       "ca-derivations" # 👈 就是这一行！开启基于内容的寻址
     ];
     substituters = [ 
-      # "https://mirrors.cernet.edu.cn/nix-channels/store" 
+      "https://mirrors.cernet.edu.cn/nix-channels/store" 
       # "https://mirrors.ustc.edu.cn/nix-channels/store"
-      # "https://mirrors4.tuna.tsinghua.edu.cn/nix-channels/store"
+      "https://mirrors4.tuna.tsinghua.edu.cn/nix-channels/store"
       "https://cache.nixos.org"
       # "https://quickshell.cachix.org"
     ];

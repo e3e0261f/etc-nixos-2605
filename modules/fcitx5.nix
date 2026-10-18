@@ -4,9 +4,9 @@ let
   rime-frost-src = pkgs.fetchFromGitHub {
     owner = "gaboolic";
     repo = "rime-frost";
-    rev = "main";
-    # 💡 若編譯報 Hash 錯，請將此處換成 Nix 提示的新 Hash
-    hash = "sha256-MdqpFMXQX2Vz1KgQ516wgEo4eiFzm3rEMyE3Qh4wyLA";
+    # 鎖定某一穩定點的 rev（此處用 main 的某個實體 hash 或直接用 fetchGit flake 模式）
+    rev = "main"; 
+    hash = "sha256-A3CY9wwMEKmaaNWFKTEQGT9nS6CUnrnwFaxKaRn4mJs="; 
   };
 in
 {
@@ -20,12 +20,16 @@ in
   home.activation.setupRime = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     RIME_DIR="$HOME/.local/share/fcitx5/rime"
     
-    if [ ! -d "$RIME_DIR" ] || [ ! -f "$RIME_DIR/rime_frost.schema.yaml" ]; then
-      mkdir -p "$RIME_DIR"
-      cp -rfL ${rime-frost-src}/* "$RIME_DIR/"
-      chmod -R u+w "$RIME_DIR"
-      rm -rf "$RIME_DIR/build" "$RIME_DIR/.git" "$RIME_DIR/README.md"
-    fi
+    # 1. 確保目錄存在
+    mkdir -p "$RIME_DIR"
+    
+    # 2. 將 Flake 抓取的源碼直接鏡像同步過去 (如同 git clone + 清理 .git)
+    # -r 递归, -v 显式, --delete 可选(若想完全同步远端)
+    cp -rfL ${rime-frost-src}/* "$RIME_DIR/"
+    chmod -R u+w "$RIME_DIR"
+    
+    # 3. 清除不需要的雜物
+    rm -rf "$RIME_DIR/.git" "$RIME_DIR/README.md"
   '';
 
   # =======================================================
