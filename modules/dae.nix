@@ -160,8 +160,8 @@ in
           }
 
           for146 {
-              policy: min_moving_avg
-              # policy: min_avg10
+              # policy: min_moving_avg
+              policy: min_avg10
               filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
@@ -233,12 +233,12 @@ in
           domain(suffix: valve.net) -> direct(must)
 
           # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
-          domain(suffix: discord.gg) -> for46
-          domain(suffix: discord.com) -> for46
-          domain(suffix: discordapp.com) -> for46
-          domain(suffix: discordapp.net) -> for46
-          domain(suffix: discord.media) -> for46
-          domain(suffix: gateway.discord.gg) -> for46
+          domain(suffix: discord.gg) -> for146
+          domain(suffix: discord.com) -> for146
+          domain(suffix: discordapp.com) -> for146
+          domain(suffix: discordapp.net) -> for146
+          domain(suffix: discord.media) -> for146
+          domain(suffix: gateway.discord.gg) -> for146
 
           # ⭐️【第 2 級】：Google AI 專屬池
           domain(suffix: aistudio.google.com) -> google_ai
