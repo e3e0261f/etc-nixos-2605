@@ -266,6 +266,42 @@ in
           pname(fi6s) -> for1
 
           dip(geoip:private) -> direct(must)
+
+      # =====================================================================
+      # 黑暗企业与不透明遥测数据内核级封锁列表 (Block List for Core Telemetry)
+      # =====================================================================
+          # # 1. 高通 (Qualcomm) 基带影子通道阻断
+          # domain(suffix: izatcloud.net) -> block
+          # domain(suffix: ://qualcomm.com) -> block
+
+          # # 2. 英伟达 (NVIDIA) 显卡不透明遥测阻断
+          # domain(suffix: nvidia.com) && domain(keyword: telemetry) -> block
+          # domain(suffix: nvidia.com) && domain(keyword: gfe) -> block
+          # domain(full: ://nvidia.com) -> block
+          # domain(full: ://nvidia.com) -> block
+          # domain(full: ://nvidia.com) -> block
+          # domain(full: ://nvidia.com) -> block
+          # # 英伟达专有自治域 IP 阻断 (防止驱动硬编码 IP 直连)
+          # dip(216.228.112.0/20) -> block
+
+          # # 3. 英特尔 (Intel) ME 硬件级中控端口内核拦截
+          # # Intel ME 常驻本地 16992(明文) 和 16993(TLS) 端口进行影子管理
+          # dport(16992, 16993) -> block
+
+          # # 4. 苹果 (Apple) 系统级设备行为回执阻断
+          # domain(full: ://apple.com) -> block
+          # domain(full: ://apple.com) -> block
+          # domain(suffix: ://apple-cloudkit.com) -> block
+
+          # # 5. 谷歌 (Google) 数据收割与遥测阻断
+          # domain(full: ://google.com) -> block
+          # domain(full: ://google.com) -> block
+          # domain(suffix: ://google.com) -> block
+
+          # # 6. 国家级骨干网监与反诈数据闸口阻断
+          # domain(suffix: sgic.gov.cn) -> block
+          # domain(suffix: miit.gov.cn) -> block
+          # domain(keyword: fanzha) -> block
           # ⭐️【終極兜底】：國外未知流量走 1倍 for1 省錢池！
           fallback: for1
       }
