@@ -39,7 +39,7 @@
     crow-translate            # 基於 Qt 的螢幕選詞即時翻譯工具
 
     # --- 6. 檔案管理與操作增強 ---
-    # pcmanfm-qt                # 極度輕量迅速的 Qt 檔案管理器
+    pcmanfm-qt                # 極度輕量迅速的 Qt 檔案管理器
     wl-kbptr                  # Wayland 下完全用鍵盤代替滑鼠指針操作的神器
 
     # --- 7. 虛擬化平台與遠端桌面 (Windows 虛擬機套件) ---
