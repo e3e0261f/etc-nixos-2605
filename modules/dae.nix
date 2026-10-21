@@ -156,10 +156,10 @@ in
           }
           
           for46 {
-              policy: min_moving_avg
+              # policy: min_moving_avg
               # policy: min_avg10
-              # policy: random
-              filter: subtag(my_sub) && name(regex: 'I|REALITY') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
+              policy: random
+              filter: subtag(my_sub) && name(regex: 'I|REALITY|4倍|6倍|1倍') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
           for146 {
