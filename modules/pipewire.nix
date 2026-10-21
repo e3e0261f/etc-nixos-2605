@@ -73,7 +73,7 @@ in
         "default.clock.rate" = 48000;
         "default.clock.allowed-rates" = [ 48000 ];
         "default.clock.quantum" = 512;
-        "default.clock.min-quantum" = 256;
+        "default.clock.min-quantum" = 512;
         "default.clock.max-quantum" = 4096;
         "default.clock.quantum-limit" = 512;
         "resample.quality" = 4;
