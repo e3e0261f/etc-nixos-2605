@@ -234,7 +234,7 @@ in
           domain(suffix: z.luxury, suffix: rockey-repo.org) -> direct(must)
           domain(suffix: edu.cn) -> direct(must)
           domain(suffix: valve.net) -> direct(must)
-          domain(suffix: cloudflare.com) -> direct(must)
+          domain(suffix: cloudflare.com) -> direct
           domain(suffix: grok.com) -> for46
 
           # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
