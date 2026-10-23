@@ -110,7 +110,9 @@ in
           # Cloudflare: 'https://1.1.1.1/dns-query'
           # Cloudflare: 'h3://dns.cloudflare.com/dns-query'
           # Cloudflare: 'h3://1.1.1.1/dns-query'
-          opennic_jp: 'udp://104.64.128.211:53'
+          # opennic_jp: 'udp://104.64.128.211:53'
+          opennic_jp: 'udp://95.216.99.249:53'
+          # opennic_jp: 'udp://103.1.184.110:53'
         }
         routing {
           request {

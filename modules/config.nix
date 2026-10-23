@@ -162,8 +162,8 @@
       "/etc/profiles/per-user/rhys/share"
       "/home/rhys/.nix-profile/share"
       "/home/rhys/.local/share"
-      "/var/lib/flatpak/exports/share"
-      "$HOME/.local/share/flatpak/exports/share"
+      # "/var/lib/flatpak/exports/share"
+      # "$HOME/.local/share/flatpak/exports/share"
     ];
     LANGUAGE = "zh_TW:zh_CN:zh:en";
     QT_QPA_PLATFORM = "wayland;xcb";
@@ -258,7 +258,7 @@
   # 开启 USB 设备重定向支持（对鼠标/键盘直通非常关键！）
   virtualisation.spiceUSBRedirection.enable = true;
   # FlatPak
-  services.flatpak.enable = true;
+  # services.flatpak.enable = true;
   # 桌面管理器
   services.displayManager.ly.enable = true;
   # services.displayManager.lemurs.enable = true;
