@@ -4,7 +4,7 @@
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     # --- 1. 瀏覽器與通訊 ---
-    google-chrome             # Google Chrome 穩定版瀏覽器
+    # google-chrome             # Google Chrome 穩定版瀏覽器
     (discord.override {
       withOpenASAR = true;
     })                        # 注入 OpenASAR 輕量優化補丁的 Discord 客戶端

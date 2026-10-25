@@ -112,7 +112,7 @@ in
           # Cloudflare: 'h3://1.1.1.1/dns-query'
           # opennic_jp: 'udp://104.64.128.211:53'
           opennic_jp: 'udp://95.216.99.249:53'
-          # opennic_jp: 'udp://103.1.184.110:53'
+          opennic_jp: 'udp://103.1.184.110:53'
         }
         routing {
           request {
@@ -174,7 +174,7 @@ in
               policy: min_moving_avg
               # policy: random
               # policy: min_avg10
-              filter: subtag(my_sub)  && name(regex: '1|4|6|I') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
+              filter: subtag(my_sub)  && name(regex: '1|4|6') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
       }
