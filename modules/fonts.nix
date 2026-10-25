@@ -134,26 +134,48 @@ in
       # =====================================================================
       # 🌐 瀏覽器專用：強制將現代網頁的蘋果字型標籤劫持為 SF Pro Display
       # =====================================================================
+      # =====================================================================
+      # 🌐 瀏覽器與 Steam 專用：蘋果字型標籤劫持 + 強制中文 Fallback
+      # =====================================================================
       localConf = ''
         <?xml version="1.0"?>
         <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
         <fontconfig>
-          <!-- 1. 劫持 -apple-system (GitHub, Twitter, Notion, 知乎等使用的標籤) -->
+          <!-- 1. 劫持 -apple-system -->
           <match target="pattern">
             <test name="family" qual="any"><string>-apple-system</string></test>
             <edit name="family" mode="assign" binding="same"><string>SF Pro Display</string></edit>
           </match>
 
-          <!-- 2. 劫持 BlinkMacSystemFont (Chrome 在 Mac 上的專用別名) -->
+          <!-- 2. 劫持 BlinkMacSystemFont -->
           <match target="pattern">
             <test name="family" qual="any"><string>BlinkMacSystemFont</string></test>
             <edit name="family" mode="assign" binding="same"><string>SF Pro Display</string></edit>
           </match>
 
-          <!-- 3. 劫持 system-ui (W3C 現代標準系統字型標籤) -->
+          <!-- 3. 劫持 system-ui -->
           <match target="pattern">
             <test name="family" qual="any"><string>system-ui</string></test>
             <edit name="family" mode="assign" binding="same"><string>SF Pro Display</string></edit>
+          </match>
+
+          <!-- ⭐️ 4. 關鍵修復：當使用 SF Pro 時，如果遇到中文，強制回退到更紗黑體或 Noto Sans CJK -->
+          <match target="pattern">
+            <test name="family" qual="any"><string>SF Pro Display</string></test>
+            <edit name="family" mode="append" binding="weak">
+              <string>Sarasa Gothic SC</string>
+              <string>PingFang TC</string>
+              <string>Noto Sans CJK SC</string>
+            </edit>
+          </match>
+
+          <match target="pattern">
+            <test name="family" qual="any"><string>SF Pro Text</string></test>
+            <edit name="family" mode="append" binding="weak">
+              <string>Sarasa Gothic SC</string>
+              <string>PingFang TC</string>
+              <string>Noto Sans CJK SC</string>
+            </edit>
           </match>
         </fontconfig>
       '';
