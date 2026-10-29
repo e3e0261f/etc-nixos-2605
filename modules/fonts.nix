@@ -83,6 +83,7 @@ in
       sarasa-gothic            # ⭐️ 開源中英文神作：更紗黑體 (自帶蘋方風格的高品質中文)
       noto-fonts-cjk-sans      # 萬能中文兜底
       noto-fonts-color-emoji   # 彩色 Emoji
+      wqy_zenhei # 添加文泉驿字体
     ];
 
     # =======================================================================
