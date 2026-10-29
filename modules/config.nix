@@ -15,7 +15,7 @@
       ./keyd.nix
       ./dae.nix
       ./pipewire.nix
-      # ./fonts.nix
+      ./fonts.nix
       # ./login.nix
       ./auth.nix
       ./openssh.nix
@@ -255,6 +255,13 @@
     };
   };
 
+  programs.steam = {
+    enable = true;
+    # 强制向 Steam 容器注入宿主机的 Fontconfig 路径和语言环境
+    package = pkgs.steam.override {
+      extraArgs = "";
+    };
+  };
   # 开启 USB 设备重定向支持（对鼠标/键盘直通非常关键！）
   virtualisation.spiceUSBRedirection.enable = true;
   # FlatPak
