@@ -139,37 +139,25 @@ in
         <?xml version="1.0"?>
         <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
         <fontconfig>
-          <!-- 1. 劫持 -apple-system -->
+          <!-- 1. 别名劫持 -->
           <match target="pattern">
             <test name="family" qual="any"><string>-apple-system</string></test>
-            <edit name="family" mode="assign" binding="same"><string>SF Pro Display</string></edit>
+            <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
           </match>
 
-          <!-- 2. 劫持 BlinkMacSystemFont -->
           <match target="pattern">
             <test name="family" qual="any"><string>BlinkMacSystemFont</string></test>
-            <edit name="family" mode="assign" binding="same"><string>SF Pro Display</string></edit>
+            <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
           </match>
 
-          <!-- 3. 劫持 system-ui -->
           <match target="pattern">
             <test name="family" qual="any"><string>system-ui</string></test>
-            <edit name="family" mode="assign" binding="same"><string>SF Pro Display</string></edit>
+            <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
           </match>
 
-          <!-- ⭐️ 4. 關鍵修復：當使用 SF Pro 時，如果遇到中文，強制回退到更紗黑體或 Noto Sans CJK -->
+          <!-- 2. 全局无衬线与 Inter 的中文完美 Fallback -->
           <match target="pattern">
-            <test name="family" qual="any"><string>SF Pro Display</string></test>
-            <edit name="family" mode="append" binding="weak">
-              <string>Sarasa Gothic SC</string>
-              <string>PingFang TC</string>
-              <string>Noto Sans CJK SC</string>
-            </edit>
-          </match>
-
-          <!-- ⭐️ 5. 确保 SF Pro 族群能正确 Fallback 到中文字体 -->
-          <match target="pattern">
-            <test name="family" qual="any"><string>SF Pro</string></test>
+            <test name="family" qual="any"><string>sans-serif</string></test>
             <edit name="family" mode="append" binding="weak">
               <string>Sarasa Gothic SC</string>
               <string>Noto Sans CJK SC</string>
@@ -177,11 +165,17 @@ in
           </match>
 
           <match target="pattern">
-            <test name="family" qual="any"><string>SF Pro Text</string></test>
+            <test name="family" qual="any"><string>Inter</string></test>
             <edit name="family" mode="append" binding="weak">
               <string>Sarasa Gothic SC</string>
-              <string>PingFang TC</string>
               <string>Noto Sans CJK SC</string>
+            </edit>
+          </match>
+
+          <!-- ⭐️ 3. 新增：强制所有字体在缺省时向更紗黑體回退，消灭最后的方块 -->
+          <match target="pattern">
+            <edit name="family" mode="append" binding="weak">
+              <string>Sarasa Gothic SC</string>
             </edit>
           </match>
         </fontconfig>

@@ -8,7 +8,7 @@
 
     # --- 2. 開發環境與遊戲平台主體 ---
     # vscodium                  # 完全去除微軟遙測的乾淨開源 VS Code
-    steam                     # 威爾福 Steam 遊戲平台本體
+    # steam                     # 威爾福 Steam 遊戲平台本體
     # heroic                    # 開源 Epic / GOG 遊戲平台啟動器
 
     # --- 3. 桌面動態渲染引擎 ---

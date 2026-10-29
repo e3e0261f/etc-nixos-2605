@@ -15,7 +15,7 @@
       ./keyd.nix
       ./dae.nix
       ./pipewire.nix
-      ./fonts.nix
+      # ./fonts.nix
       # ./login.nix
       ./auth.nix
       ./openssh.nix
