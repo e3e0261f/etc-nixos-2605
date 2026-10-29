@@ -101,14 +101,12 @@ in
       };
 
       defaultFonts = {
-        # 1. 系統 UI / 無襯線字型優先順序
+        # 1. 系統 UI / 無襯線字型優先順序（把通用且中西文兼顧的 Inter / 更紗黑體 放在前面）
         sansSerif = [
-          "SF Pro Display"
-          "SF Pro Text"
           "Inter"
-          "PingFang TC"
           "Sarasa Gothic SC"
-          "Noto Sans CJK TC"
+          "SF Pro"
+          "Noto Sans CJK SC"
         ];
 
         # 2. 襯線字型
@@ -165,6 +163,15 @@ in
             <edit name="family" mode="append" binding="weak">
               <string>Sarasa Gothic SC</string>
               <string>PingFang TC</string>
+              <string>Noto Sans CJK SC</string>
+            </edit>
+          </match>
+
+          <!-- ⭐️ 5. 确保 SF Pro 族群能正确 Fallback 到中文字体 -->
+          <match target="pattern">
+            <test name="family" qual="any"><string>SF Pro</string></test>
+            <edit name="family" mode="append" binding="weak">
+              <string>Sarasa Gothic SC</string>
               <string>Noto Sans CJK SC</string>
             </edit>
           </match>
