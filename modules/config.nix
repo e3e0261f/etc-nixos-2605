@@ -251,10 +251,19 @@
   };
 
     # 2. 开启并配置 Steam（这会自动处理绝大多数 FHS 兼容性问题）
-  programs.steam = {
+      programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # 如果需要远程串流
-    dedicatedServer.openFirewall = true; # 如果需要开本地服务器
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+
+    # 🔥 核心补丁：强制将 NixOS 系统字体路径映射到 Steam 沙盒中
+    package = pkgs.steam.override {
+      extraBwrapArgs = [
+        "--bind /run/current-system/sw/share/X11/fonts /run/current-system/sw/share/X11/fonts"
+        "--bind /share/fonts /share/fonts"
+        "--bind /etc/fonts /etc/fonts"
+      ];
+    };
   };
 
   # 3. 启用字体配置并开启 32 位字体支持（修复方块字的关键）
