@@ -1,4 +1,4 @@
-# /etc/nixos/modules/fonts.nix
+# /etc/nixos/modules/fonts.nix - 完整文件内容
 { pkgs, lib, ... }:
 
 let
@@ -9,7 +9,6 @@ let
     pname = "apple-official-fonts";
     version = "2024-latest";
 
-    # 1. 宣告式自動從蘋果官方開發者 CDN 下載正版 DMG 映像檔 (真實校準 Hash)
     srcs = [
       (pkgs.fetchurl {
         url = "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg";
@@ -29,10 +28,8 @@ let
       })
     ];
 
-    # 2. 引入 7-Zip 工具作為解壓構建依賴
     nativeBuildInputs = [ pkgs._7zz ];
 
-    # 3. 關閉標準 unpackPhase，在構建沙盒內自動化執行三層脫殼流程
     sourceRoot = ".";
     unpackPhase = ''
       runHook preUnpack
@@ -40,24 +37,20 @@ let
         7zz x -y "$src" >/dev/null
       done
 
-      # 第二層：解開所有 PKG
       find . -type f -name "*.pkg" -print0 | while IFS= read -r -d "" pkg; do
         7zz x -y -o"$(dirname "$pkg")/extracted" "$pkg" >/dev/null
       done
 
-      # 第三層：解開 Payload 為 Payload~
       find . -type f -name "Payload" -print0 | while IFS= read -r -d "" p; do
         7zz x -y -o"$(dirname "$p")" "$p" >/dev/null
       done
 
-      # 第四層：釋放出最終 .otf 字型
       find . -type f -name "Payload~" -print0 | while IFS= read -r -d "" p; do
         7zz x -y -o"$(dirname "$p")" "$p" >/dev/null
       done
       runHook postUnpack
     '';
 
-    # 4. 安裝到系統字型標準目錄
     installPhase = ''
       runHook preInstall
       mkdir -p $out/share/fonts/opentype/apple
@@ -76,71 +69,55 @@ in
     enableDefaultPackages = true;
     fontDir.enable = true;
 
-    # ⭐️ 納入系統字型庫清單
+    # ⭐️ 完整恢复你原本高质量的字型库
     packages = with pkgs; [
+      inter                    
+      wqy_zenhei 
+      sarasa-gothic            # ⭐️ 核心中英文神作：更紗黑體
+      noto-fonts-cjk-sans      
+      noto-fonts-color-emoji   
       apple-official-fonts
-      inter                    # ⭐️ 世界頂級開源蘋果風字型 Inter
-      sarasa-gothic            # ⭐️ 開源中英文神作：更紗黑體 (自帶蘋方風格的高品質中文)
-      noto-fonts-cjk-sans      # 萬能中文兜底
-      noto-fonts-color-emoji   # 彩色 Emoji
-      wqy_zenhei # 添加文泉驿字体
     ];
 
-    # =======================================================================
-    # ⭐️ 核心設定：Fontconfig 優先級與瀏覽器 CSS 標籤劫持
-    # =======================================================================
     fontconfig = {
       enable = true;
       antialias = true;
       hinting = {
         enable = true;
-        style = "slight"; # 蘋果官方推薦的微弱平滑微調
+        style = "slight"; 
       };
       subpixel = {
-        rgba = "rgb";     # 適配你的 DELL 顯示器子像素排列，邊緣極度銳利
+        rgba = "rgb";     
         lcdfilter = "default";
       };
 
       defaultFonts = {
-        # 1. 系統 UI / 無襯線字型優先順序（把通用且中西文兼顧的 Inter / 更紗黑體 放在前面）
         sansSerif = [
           "Inter"
           "Sarasa Gothic SC"
           "SF Pro"
           "Noto Sans CJK SC"
         ];
-
-        # 2. 襯線字型
         serif = [
           "New York"
           "Noto Serif CJK TC"
         ];
-
-        # 3. 終端機與代碼等寬字型
         monospace = [
           "SF Mono"
           "Sarasa Mono SC"
           "JetBrainsMono Nerd Font"
         ];
-
-        # 4. 表情符號
         emoji = [
           "Apple Color Emoji"
           "Noto Color Emoji"
         ];
       };
 
-      # =====================================================================
-      # 🌐 瀏覽器專用：強制將現代網頁的蘋果字型標籤劫持為 SF Pro Display
-      # =====================================================================
-      # =====================================================================
-      # 🌐 瀏覽器與 Steam 專用：蘋果字型標籤劫持 + 強制中文 Fallback
-      # =====================================================================
+      # 🌐 浏览器与 Steam 专用的字体劫持及中文回退
       localConf = ''
         <?xml version="1.0"?>
         <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
         <fontconfig>
-          <!-- 1. 别名劫持 -->
           <match target="pattern">
             <test name="family" qual="any"><string>-apple-system</string></test>
             <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
@@ -156,7 +133,6 @@ in
             <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
           </match>
 
-          <!-- 2. 全局无衬线与 Inter 的中文完美 Fallback -->
           <match target="pattern">
             <test name="family" qual="any"><string>sans-serif</string></test>
             <edit name="family" mode="append" binding="weak">
@@ -173,7 +149,7 @@ in
             </edit>
           </match>
 
-          <!-- ⭐️ 3. 新增：强制所有字体在缺省时向更紗黑體回退，消灭最后的方块 -->
+          <!-- ⭐️ 强制所有未匹配字体默认向更纱黑体回退，彻底根除方块 -->
           <match target="pattern">
             <edit name="family" mode="append" binding="weak">
               <string>Sarasa Gothic SC</string>

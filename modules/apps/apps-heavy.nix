@@ -10,6 +10,7 @@
     # vscodium                  # 完全去除微軟遙測的乾淨開源 VS Code
     # steam                     # 威爾福 Steam 遊戲平台本體
     # heroic                    # 開源 Epic / GOG 遊戲平台啟動器
+    fontconfig
 
     # --- 3. 桌面動態渲染引擎 ---
     # linux-wallpaperengine     # 在 Linux 上運行 Wallpaper Engine 創意工坊壁紙的後台引擎

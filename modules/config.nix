@@ -1,7 +1,7 @@
 # /etc/nixos/modules/dev.nix
 # git clone https://gist.github.com/e3e0261f/951488c7b640b599b33c1aec6bc4399b
 # git clone https://github.com/e3e0261f/etc-nixos-2605.git
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -84,11 +84,6 @@
     '';
   };
   
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
   # 降低延遲核心依賴
   security.rtkit.enable = true;
 
@@ -255,13 +250,39 @@
     };
   };
 
+    # 2. 开启并配置 Steam（这会自动处理绝大多数 FHS 兼容性问题）
   programs.steam = {
     enable = true;
-    # 强制向 Steam 容器注入宿主机的 Fontconfig 路径和语言环境
-    package = pkgs.steam.override {
-      extraArgs = "";
-    };
+    remotePlay.openFirewall = true; # 如果需要远程串流
+    dedicatedServer.openFirewall = true; # 如果需要开本地服务器
   };
+
+  # 3. 启用字体配置并开启 32 位字体支持（修复方块字的关键）
+  fonts = {
+    enableDefaultPackages = true;
+    fontconfig = {
+      enable = true;
+    };
+    # 推荐顺便安装基础的微软替代字体和中文字体
+    packages = with pkgs; [
+      liberation_ttf
+      wqy_zenhei # 文泉驿正黑（提供基本中文字体支持）
+      noto-fonts-cjk-sans # Google Noto 中文字体
+    ];
+  };
+
+  # 4. 确保开启了 32 位图形驱动支持（Steam 正常运行必备）
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
+# 另外，如果是通过 environment.variables 注入，可以确保全局 UI 能够捕获：
+environment.sessionVariables = {
+  # 确保 Steam 容器能正确通过 fontconfig 找到路径
+  FONTCONFIG_FILE = "/etc/fonts/fonts.conf";
+};
+
   # 开启 USB 设备重定向支持（对鼠标/键盘直通非常关键！）
   virtualisation.spiceUSBRedirection.enable = true;
   # FlatPak
