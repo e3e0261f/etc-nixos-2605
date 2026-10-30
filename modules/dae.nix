@@ -178,8 +178,7 @@ in
           # l4proto(icmp) -> direct
           
           # 确保给 Flatpak 的本地流量放行
-          pname(flatpak, flatpak-session-helper) -> for1
-          domain(keyword: dl.flathub.org) -> for1
+          domain(keyword: dl.flathub.org) -> direct
           
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
