@@ -251,34 +251,8 @@
   };
 
     # 2. 开启并配置 Steam（这会自动处理绝大多数 FHS 兼容性问题）
-      programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
+    # programs.steam.enable = true;
 
-    # 🔥 核心补丁：强制将 NixOS 系统字体路径映射到 Steam 沙盒中
-    package = pkgs.steam.override {
-      extraBwrapArgs = [
-        "--bind /run/current-system/sw/share/X11/fonts /run/current-system/sw/share/X11/fonts"
-        "--bind /share/fonts /share/fonts"
-        "--bind /etc/fonts /etc/fonts"
-      ];
-    };
-  };
-
-  # 3. 启用字体配置并开启 32 位字体支持（修复方块字的关键）
-  fonts = {
-    enableDefaultPackages = true;
-    fontconfig = {
-      enable = true;
-    };
-    # 推荐顺便安装基础的微软替代字体和中文字体
-    packages = with pkgs; [
-      liberation_ttf
-      wqy_zenhei # 文泉驿正黑（提供基本中文字体支持）
-      noto-fonts-cjk-sans # Google Noto 中文字体
-    ];
-  };
 
   # 4. 确保开启了 32 位图形驱动支持（Steam 正常运行必备）
   hardware.graphics = {
@@ -286,16 +260,10 @@
     enable32Bit = true;
   };
 
-# 另外，如果是通过 environment.variables 注入，可以确保全局 UI 能够捕获：
-environment.sessionVariables = {
-  # 确保 Steam 容器能正确通过 fontconfig 找到路径
-  FONTCONFIG_FILE = "/etc/fonts/fonts.conf";
-};
-
   # 开启 USB 设备重定向支持（对鼠标/键盘直通非常关键！）
   virtualisation.spiceUSBRedirection.enable = true;
   # FlatPak
-  # services.flatpak.enable = true;
+  services.flatpak.enable = true;
   # 桌面管理器
   services.displayManager.ly.enable = true;
   # services.displayManager.lemurs.enable = true;

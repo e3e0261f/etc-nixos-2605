@@ -104,39 +104,27 @@ in
         upstream {
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
-          ali_h3: 'h3://223.5.5.5:443/dns-query'
           # Cloudflare: 'tcp+udp://1.1.1.1:53'
           # Cloudflare: 'tcp+udp://1.0.0.1:53'
           # Cloudflare: 'https://1.1.1.1/dns-query'
-          # Cloudflare: 'h3://dns.cloudflare.com/dns-query'
-          # Cloudflare: 'h3://1.1.1.1/dns-query'
-          # opennic_jp: 'udp://104.64.128.211:53'
-          opennic_jp: 'udp://95.216.99.249:53'
-          opennic_jp: 'udp://103.1.184.110:53'
         }
         routing {
           request {
-            qtype(https) -> reject
+            # qtype(https) -> reject
             qtype(aaaa) -> reject
 
             # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
             # !qname(geosite:cn) && qname(geosite:google) -> googledns
+            qname(geosite:google) -> googledns
             qname(geosite:cn)  -> alidns
-
-            # 3. ✨【您的指定】除了 Google 以外的其他國外網域走Cloudflare DoH3
-            # !qname(geosite:cn) -> Cloudflare
-
-            fallback: opennic_jp
-            # fallback: googledns
+            fallback: alidns
           }
           response {
             # 信任我們啟用的安全上游
             upstream(googledns) -> accept
             # upstream(Cloudflare) -> accept
-            upstream(ali_h3) -> accept
             upstream(alidns) -> accept
             ip(geoip:private) && !qname(geosite:cn) -> googledns
-            # ip(geoip:private) && !qname(geosite:cn) -> Cloudflare
             fallback: accept
           }
         }
@@ -186,6 +174,12 @@ in
           # dport(443) && l4proto(udp) -> block
           # ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
+          #
+          # l4proto(icmp) -> direct
+          
+          # 确保给 Flatpak 的本地流量放行
+          pname(flatpak, flatpak-session-helper) -> for1
+
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
