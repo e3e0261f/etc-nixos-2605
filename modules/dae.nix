@@ -101,22 +101,23 @@ in
         upstream {
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
-          # cfdns: 'https://1.1.1.1/dns-query'
+          cfdns: 'https://1.1.1.1/dns-query'
         }
         routing {
           request {
             qtype(https) -> reject
             qtype(aaaa) -> reject
 
-            !qname(geosite:cn) && qname(geosite:google) -> googledns
-            qname(geosite:cn)  -> alidns
-            fallback: googledns
+            # !qname(geosite:cn) && qname(geosite:google) -> googledns
+            !qname(geosite:cn) && qname(geosite:google) -> cfdns
+            fallback: alidns
           }
           response {
             # 信任我們啟用的安全上游
             upstream(googledns) -> accept
             upstream(alidns) -> accept
-            ip(geoip:private) && !qname(geosite:cn) -> googledns
+            # ip(geoip:private) && !qname(geosite:cn) -> googledns
+            ip(geoip:private) && !qname(geosite:cn) -> cfdns
             fallback: accept
           }
         }
@@ -152,7 +153,7 @@ in
           # 确保给 Flatpak 的本地流量放行
           domain(keyword: dl.flathub.org) -> direct
           
-          pname(flatpak) -> direct(must)
+          pname(flatpak) -> for1
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
@@ -171,7 +172,15 @@ in
           domain(suffix: steamcontent.com) -> direct
           domain(suffix: steampipe.akamaized.net) -> direct
           domain(suffix: steam4shared.com) -> direct
-          domain(suffix: client-update.steamstatic.com) -> for1
+          # Steam 官方更新與內容 CDN 全部強制走代理 (for1)
+          domain(suffix: steamstatic.com) -> for1
+          domain(suffix: steampowered.com) -> for1
+          domain(suffix: steamcommunity.com) -> for1
+          domain(suffix: steamusercontent.com) -> for1
+          domain(suffix: akamaized.net) -> for1
+          domain(suffix: fastly.net) -> for1
+          domain(suffix: steamstatic.com) -> for1
+          domain(keyword: "steamstatic.com") -> for1
     
           # 【修正】Steam 國內下載/語音直連
           domain(geosite: steam@cn) -> direct
