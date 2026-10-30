@@ -65,7 +65,7 @@ in
           tcp_check_http_method: HEAD
           # 🌟【核心降級修復】縮短健康度探測間隔與超時時間
           # 配置刷新时间
-          check_interval: 60s
+          check_interval: 1060s
           # 探測超時時間
           check_tolerance: 5s
           # Timeout to waiting for first data sending for sniffing. It is always 0 if dial_mode is ip. Set it higher is useful
@@ -87,12 +87,9 @@ in
       }
 
       subscription {
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=4'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=3'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=2'
-          my_sub: 'https://links.rockey-repo.org/s/CEYCDf96zE5dU6gY?sub=1'
           my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
+          my_sub: 'https://103.23.88.108/link/CEYCDf96zE5dU6gY'
+          my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
           my_sub: 'https://api0.bigmelook.com/BigME/Subscription/api/v1/client/subscribe?token=d2ecd2c553222f8b8df5347c8224976b'
       }
 
@@ -104,25 +101,20 @@ in
         upstream {
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
-          # Cloudflare: 'tcp+udp://1.1.1.1:53'
-          # Cloudflare: 'tcp+udp://1.0.0.1:53'
-          # Cloudflare: 'https://1.1.1.1/dns-query'
+          # cfdns: 'https://1.1.1.1/dns-query'
         }
         routing {
           request {
-            # qtype(https) -> reject
+            qtype(https) -> reject
             qtype(aaaa) -> reject
 
-            # 2. ✨【您的指定】所有 Google 網域強制走自己的 googledns (8.8.8.8)
-            # !qname(geosite:cn) && qname(geosite:google) -> googledns
-            qname(geosite:google) -> googledns
+            !qname(geosite:cn) && qname(geosite:google) -> googledns
             qname(geosite:cn)  -> alidns
-            fallback: alidns
+            fallback: googledns
           }
           response {
             # 信任我們啟用的安全上游
             upstream(googledns) -> accept
-            # upstream(Cloudflare) -> accept
             upstream(alidns) -> accept
             ip(geoip:private) && !qname(geosite:cn) -> googledns
             fallback: accept
@@ -134,35 +126,15 @@ in
       # =======================================================
       group { # 在这里替换你想要的策略，如 random, min, fixed(0), min_avg10
           for1 {
-              policy: min_avg10
-              filter: subtag(my_sub) && !name(regex: '4倍|6倍|HK|广州|剩余|到期|3x|客服|支持AI')
-          }
-
-          for4 {
               policy: min_moving_avg
-              # policy: min_avg10
-              # policy: random
-              filter: subtag(my_sub) && name(regex: '4倍') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
-          }
-          
-          for46 {
-              # policy: min_moving_avg
-              # policy: min_avg10
-              policy: random
-              filter: subtag(my_sub) && name(regex: 'I|REALITY|4倍|6倍|1倍') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
-          }
-
-          for146 {
-              # policy: min_moving_avg
-              policy: min_avg10
-              filter: subtag(my_sub) && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
+              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: 'HK|广州|4倍|6倍|剩余|到期|3x|客服|支持AI')
           }
 
           google_ai {
               policy: min_moving_avg
               # policy: random
               # policy: min_avg10
-              filter: subtag(my_sub)  && name(regex: '1|4|6') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
+              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
       }
@@ -175,11 +147,12 @@ in
           # ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           #
-          # l4proto(icmp) -> direct
+          l4proto(icmp) -> direct
           
           # 确保给 Flatpak 的本地流量放行
           domain(keyword: dl.flathub.org) -> direct
           
+          pname(flatpak) -> direct(must)
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
@@ -198,6 +171,7 @@ in
           domain(suffix: steamcontent.com) -> direct
           domain(suffix: steampipe.akamaized.net) -> direct
           domain(suffix: steam4shared.com) -> direct
+          domain(suffix: client-update.steamstatic.com) -> for1
     
           # 【修正】Steam 國內下載/語音直連
           domain(geosite: steam@cn) -> direct
@@ -231,15 +205,15 @@ in
           domain(suffix: edu.cn) -> direct(must)
           domain(suffix: valve.net) -> direct(must)
           domain(suffix: cloudflare.com) -> direct
-          domain(suffix: grok.com) -> for46
+          domain(suffix: grok.com) -> for1
 
           # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
-          domain(suffix: discord.gg) -> for146
-          domain(suffix: discord.com) -> for146
-          domain(suffix: discordapp.com) -> for146
-          domain(suffix: discordapp.net) -> for146
-          domain(suffix: discord.media) -> for146
-          domain(suffix: gateway.discord.gg) -> for146
+          domain(suffix: discord.gg) -> for1
+          domain(suffix: discord.com) -> for1
+          domain(suffix: discordapp.com) -> for1
+          domain(suffix: discordapp.net) -> for1
+          domain(suffix: discord.media) -> for1
+          domain(suffix: gateway.discord.gg) -> for1
 
           # ⭐️【第 2 級】：Google AI 專屬池
           domain(suffix: aistudio.google.com) -> google_ai
@@ -259,7 +233,7 @@ in
           # 修正筆誤：google-chrome 是進程名 (pname)，不是 domain
           pname(google-chrome, chrome, discord) -> for1
           domain(suffix: mega.nz) -> for1
-          domain(suffix:discord) -> for146
+          domain(suffix:discord) -> for1
           # 直连下载会遭遇严重的GFW丢包、连接重置和反复重试。
           # 这进一步打烂Wi-Fi 吞吐，导致 dae 的后台探测包彻底发不出去。
           pname(aria2c) && !domain(geosite:cn) -> for1
