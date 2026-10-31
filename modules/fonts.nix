@@ -65,52 +65,64 @@ let
   };
 in
 {
-
-  # 1. 向 Nix Store 物理拉取字体包，并符号链接到系统级字体目录
   fonts.packages = with pkgs; [
-    # 核心西文与符号库
-    dejavu_fonts
+    # 1. 苹果风开源门面西文字体（Inter）
+    inter
     
-    # 核心中文字库（Google 思源黑体/宋体，解决 99.9% 的汉字与日韩字形缺失）
+    # 2. 核心中文字库（为 Inter 补齐汉字）
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
-    
-    # 彩色 Emoji 字体
     noto-fonts-color-emoji
     
-    # 程序员最强中英等宽字体（更纱黑体）
+    # 3. 终端与代码专用等宽字体（更纱黑体）
     sarasa-gothic
     
-    # 经典兜底中文点阵/矢量字库（注意：nixpkgs 中使用下划线命名）
+    # 4. 老游戏/Steam 必备兼容字体
     wqy_zenhei
-    wqy_microhei
   ];
 
-  # 2. 生成底层 /etc/fonts/fonts.conf 规则，决定文本渲染时的物理回退流水线
   fonts.fontconfig = {
     enable = true;
 
-    # 遇到字符时，按以下数组顺序从前往后寻找字形（Fallback）
     defaultFonts = {
+      # UI 与常规无衬线字体：
+      # 物理逻辑：先吃 Inter（英文变苹果风），Inter 没汉字自动向右借字（Noto Sans CJK TC 繁体）
+      sansSerif = [
+        "Inter"                 # 英文、数字呈现纯正苹果质感
+        "Noto Sans CJK TC"      # 汉字无缝回退，绝不缺字
+        "Noto Sans CJK SC"
+        "WenQuanYi Zen Hei"
+      ];
+
+      # 代码与终端等宽
       monospace = [
+        "Sarasa Mono TC"
         "Sarasa Mono SC"
-        "Noto Sans Mono CJK SC"
         "DejaVu Sans Mono"
       ];
 
-      sansSerif = [
-        "Noto Sans CJK SC"
-        "Noto Sans"
-        "DejaVu Sans"
-      ];
-
       serif = [
+        "Noto Serif CJK TC"
         "Noto Serif CJK SC"
-        "Noto Serif"
-        "DejaVu Serif"
       ];
 
       emoji = [ "Noto Color Emoji" ];
     };
+
+    # 【核心防御】：这里选项名为 localConf，底层将直接注入 /etc/fonts/local.conf
+    localConf = ''
+      <match target="pattern">
+        <test name="family"><string>Arial</string></test>
+        <edit name="family" mode="append" binding="same">
+          <string>WenQuanYi Zen Hei</string>
+        </edit>
+      </match>
+      <match target="pattern">
+        <test name="family"><string>Tahoma</string></test>
+        <edit name="family" mode="append" binding="same">
+          <string>WenQuanYi Zen Hei</string>
+        </edit>
+      </match>
+    '';
   };
 }
