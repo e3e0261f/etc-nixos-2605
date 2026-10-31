@@ -181,6 +181,7 @@ in
           domain(suffix: fastly.net) -> for1
           domain(suffix: steamstatic.com) -> for1
           domain(keyword: "steamstatic.com") -> for1
+          domain(keyword: "gettr.com") -> for1
     
           # 【修正】Steam 國內下載/語音直連
           domain(geosite: steam@cn) -> direct

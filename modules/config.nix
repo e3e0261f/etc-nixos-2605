@@ -35,6 +35,16 @@
     zlib
   ];
 
+  fonts = {
+  fontDir.enable = true; # 启用全局字型目录链接
+  packages = with pkgs; [
+    corefonts          # 包含微软的核心字型（Arial, Comic Sans, Times New Roman 等）
+    wqy_zenhei         # 如果需要中文支持，建议加上文泉驿正黑
+    noto-fonts
+    noto-fonts-cjk-sans
+  ];
+};
+
   # 1. 挂载 585G 合并 SSD 存储池
   fileSystems."/mnt/ssd" = {
     device = "/dev/vg_ssd/lv_fast";
