@@ -16,6 +16,7 @@
     socat                     # 雙向資料串流轉發與端口重定向多功能工具
     netcat                    # 經典網路連線瑞士軍刀 (nc)
     ffmpeg
+    font-manager
 
 
 
