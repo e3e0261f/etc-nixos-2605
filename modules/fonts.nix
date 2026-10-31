@@ -65,98 +65,52 @@ let
   };
 in
 {
-  fonts = {
-    enableDefaultPackages = true;
-    fontDir.enable = true;
 
-    # ⭐️ 完整恢复你原本高质量的字型库
-    packages = with pkgs; [
-      inter                    
-      wqy_zenhei 
-      sarasa-gothic            # ⭐️ 核心中英文神作：更紗黑體
-      noto-fonts-cjk-sans      
-      noto-fonts-color-emoji   
-      apple-official-fonts
-    ];
+  # 1. 向 Nix Store 物理拉取字体包，并符号链接到系统级字体目录
+  fonts.packages = with pkgs; [
+    # 核心西文与符号库
+    dejavu_fonts
+    
+    # 核心中文字库（Google 思源黑体/宋体，解决 99.9% 的汉字与日韩字形缺失）
+    noto-fonts-cjk-sans
+    noto-fonts-cjk-serif
+    
+    # 彩色 Emoji 字体
+    noto-fonts-color-emoji
+    
+    # 程序员最强中英等宽字体（更纱黑体）
+    sarasa-gothic
+    
+    # 经典兜底中文点阵/矢量字库（注意：nixpkgs 中使用下划线命名）
+    wqy_zenhei
+    wqy_microhei
+  ];
 
-    fontconfig = {
-      enable = true;
-      antialias = true;
-      hinting = {
-        enable = true;
-        style = "slight"; 
-      };
-      subpixel = {
-        rgba = "rgb";     
-        lcdfilter = "default";
-      };
+  # 2. 生成底层 /etc/fonts/fonts.conf 规则，决定文本渲染时的物理回退流水线
+  fonts.fontconfig = {
+    enable = true;
 
-      defaultFonts = {
-        sansSerif = [
-          "Inter"
-          "Sarasa Gothic SC"
-          "SF Pro"
-          "Noto Sans CJK SC"
-        ];
-        serif = [
-          "New York"
-          "Noto Serif CJK TC"
-        ];
-        monospace = [
-          "SF Mono"
-          "Sarasa Mono SC"
-          "JetBrainsMono Nerd Font"
-        ];
-        emoji = [
-          "Apple Color Emoji"
-          "Noto Color Emoji"
-        ];
-      };
+    # 遇到字符时，按以下数组顺序从前往后寻找字形（Fallback）
+    defaultFonts = {
+      monospace = [
+        "Sarasa Mono SC"
+        "Noto Sans Mono CJK SC"
+        "DejaVu Sans Mono"
+      ];
 
-      # 🌐 浏览器与 Steam 专用的字体劫持及中文回退
-      localConf = ''
-        <?xml version="1.0"?>
-        <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
-        <fontconfig>
-          <match target="pattern">
-            <test name="family" qual="any"><string>-apple-system</string></test>
-            <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
-          </match>
+      sansSerif = [
+        "Noto Sans CJK SC"
+        "Noto Sans"
+        "DejaVu Sans"
+      ];
 
-          <match target="pattern">
-            <test name="family" qual="any"><string>BlinkMacSystemFont</string></test>
-            <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
-          </match>
+      serif = [
+        "Noto Serif CJK SC"
+        "Noto Serif"
+        "DejaVu Serif"
+      ];
 
-          <match target="pattern">
-            <test name="family" qual="any"><string>system-ui</string></test>
-            <edit name="family" mode="assign" binding="same"><string>Inter</string></edit>
-          </match>
-
-          <match target="pattern">
-            <test name="family" qual="any"><string>sans-serif</string></test>
-            <edit name="family" mode="append" binding="weak">
-              <string>Sarasa Gothic SC</string>
-              <string>Noto Sans CJK SC</string>
-            </edit>
-          </match>
-
-          <match target="pattern">
-            <test name="family" qual="any"><string>Inter</string></test>
-            <edit name="family" mode="append" binding="weak">
-              <string>Sarasa Gothic SC</string>
-              <string>Noto Sans CJK SC</string>
-            </edit>
-          </match>
-
-          <!-- ⭐️ 强制所有未匹配字体默认向更纱黑体回退，彻底根除方块 -->
-          <match target="pattern">
-            <edit name="family" mode="append" binding="weak">
-              <string>Sarasa Gothic SC</string>
-            </edit>
-          </match>
-        </fontconfig>
-      '';
+      emoji = [ "Noto Color Emoji" ];
     };
   };
 }
