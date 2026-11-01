@@ -251,7 +251,7 @@
   };
 
     # 2. 开启并配置 Steam（这会自动处理绝大多数 FHS 兼容性问题）
-    # programs.steam.enable = true;
+  programs.steam.enable = true;
 
 
   # 4. 确保开启了 32 位图形驱动支持（Steam 正常运行必备）
