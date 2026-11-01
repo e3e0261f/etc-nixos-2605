@@ -102,22 +102,22 @@ in
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
           cfdns: 'https://1.1.1.1/dns-query'
+          opennic: 'tcp+udp://95.216.99.249:53'
         }
         routing {
           request {
             qtype(https) -> reject
             qtype(aaaa) -> reject
 
-            # !qname(geosite:cn) && qname(geosite:google) -> googledns
-            !qname(geosite:cn) && qname(geosite:google) -> cfdns
+            !qname(geosite:cn) && qname(geosite:google) -> opennic
             fallback: alidns
           }
           response {
             # 信任我們啟用的安全上游
             upstream(googledns) -> accept
             upstream(alidns) -> accept
-            # ip(geoip:private) && !qname(geosite:cn) -> googledns
-            ip(geoip:private) && !qname(geosite:cn) -> cfdns
+            upstream(opennic) -> accept
+            ip(geoip:private) && !qname(geosite:cn) -> opennic
             fallback: accept
           }
         }
@@ -203,6 +203,7 @@ in
 
           # DNS直連防回環
            dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
+           dip(95.216.99.249, 104.64.128.211, 172.104.178.107, 103.1.184.110) -> direct
           
           # 22 port
           dip(192.168.2.0/24) && dport(22) -> google_ai
