@@ -193,6 +193,10 @@ in
           domain(suffix: steamusercontent.com) -> for1
           domain(suffix: akamaized.net) -> direct
           domain(suffix: fastly.net) -> for1
+          domain(suffix: steamloopback.host) -> for1
+          domain(suffix: steamapi-a.akamaihd.net) -> for1
+          domain(suffix: valve-networks.com) -> for1
+          domain(suffix: valvesoftware.com) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
