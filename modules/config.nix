@@ -35,15 +35,6 @@
     zlib
   ];
 
-  programs.steam = {
-    enable = true;
-    # 开启字体等环境支持
-    fontPackages = with pkgs; [
-      noto-fonts-cjk-sans
-      wqy_zenhei
-    ];
-  };
-
   # 1. 挂载 585G 合并 SSD 存储池
   fileSystems."/mnt/ssd" = {
     device = "/dev/vg_ssd/lv_fast";
