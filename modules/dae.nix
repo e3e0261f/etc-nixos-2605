@@ -177,7 +177,6 @@ in
           domain(suffix: steampowered.com) -> for1
           domain(suffix: steamcommunity.com) -> for1
           domain(suffix: steamusercontent.com) -> for1
-          domain(suffix: akamaized.net) -> for1
           domain(suffix: fastly.net) -> for1
           domain(suffix: steamstatic.com) -> for1
           domain(keyword: "steamstatic.com") -> for1
@@ -192,7 +191,7 @@ in
           domain(suffix: steampowered.com) -> for1
           domain(suffix: steamcommunity.com) -> for1
           domain(suffix: steamusercontent.com) -> for1
-          domain(suffix: akamaized.net) -> for1
+          domain(suffix: akamaized.net) -> direct
           domain(suffix: fastly.net) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
