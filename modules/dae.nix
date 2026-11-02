@@ -198,7 +198,7 @@ in
           # domain(suffix: valvesoftware.com) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
-          pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
+          pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae, tf_linux64) -> direct
 
           # DNS直連防回環
            dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
