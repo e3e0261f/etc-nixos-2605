@@ -186,17 +186,16 @@ in
           domain(geosite: steam@cn) -> direct
 
           # 【修正】Steam 商店、社群、圖片 CDN 強制走代理
-          domain(geosite: steam) -> for1
-          domain(suffix: steamstatic.com) -> for1
-          domain(suffix: steampowered.com) -> for1
-          domain(suffix: steamcommunity.com) -> for1
-          domain(suffix: steamusercontent.com) -> for1
-          domain(suffix: akamaized.net) -> direct
-          domain(suffix: fastly.net) -> for1
-          domain(suffix: steamloopback.host) -> for1
-          domain(suffix: steamapi-a.akamaihd.net) -> for1
-          domain(suffix: valve-networks.com) -> for1
-          domain(suffix: valvesoftware.com) -> for1
+          # domain(geosite: steam) -> for1
+          # domain(suffix: steamstatic.com) -> for1
+          # domain(suffix: steampowered.com) -> for1
+          # domain(suffix: steamcommunity.com) -> for1
+          # domain(suffix: steamusercontent.com) -> for1
+          # domain(suffix: akamaized.net) -> direct
+          # domain(suffix: steamloopback.host) -> for1
+          # domain(suffix: steamapi-a.akamaihd.net) -> for1
+          # domain(suffix: valve-networks.com) -> for1
+          # domain(suffix: valvesoftware.com) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
           pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae) -> direct
