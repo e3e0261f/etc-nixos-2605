@@ -8,15 +8,15 @@
         ids = [ "*" ];
         settings = {
           main = {
-            # ⭐️ 1. 让 CapsLock 彻底变成 Insert 键
+            # ⭐️ 1. 让 CapsLock 彻底变成 Insert 键（保留长按功能）
             capslock = "overload(ins_mod, insert)";
             insert = "overload(ins_mod, insert)";
 
-            # 🚀 2. WASD 动态覆盖（SOCD 后输优先）
-            a = "overload(a_layer, a)";
-            d = "overload(d_layer, d)";
-            w = "overload(w_layer, w)";
-            s = "overload(s_layer, s)";
+            # 🚀 2. 无延迟后输优先（按下 A 立即切到 a 激活层，下同）
+            a = "setlayer(a_active, a)";
+            d = "setlayer(d_active, d)";
+            w = "setlayer(w_active, w)";
+            s = "setlayer(s_active, s)";
 
             # 保留备用的快捷键
             "C-A-g" = "toggle(game)";
@@ -35,26 +35,30 @@
             l = "right";
           };
 
-          # 🚀 4. 定义 WASD 互相清除的防冲突层
-          a_layer = {
-            d = "clear(a) d";
-          };
-          d_layer = {
-            a = "clear(d) a";
-          };
-          w_layer = {
-            s = "clear(w) s";
-          };
-          s_layer = {
-            w = "clear(s) w";
+          # 🚀 4. A 键正在被按住的层（此时 A 生效中）
+          a_active = {
+            # 关键：当按着 A 的时候按下 D，不仅要触发 D，还要强行清掉 A 的输出！
+            d = "clear(a_active) d";
           };
 
-          # 🎮 5. 游戏模式层
-          # 当你按下 Ctrl+Alt+G 切换到此层时，WASD 将会被恢复为普通按键（不触发防冲突）
+          # 🚀 5. D 键正在被按住的层（此时 D 生效中）
+          d_active = {
+            # 关键：当按着 D 的时候按下 A，不仅要触发 A，还要强行清掉 D 的输出！
+            a = "clear(d_active) a";
+          };
+
+          # 🚀 6. W 和 S 的动态互解层
+          w_active = {
+            s = "clear(w_active) s";
+          };
+          s_active = {
+            w = "clear(s_active) w";
+          };
+
+          # 🎮 7. 游戏模式层
           game = {
             capslock = "insert";
             insert = "insert";
-            # 显式重置 WASD，防止它们继承 main 层的 overload 行为
             a = "a";
             d = "d";
             w = "w";
