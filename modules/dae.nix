@@ -157,6 +157,7 @@ in
           pname(Albion-Online, albion-online) -> direct(must)
           pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
+          domain(keyword: "albion.zone") -> direct
           domain(keyword: "cloudflare.com") -> direct
           domain(suffix: albiononline.com) -> direct(must)
           pname(gix, Counter-Strike) -> direct(must)
