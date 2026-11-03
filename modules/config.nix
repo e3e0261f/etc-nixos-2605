@@ -80,7 +80,7 @@
       /run/current-system/sw/bin/systemctl stop dae || true
       /run/current-system/sw/bin/systemctl start dae || true
       # /run/current-system/sw/bin/systemctl start dae || true
-      /etc/profiles/per-user/rhys/bin/caelestia shell -d || true
+      # /etc/profiles/per-user/rhys/bin/caelestia shell -d || true
     '';
   };
   
