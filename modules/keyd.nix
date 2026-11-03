@@ -8,21 +8,23 @@
         ids = [ "*" ];
         settings = {
           main = {
-            # ⭐️ 1. 让 CapsLock 彻底变成 Insert 键！
-            # 无论按物理 CapsLock 还是物理 Insert，统统都是 overload(ins_mod, insert)
+            # ⭐️ 1. 让 CapsLock 彻底变成 Insert 键
             capslock = "overload(ins_mod, insert)";
             insert = "overload(ins_mod, insert)";
+
+            # 🚀 2. WASD 动态覆盖（SOCD 后输优先）
+            a = "overload(a_layer, a)";
+            d = "overload(d_layer, d)";
+            w = "overload(w_layer, w)";
+            s = "overload(s_layer, s)";
 
             # 保留备用的快捷键
             "C-A-g" = "toggle(game)";
           };
 
-          # ⭐️ 2. 核心层：按住这个键（Insert / 原Caps）时的所有动作
+          # ⭐️ 3. 核心层：按住这个键（Insert / 原Caps）时的所有动作
           ins_mod = {
-            # 💡 按住它 + 空格 = 直接触发回车 (Enter)！
             space = "enter";
-
-            # 按住它 + WASD / HJKL = 方向键
             w = "up";
             a = "left";
             s = "down";
@@ -33,10 +35,30 @@
             l = "right";
           };
 
-          # 游戏模式层（纯备用）
+          # 🚀 4. 定义 WASD 互相清除的防冲突层
+          a_layer = {
+            d = "clear(a) d";
+          };
+          d_layer = {
+            a = "clear(d) a";
+          };
+          w_layer = {
+            s = "clear(w) s";
+          };
+          s_layer = {
+            w = "clear(s) w";
+          };
+
+          # 🎮 5. 游戏模式层
+          # 当你按下 Ctrl+Alt+G 切换到此层时，WASD 将会被恢复为普通按键（不触发防冲突）
           game = {
             capslock = "insert";
             insert = "insert";
+            # 显式重置 WASD，防止它们继承 main 层的 overload 行为
+            a = "a";
+            d = "d";
+            w = "w";
+            s = "s";
           };
         };
       };
