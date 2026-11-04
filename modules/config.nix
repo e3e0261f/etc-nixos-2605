@@ -186,7 +186,7 @@
   users.users."rhys" = {
     isNormalUser = true;
     description = "Rhys";
-    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" "input" "podman" "bluetooth" "libvirtd" "kvm" ];
+    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" "input" "podman" "bluetooth" "libvirtd" "kvm" "ydotool"];
     shell = pkgs.fish;
   };
   programs.fish.enable = true;
