@@ -259,9 +259,9 @@
     enable = true;
     enable32Bit = true;
   };
-
-  # 🚀 一行开启 input-remapper 服务，支持后台无缝运行
-  services.input-remapper.enable = true;
+  
+  # 🚀 开启 ydotool 后台极轻量守护进程（原生处理内核 input 权限）
+  programs.ydotool.enable = true;
   # 开启 USB 设备重定向支持（对鼠标/键盘直通非常关键！）
   virtualisation.spiceUSBRedirection.enable = true;
   # FlatPak

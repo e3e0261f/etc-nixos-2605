@@ -18,7 +18,6 @@
     ffmpeg
     noto-fonts
     nerd-fonts."m+"
-    input-remapper
 
 
 
