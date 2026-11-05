@@ -48,6 +48,7 @@
     # spice                     # SPICE 虛擬化通訊協議核心庫
     # spice-gtk                 # SPICE 協議的 GTK 圖形客戶端組件
     freerdp                   # 現代高效的 RDP 遠端桌面協定客戶端
+    wtype
   ];
 
   # Hyprland 桌面會話與入口
