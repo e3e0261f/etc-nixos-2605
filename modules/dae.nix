@@ -163,8 +163,7 @@ in
           pname(gix, Counter-Strike) -> direct(must)
           pname(Team, tf_linux64) -> direct
           # wow
-          domain(keyword: battle) -> direct
-          domain(keyword: blizzard, "battle.net") -> direct
+          domain(keyword: akamaitechnologies.com) -> direct
           # pname(Battle.net.exe, Agent.exe, Wow.exe) -> direct
           # pname(wine, wineserver, winedevice.exe) -> direct
           
