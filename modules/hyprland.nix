@@ -29,7 +29,8 @@
     menu        = "fuzzel"
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     --hl.bind("Q", hl.dsp.exec_cmd("wtype q"))
-    hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
+    --hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
+    hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("hyprctl kill"))
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
     hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
     require("AUTOSTART")

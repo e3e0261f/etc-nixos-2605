@@ -90,7 +90,6 @@ in
           my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY'
           my_sub: 'https://103.23.88.108/link/CEYCDf96zE5dU6gY'
           my_sub: 'https://link.rockey-repo.org/link/CEYCDf96zE5dU6gY?clash=2'
-          my_sub: 'https://api0.bigmelook.com/BigME/Subscription/api/v1/client/subscribe?token=d2ecd2c553222f8b8df5347c8224976b'
       }
 
       # =======================================================
@@ -135,8 +134,6 @@ in
 
           google_ai {
               policy: min_moving_avg
-              # policy: random
-              # policy: min_avg10
               filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
           }
 
@@ -146,14 +143,18 @@ in
       # ⭐️ 路由分流規則（嚴格從上到下匹配）
       # =======================================================
       routing {
-          # dport(443) && l4proto(udp) -> block
-          # ipversion(6) -> block
+          dport(443) && l4proto(udp) -> block
+          ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           #
-          # l4proto(icmp) -> direct
+          l4proto(icmp) -> direct
           
           # 确保给 Flatpak 的本地流量放行
           domain(keyword: dl.flathub.org) -> direct
+          domain(keyword: hinet.net) -> direct
+          domain(suffix: github.com) -> for1
+          domain(suffix: githubusercontent.com) -> for1
+          domain(suffix: githubassets.com) -> for1
           
           # pname(flatpak) -> for1
           pname(Albion-Online, albion-online) -> direct(must)
@@ -166,8 +167,8 @@ in
           pname(Team, tf_linux64) -> direct
           # wow
           # domain(keyword: akamaitechnologies.com) -> direct
-          # pname(Battle.net.exe, Agent.exe, Wow.exe) -> for1
-          # pname(wine, wineserver, winedevice.exe) -> direct
+          pname(Wow.exe, Battle.net.exe, Agent.exe) -> for1
+          pname(wine, wineserver, winedevice.exe) -> direct
           
           # 2. Steam 流量精準分流
           # 下載伺服器域名字尾匹配（直連）
@@ -200,7 +201,7 @@ in
           # domain(suffix: valvesoftware.com) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
-          pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae, tf_linux64) -> direct
+          pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae, tf_linux64) -> direct(must)
 
           # DNS直連防回環
            dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
