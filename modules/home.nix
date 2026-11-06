@@ -74,7 +74,7 @@
       ExecCondition = "${pkgs.bash}/bin/bash -c '[ \"$XDG_CURRENT_DESKTOP\" = \"Hyprland\" ]'";
 
       Environment = [ "QS_ICON_THEME=Papirus-Dark" ];
-      ExecStart = "${inputs.caelestia-shell.packages.${pkgs.system}.with-cli}/bin/caelestia-shell";
+      # ExecStart = "${inputs.caelestia-shell.packages.${pkgs.system}.with-cli}/bin/caelestia-shell";
       Restart = "on-failure";
       RestartSec = "1s";
     };

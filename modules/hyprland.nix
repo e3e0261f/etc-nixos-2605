@@ -203,7 +203,7 @@ hl.window_rule({
     hl.bind(mainMod .. " + F", hl.dsp.window.float({ action = "toggle" }))
     hl.bind(mainMod .. " + ALT + F", hl.dsp.exec_cmd("hypr-remember-float"))
     --hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("pkill -SIGUSR1 .waybar-wrapped || pkill -SIGUSR1 waybar"))
-    hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("caelestia shell drawers toggle dashboard"))
+    --hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("caelestia shell drawers toggle dashboard"))
     hl.bind(mainMod .. " + SHIFT + CTRL + S", hl.dsp.exec_cmd("trans-gui"))
 
     -- 方向導航
