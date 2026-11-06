@@ -168,7 +168,7 @@ in
           # wow
           # domain(keyword: akamaitechnologies.com) -> direct
           pname(Wow.exe, Agent.exe) -> direct
-          pname(Battle.net.exe) -> for1
+          pname(Battle.net.exe) -> direct
           pname(wine, wineserver, winedevice.exe) -> direct
           
           # 2. Steam 流量精準分流
