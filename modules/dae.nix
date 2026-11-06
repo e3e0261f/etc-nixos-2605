@@ -109,8 +109,10 @@ in
             qtype(https) -> reject
             qtype(aaaa) -> reject
 
-            !qname(geosite:cn) && qname(geosite:google) -> opennic
-            fallback: alidns
+            qname(geosite:cn) -> alidns
+            # !qname(geosite:cn) && qname(geosite:google) -> opennic
+            # fallback: alidns
+            fallback: opennic
           }
           response {
             # 信任我們啟用的安全上游
