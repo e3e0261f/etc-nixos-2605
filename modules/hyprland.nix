@@ -321,9 +321,9 @@ hl.window_rule({
         min_refresh_rate = 60,          -- 最低鎖定 60 幀
         },
         general = {
-            gaps_in  = 5,  -- 窗口与窗口之间的缝隙
+            gaps_in  = 2,  -- 窗口与窗口之间的缝隙
             gaps_out = 1, -- 窗口与屏幕边缘之间的缝隙
-            border_size = 2,
+            border_size = 1,
 
             col = {
                 -- ⭐️ 當前視窗：賽博青藍到極光紫的流光邊框
