@@ -114,14 +114,14 @@ in
             # fallback: alidns
             fallback: opennic
           }
-          response {
-            # 信任我們啟用的安全上游
-            upstream(googledns) -> accept
-            upstream(alidns) -> accept
-            upstream(opennic) -> accept
-            ip(geoip:private) && !qname(geosite:cn) -> opennic
-            fallback: accept
-          }
+          # response {
+          #   # 信任我們啟用的安全上游
+          #   upstream(googledns) -> accept
+          #   upstream(alidns) -> accept
+          #   upstream(opennic) -> accept
+          #   ip(geoip:private) && !qname(geosite:cn) -> opennic
+          #   fallback: accept
+          # }
         }
       }
       # =======================================================
@@ -150,14 +150,14 @@ in
           # ipversion(6) -> block
           # ⭐️【第 0 級最高優先】：系統底層、遊戲與核心直連
           #
-          l4proto(icmp) -> direct
+          # l4proto(icmp) -> direct
           
           # 确保给 Flatpak 的本地流量放行
           domain(keyword: dl.flathub.org) -> direct
           
-          pname(flatpak) -> for1
+          # pname(flatpak) -> for1
           pname(Albion-Online, albion-online) -> direct(must)
-          pname(cloudflared) -> direct(must)
+          # pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "albion.zone") -> direct
           domain(keyword: "cloudflare.com") -> direct
@@ -165,8 +165,8 @@ in
           pname(gix, Counter-Strike) -> direct(must)
           pname(Team, tf_linux64) -> direct
           # wow
-          domain(keyword: akamaitechnologies.com) -> direct
-          pname(Battle.net.exe, Agent.exe, Wow.exe) -> for1
+          # domain(keyword: akamaitechnologies.com) -> direct
+          # pname(Battle.net.exe, Agent.exe, Wow.exe) -> for1
           # pname(wine, wineserver, winedevice.exe) -> direct
           
           # 2. Steam 流量精準分流
