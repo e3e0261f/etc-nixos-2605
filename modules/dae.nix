@@ -167,7 +167,8 @@ in
           pname(Team, tf_linux64) -> direct
           # wow
           # domain(keyword: akamaitechnologies.com) -> direct
-          pname(Wow.exe, Battle.net.exe, Agent.exe) -> for1
+          pname(Wow.exe, Agent.exe) -> direct
+          pname(Battle.net.exe) -> for1
           pname(wine, wineserver, winedevice.exe) -> direct
           
           # 2. Steam 流量精準分流
