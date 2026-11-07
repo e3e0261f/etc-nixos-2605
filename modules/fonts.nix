@@ -79,6 +79,7 @@ in
     
     # 4. 老游戏/Steam 必备兼容字体
     wqy_zenhei
+    jetbrains-mono
   ];
 
   fonts.fontconfig = {
