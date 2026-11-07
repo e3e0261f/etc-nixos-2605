@@ -152,9 +152,6 @@ in
           # 确保给 Flatpak 的本地流量放行
           domain(keyword: dl.flathub.org) -> direct
           domain(keyword: hinet.net) -> direct
-          domain(suffix: github.com) -> for1
-          domain(suffix: githubusercontent.com) -> for1
-          domain(suffix: githubassets.com) -> for1
           
           # pname(flatpak) -> for1
           pname(Albion-Online, albion-online) -> direct(must)
@@ -185,6 +182,7 @@ in
           domain(suffix: steamstatic.com) -> for1
           domain(keyword: "steamstatic.com") -> for1
           domain(keyword: "gettr.com") -> for1
+          domain(keyword: "github") -> for1
     
           # 【修正】Steam 國內下載/語音直連
           domain(geosite: steam@cn) -> direct

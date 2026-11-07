@@ -19,11 +19,11 @@ let
       m30_h = 5;   m30_w = 2;
       m60_h = 6;   m60_w = 2;
 
-      boost_m1_h  = 8;   boost_m1_w  = 1;
-      boost_m5_h  = 9;  boost_m5_w  = 1;
-      boost_m10_h = 11;  boost_m10_w = 1;
-      boost_m30_h = 8;  boost_m30_w = 2;
-      boost_m60_h = 9;  boost_m60_w = 3;
+      boost_m1_h  = 7;   boost_m1_w  = 1;
+      boost_m5_h  = 8;  boost_m5_w  = 1;
+      boost_m10_h = 9;  boost_m10_w = 1;
+      boost_m30_h = 7;  boost_m30_w = 2;
+      boost_m60_h = 8;  boost_m60_w = 3;
 
       color         = "#94a3b8";
       hourColor     = "#ffffff";
