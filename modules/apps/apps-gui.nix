@@ -49,7 +49,7 @@
     # spice-gtk                 # SPICE 協議的 GTK 圖形客戶端組件
     freerdp                   # 現代高效的 RDP 遠端桌面協定客戶端
     wtype
-    # lutris
+    lutris
     # bottles
   ];
 
