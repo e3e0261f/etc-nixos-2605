@@ -200,7 +200,7 @@ in
           # domain(suffix: valvesoftware.com) -> for1
 
           # 3. 强制让本地的网络管理器（NetworkManager）和系统内核流量直连
-          pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae, tf_linux64) -> direct(must)
+          pname(NetworkManager, nm-dispatcher, dhcpcd, systemd-resolved, systemd-networkd, wpa_supplicant, iwd, dae, tf_linux64, nix) -> direct(must)
 
           # DNS直連防回環
            dip(223.5.5.5, 223.6.6.6, 119.29.29.29, 8.8.8.8, 192.168.1.0/24, 192.168.2.0/24, 192.168.99.0/24) -> direct
@@ -221,6 +221,16 @@ in
           domain(suffix: valve.net) -> direct(must)
           domain(suffix: cloudflare.com) -> direct
           domain(suffix: grok.com) -> for1
+
+              # 1. 将 NixOS 官方及核心域名全部设置为直连
+          domain(suffix: nixos.org) -> direct
+          domain(suffix: nixos.org.cn) -> direct
+          domain(suffix: cachix.org) -> direct  # 如果你用了 cachix 缓存
+
+          # 2. 如果你使用了国内的镜像站，也必须确保它们直连
+          domain(suffix: tsinghua.edu.cn) -> direct
+          domain(suffix: ustc.edu.cn) -> direct
+          domain(suffix: sjtu.edu.cn) -> direct
 
           # 1. Discord 核心全家桶（API + Gateway WebSocket + 媒体 CDN）
           domain(suffix: discord.gg) -> for1
