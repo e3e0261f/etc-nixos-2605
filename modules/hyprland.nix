@@ -323,7 +323,7 @@ hl.window_rule({
         },
         general = {
             gaps_in  = 2,  -- 窗口与窗口之间的缝隙
-            gaps_out = 1, -- 窗口与屏幕边缘之间的缝隙
+            gaps_out = 0, -- 窗口与屏幕边缘之间的缝隙
             border_size = 1,
 
             col = {

@@ -15,15 +15,15 @@ let
     ticks = {
       m1_h  = 5;   m1_w  = 1;
       m5_h  = 6;   m5_w  = 1;
-      m10_h = 6;   m10_w = 1;
-      m30_h = 7;   m30_w = 1;
-      m60_h = 7;   m60_w = 2;
+      m10_h = 7;   m10_w = 1;
+      m30_h = 5;   m30_w = 2;
+      m60_h = 6;   m60_w = 2;
 
       boost_m1_h  = 8;   boost_m1_w  = 1;
-      boost_m5_h  = 10;  boost_m5_w  = 1;
-      boost_m10_h = 12;  boost_m10_w = 1;
-      boost_m30_h = 14;  boost_m30_w = 2;
-      boost_m60_h = 14;  boost_m60_w = 3;
+      boost_m5_h  = 9;  boost_m5_w  = 1;
+      boost_m10_h = 11;  boost_m10_w = 1;
+      boost_m30_h = 8;  boost_m30_w = 2;
+      boost_m60_h = 9;  boost_m60_w = 3;
 
       color         = "#94a3b8";
       hourColor     = "#ffffff";
