@@ -261,7 +261,8 @@ in
           domain(suffix:discord) -> for1
           # 直连下载会遭遇严重的GFW丢包、连接重置和反复重试。
           # 这进一步打烂Wi-Fi 吞吐，导致 dae 的后台探测包彻底发不出去。
-          pname(aria2c) && !domain(geosite:cn) -> for1
+          # pname(aria2c) && !domain(geosite:cn) -> for1
+          pname(aria2c) -> direct
           pname(fi6s) -> for1
 
           dip(geoip:private) -> direct(must)
