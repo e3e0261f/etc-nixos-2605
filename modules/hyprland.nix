@@ -322,7 +322,7 @@ hl.window_rule({
         min_refresh_rate = 60,          -- 最低鎖定 60 幀
         },
         general = {
-            gaps_in  = 2,  -- 窗口与窗口之间的缝隙
+            gaps_in  = 0,  -- 窗口与窗口之间的缝隙
             gaps_out = 0, -- 窗口与屏幕边缘之间的缝隙
             border_size = 1,
 
