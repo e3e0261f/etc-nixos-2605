@@ -57,6 +57,7 @@
     # inputs.caelestia-cli.packages.${pkgs.system}.default    # ⭐️ 終端直接可用的 caelestia 命令
     inputs.quickshell.packages.${pkgs.system}.default
   ];
+  home.file.".config/quickshell".source = inputs.rhyshell;
 
   # =========================================================================
   # ⭐️ 核心修正：讓 Caelestia Shell 專屬於 Hyprland，進 KDE 時絕不啟動！

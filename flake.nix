@@ -12,6 +12,12 @@
     #   url = "github:e3e0261f/a";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    #
+    # 引入你的 quickshell 配置仓库
+    rhyshell = {
+      url = "github:e3e0261f/rhyshell";
+      flake = false; # 因为你的仓库里没有 flake.nix，所以必须设为 false
+    };
     
     # 1. 引入 Home Manager
     home-manager = {
