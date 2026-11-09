@@ -30,9 +30,6 @@
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("kitty"))
     hl.bind(mainMod .. " + SPACE", hl.dsp.global("quickshell:inspect_time"))
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
-    --hl.bind("Q", hl.dsp.exec_cmd("ydotool key 16:1 16:0"))
-    --hl.bind("SUPER + mouse:273", hl.dsp.exec_cmd("pkill -USR1 quickshell || true"))
-    -- Shift+Z 和 Shift+X 觸發 Quickshell 的定點打擊！
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
     hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
     require("AUTOSTART")
@@ -286,6 +283,8 @@ hl.window_rule({
     hl.bind("SHIFT + X", hl.dsp.global("quickshell:strike_x"))
     -- Shift+C 一鍵開啟/關閉鼠標連擊 (對接 Quickshell)
     hl.bind("SHIFT + C", hl.dsp.global("quickshell:toggle_clicker"))
+    hl.bind("", "Q", hl.dsp.exec("echo 1 > /tmp/q_spam.lock"))
+    hl.bindrt("", "Q", hl.dsp.exec("rm -f /tmp/q_spam.lock"))
   '';
 
   xdg.configFile."MYHYprLUa/MONITORS.lua".text = '''';
