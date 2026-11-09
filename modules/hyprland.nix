@@ -288,7 +288,9 @@ hl.window_rule({
     -- hl.bind("Q", hl.dsp.exec_cmd("sh -c 'while true; do wtype q; sleep 0.025; done & echo $! > /tmp/q_loop.pid'"))
 
     -- 2. 释放 Q 键时停止连击（修正后的语法）
-    -- hl.bind("Q", hl.dsp.exec_cmd("sh -c 'if [ -f /tmp/q_loop.pid ]; then kill $(cat /tmp/q_loop.pid); rm /tmp/q_loop.pid; fi'"), { release = true })
+    -- 用单行代码同时绑定按下和松开：第二个参数是按下触发，第四个参数是松开触发
+    -- hl.bind("Q", hl.dsp.exec_cmd("sh -c 'while true; do wtype q; sleep 0.025; done & echo $! > /tmp/q_loop.pid'"), {}, hl.dsp.exec_cmd("sh -c 'if [ -f /tmp/q_loop.pid ]; then kill $(cat /tmp/q_loop.pid); rm /tmp/q_loop.pid; fi'"))
+
 
 
 
@@ -300,10 +302,11 @@ hl.window_rule({
   # 5. 自啟動模組 (開機視角牢牢鎖定 Workspace 1)
   # =======================================================
   xdg.configFile."MYHYprLUa/AUTOSTART.lua".text = ''
-   hl.on("hyprland.start", function ()
+  hl.on("hyprland.start", function ()
       -- 🟢 2. 音频控制和壁纸脚本（用 uwsm app -- 包裹）
       hl.exec_cmd("wpctl set-profile 122 1 && wpctl set-profile 122 16")
       hl.exec_cmd("uwsm app -- wall-random")
+      hl.exec_cmd("uwsm app -- ")
 
       -- 🟢 3. 图形客户端软件（用 uwsm app -- 包裹，确保能优雅退出、不丢失浏览器缓存）
       hl.exec_cmd("uwsm app -- google-chrome")
