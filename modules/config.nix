@@ -1,7 +1,7 @@
 # /etc/nixos/modules/dev.nix
 # git clone https://gist.github.com/e3e0261f/951488c7b640b599b33c1aec6bc4399b
 # git clone https://github.com/e3e0261f/etc-nixos-2605.git
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -55,13 +55,20 @@
       }
     });
   '';
-  # Wayland 截图
+  # XDG
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    extraPortals = [
+      pkgs.xdg-desktop-portal-hyprland
+      pkgs.kdePackages.xdg-desktop-portal-kde # 👈 修正这里
+    ];
     configPackages = [ pkgs.hyprland ];
-    config.common.default = "*"; 
+    config.common.default = lib.mkForce [ "kde" ]; # 👈 保持使用 kde 后端
+    xdgOpenUsePortal = true;
   };
+
+
+
   
   # 睡眠唤醒解耦
   powerManagement = {
