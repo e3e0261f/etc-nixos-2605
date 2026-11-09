@@ -33,8 +33,6 @@
     --hl.bind("Q", hl.dsp.exec_cmd("ydotool key 16:1 16:0"))
     --hl.bind("SUPER + mouse:273", hl.dsp.exec_cmd("pkill -USR1 quickshell || true"))
     -- Shift+Z 和 Shift+X 觸發 Quickshell 的定點打擊！
-    hl.bind("SHIFT", "Z", hl.dsp.global("quickshell:strike_z"))
-    hl.bind("SHIFT", "X", hl.dsp.global("quickshell:strike_x"))
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
     hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
     require("AUTOSTART")
@@ -283,6 +281,11 @@ hl.window_rule({
     hl.bind(mainMod .. " + ALT + left",  hl.dsp.window.resize({ x = -40, y = 0 }))
     hl.bind(mainMod .. " + ALT + up",    hl.dsp.window.resize({ x = 0,   y = -40 }))
     hl.bind(mainMod .. " + ALT + down",  hl.dsp.window.resize({ x = 0,   y = 40 }))
+   
+    hl.bind("SHIFT + Z", hl.dsp.global("quickshell:strike_z"))
+    hl.bind("SHIFT + X", hl.dsp.global("quickshell:strike_x"))
+    -- Shift+C 一鍵開啟/關閉鼠標連擊 (對接 Quickshell)
+    hl.bind("SHIFT + C", hl.dsp.global("quickshell:toggle_clicker"))
   '';
 
   xdg.configFile."MYHYprLUa/MONITORS.lua".text = '''';
