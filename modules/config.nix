@@ -66,10 +66,7 @@
     config.common.default = lib.mkForce [ "kde" ]; # 👈 保持使用 kde 后端
     xdgOpenUsePortal = true;
   };
-
-
-
-  
+   
   # 睡眠唤醒解耦
   powerManagement = {
     enable = true;
