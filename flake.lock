@@ -713,6 +713,22 @@
         "url": "https://git.outfoxxed.me/quickshell/quickshell"
       }
     },
+    "rhyshell": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794197923,
+        "narHash": "sha256-Ae3LlpsjMNjOX2x3CPKgGmOL/fp0MfVFcqbU6dtvmwI=",
+        "owner": "e3e0261f",
+        "repo": "rhyshell",
+        "rev": "18b402509a2582193f1199c3be0237ee2dd59348",
+        "type": "github"
+      },
+      "original": {
+        "owner": "e3e0261f",
+        "repo": "rhyshell",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "caelestia-cli": "caelestia-cli",
@@ -721,7 +737,8 @@
         "hy3": "hy3",
         "my-rules": "my-rules",
         "nixpkgs": "nixpkgs_2",
-        "quickshell": "quickshell_3"
+        "quickshell": "quickshell_3",
+        "rhyshell": "rhyshell"
       }
     },
     "systems": {
