@@ -716,11 +716,11 @@
     "rhyshell": {
       "flake": false,
       "locked": {
-        "lastModified": 1794197923,
-        "narHash": "sha256-Ae3LlpsjMNjOX2x3CPKgGmOL/fp0MfVFcqbU6dtvmwI=",
+        "lastModified": 1794225705,
+        "narHash": "sha256-zUgeM0E2ZzluYFiDne+Iy3iFef/q/qzq6qxn9hMl6N0=",
         "owner": "e3e0261f",
         "repo": "rhyshell",
-        "rev": "18b402509a2582193f1199c3be0237ee2dd59348",
+        "rev": "6e93dd9b369a5f457192be4bf3fcdd0961ee2212",
         "type": "github"
       },
       "original": {
