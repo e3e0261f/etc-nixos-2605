@@ -283,8 +283,7 @@ hl.window_rule({
     hl.bind("SHIFT + X", hl.dsp.global("quickshell:strike_x"))
     -- Shift+C 一鍵開啟/關閉鼠標連擊 (對接 Quickshell)
     hl.bind("SHIFT + C", hl.dsp.global("quickshell:toggle_clicker"))
-    hl.bind("", "Q", hl.dsp.exec("echo 1 > /tmp/q_spam.lock"))
-    hl.bindrt("", "Q", hl.dsp.exec("rm -f /tmp/q_spam.lock"))
+    -- hl.bind("Q", hl.dsp.exec("echo 1 > /tmp/q_spam.lock"))
   '';
 
   xdg.configFile."MYHYprLUa/MONITORS.lua".text = '''';
