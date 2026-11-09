@@ -283,7 +283,15 @@ hl.window_rule({
     hl.bind("SHIFT + X", hl.dsp.global("quickshell:strike_x"))
     -- Shift+C 一鍵開啟/關閉鼠標連擊 (對接 Quickshell)
     hl.bind("SHIFT + C", hl.dsp.global("quickshell:toggle_clicker"))
-    -- hl.bind("Q", hl.dsp.exec("echo 1 > /tmp/q_spam.lock"))
+    -- 按下 Q 时：用 sh 启动一个无限循环连点鼠标，并在后台运行（&）
+    -- 1. 按下 Q 键时启动连击
+    -- hl.bind("Q", hl.dsp.exec_cmd("sh -c 'while true; do wtype q; sleep 0.025; done & echo $! > /tmp/q_loop.pid'"))
+
+    -- 2. 释放 Q 键时停止连击（修正后的语法）
+    -- hl.bind("Q", hl.dsp.exec_cmd("sh -c 'if [ -f /tmp/q_loop.pid ]; then kill $(cat /tmp/q_loop.pid); rm /tmp/q_loop.pid; fi'"), { release = true })
+
+
+
   '';
 
   xdg.configFile."MYHYprLUa/MONITORS.lua".text = '''';
@@ -295,7 +303,6 @@ hl.window_rule({
    hl.on("hyprland.start", function ()
       -- 🟢 2. 音频控制和壁纸脚本（用 uwsm app -- 包裹）
       hl.exec_cmd("wpctl set-profile 122 1 && wpctl set-profile 122 16")
-      hl.exec_cmd("uwsm app -- caelestia shell -d")
       hl.exec_cmd("uwsm app -- wall-random")
 
       -- 🟢 3. 图形客户端软件（用 uwsm app -- 包裹，确保能优雅退出、不丢失浏览器缓存）
