@@ -279,21 +279,10 @@ hl.window_rule({
     hl.bind(mainMod .. " + ALT + up",    hl.dsp.window.resize({ x = 0,   y = -40 }))
     hl.bind(mainMod .. " + ALT + down",  hl.dsp.window.resize({ x = 0,   y = 40 }))
    
-    hl.bind("SHIFT + Z", hl.dsp.global("quickshell:strike_z"))
-    hl.bind("SHIFT + X", hl.dsp.global("quickshell:strike_x"))
-    -- Shift+C 一鍵開啟/關閉鼠標連擊 (對接 Quickshell)
-    hl.bind("SHIFT + C", hl.dsp.global("quickshell:toggle_clicker"))
-    -- 按下 Q 时：用 sh 启动一个无限循环连点鼠标，并在后台运行（&）
-    -- 1. 按下 Q 键时启动连击
-    -- hl.bind("Q", hl.dsp.exec_cmd("sh -c 'while true; do wtype q; sleep 0.025; done & echo $! > /tmp/q_loop.pid'"))
-
-    -- 2. 释放 Q 键时停止连击（修正后的语法）
-    -- 用单行代码同时绑定按下和松开：第二个参数是按下触发，第四个参数是松开触发
-    -- hl.bind("Q", hl.dsp.exec_cmd("sh -c 'while true; do wtype q; sleep 0.025; done & echo $! > /tmp/q_loop.pid'"), {}, hl.dsp.exec_cmd("sh -c 'if [ -f /tmp/q_loop.pid ]; then kill $(cat /tmp/q_loop.pid); rm /tmp/q_loop.pid; fi'"))
-
-
-
-
+    hl.bind(mainMod .. " + Z", hl.dsp.global("quickshell:strike_z"))
+    hl.bind(mainMod .. " + X", hl.dsp.global("quickshell:strike_x"))
+    hl.bind(mainMod .. " + C", hl.dsp.global("quickshell:toggle_clicker"))
+    
   '';
 
   xdg.configFile."MYHYprLUa/MONITORS.lua".text = '''';
