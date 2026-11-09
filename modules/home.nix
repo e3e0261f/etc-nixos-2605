@@ -18,7 +18,7 @@
     # -----------------------------------------------------------------------
     # ⌨️ 2. 輸入法、終端機與主力編輯器 (Terminal & Productivity)
     # -----------------------------------------------------------------------
-    # ./fcitx5.nix        # ⌨️ Fcitx5 輸入法 (Rime 中州韻 + 小鶴雙拼 + 四葉草詞庫 + 八股文語意模型)
+    ./fcitx5.nix        # ⌨️ Fcitx5 輸入法 (Rime 中州韻 + 小鶴雙拼 + 四葉草詞庫 + 八股文語意模型)
     ./kitty.nix         # 🐱 Kitty GPU 加速終端機 (JetBrainsMono 字體、透明背景、按鍵穿透)
     ./helix.nix         # 🧬 Helix 現代模態編輯器 (Space+w 存檔 | Space+Space 搜檔 | LSP 自動補全)
     ./yazi.nix          # 📁 Yazi 終端檔案管理器 (g D 一秒跳 ~/DOwn，Enter 直連 Helix，極速預覽)
@@ -62,24 +62,24 @@
   # =========================================================================
   # ⭐️ 核心修正：讓 Caelestia Shell 專屬於 Hyprland，進 KDE 時絕不啟動！
   # =========================================================================
-  systemd.user.services.caelestia-shell = {
-    Unit = {
-      Description = "Caelestia Desktop Shell Daemon";
-      # ⭐️ 1. 改為只跟隨 Hyprland 會話生命週期
-      PartOf = [ "hyprland-session.target" ];
-      After = [ "hyprland-session.target" ];
-    };
+  # systemd.user.services.caelestia-shell = {
+  #   Unit = {
+  #     Description = "Caelestia Desktop Shell Daemon";
+  #     # ⭐️ 1. 改為只跟隨 Hyprland 會話生命週期
+  #     PartOf = [ "hyprland-session.target" ];
+  #     After = [ "hyprland-session.target" ];
+  #   };
 
-    Service = {
-      # ⭐️ 2. 雙重保險：只有桌面環境是 Hyprland 時才准運行，在 KDE 中直接靜默跳過！
-      ExecCondition = "${pkgs.bash}/bin/bash -c '[ \"$XDG_CURRENT_DESKTOP\" = \"Hyprland\" ]'";
+  #   Service = {
+  #     # ⭐️ 2. 雙重保險：只有桌面環境是 Hyprland 時才准運行，在 KDE 中直接靜默跳過！
+  #     ExecCondition = "${pkgs.bash}/bin/bash -c '[ \"$XDG_CURRENT_DESKTOP\" = \"Hyprland\" ]'";
 
-      Environment = [ "QS_ICON_THEME=Papirus-Dark" ];
-      # ExecStart = "${inputs.caelestia-shell.packages.${pkgs.system}.with-cli}/bin/caelestia-shell";
-      Restart = "on-failure";
-      RestartSec = "1s";
-    };
-  };
+  #     Environment = [ "QS_ICON_THEME=Papirus-Dark" ];
+  #     # ExecStart = "${inputs.caelestia-shell.packages.${pkgs.system}.with-cli}/bin/caelestia-shell";
+  #     Restart = "on-failure";
+  #     RestartSec = "1s";
+  #   };
+  # };
 
   # 💡 IBus 服務託管 (UWSM 規範版)
   services.hypridle = {
