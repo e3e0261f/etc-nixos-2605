@@ -32,6 +32,9 @@
     hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.close())
     --hl.bind("Q", hl.dsp.exec_cmd("ydotool key 16:1 16:0"))
     --hl.bind("SUPER + mouse:273", hl.dsp.exec_cmd("pkill -USR1 quickshell || true"))
+    -- Shift+Z 和 Shift+X 觸發 Quickshell 的定點打擊！
+    hl.bind("SHIFT", "Z", hl.dsp.global("quickshell:strike_z"))
+    hl.bind("SHIFT", "X", hl.dsp.global("quickshell:strike_x"))
     hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
     hl.bind(mainMod .. " + SHIFT + CTRL + ALT + DELETE", hl.dsp.exec_cmd("hyprctl reload"))
     require("AUTOSTART")
