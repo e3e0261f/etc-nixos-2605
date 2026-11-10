@@ -279,9 +279,9 @@ hl.window_rule({
     hl.bind(mainMod .. " + ALT + up",    hl.dsp.window.resize({ x = 0,   y = -40 }))
     hl.bind(mainMod .. " + ALT + down",  hl.dsp.window.resize({ x = 0,   y = 40 }))
    
-    hl.bind(mainMod .. " + Z", hl.dsp.global("quickshell:strike_z"))
-    hl.bind(mainMod .. " + X", hl.dsp.global("quickshell:strike_x"))
-    hl.bind(mainMod .. " + C", hl.dsp.global("quickshell:toggle_clicker"))
+    hl.bind("ALT + Z", hl.dsp.global("quickshell:strike_z"))
+    hl.bind("ALT + X", hl.dsp.global("quickshell:strike_x"))
+    hl.bind("ALT + C", hl.dsp.global("quickshell:toggle_clicker"))
     -- 1. 當按下 Q 鍵時，觸發 QuickShell 的 press_q
     -- 注意：這裡一定要加上 "e" 旗標 (也就是按住重複執行)
     --hl.bindp("Q", hl.dsp.global("quickshell:press_q"))
