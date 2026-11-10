@@ -284,8 +284,25 @@ hl.window_rule({
     hl.bind(mainMod .. " + C", hl.dsp.global("quickshell:toggle_clicker"))
     -- 1. 當按下 Q 鍵時，觸發 QuickShell 的 press_q
     -- 注意：這裡一定要加上 "e" 旗標 (也就是按住重複執行)
-    hl.bind("Q", hl.dsp.global("quickshell:press_q"))
-
+    --hl.bindp("Q", hl.dsp.global("quickshell:press_q"))
+    hl.bind("Q", function()
+        -- 透過你的事件或全域狀態讀取 QuickShell 的 autoQActive 開關
+        -- 註：如果你的框架有提供直接讀取變數的方法，可以直接使用
+        -- 這裡我們用最標準的：如果開關是開的，執行邏輯；否則 pass 原生按鍵
+    
+        -- 假設你可以透過某種方式獲取變數，或如果你的 hl.dsp.global 
+        -- 本身可以回傳值，或者我們可以用最保險的狀態檔案判斷：
+        local handle = io.open("/tmp/q_spam_enabled", "r")
+        if handle then
+            handle:close()
+            -- 開關開啟：觸發 QuickShell 的 press_q
+            hl.dispatch(hl.dsp.global("quickshell:press_q"))
+            return { ok = true } -- 消耗掉這個按鍵，不讓實體 Q 傳進遊戲
+        else
+            -- 開關關閉：直接 pass 讓遊戲正常接收 Q 鍵
+            return { ok = false }
+        end
+    end, { auto_consuming = true, flags = "e" }) -- 加上 e 旗標確保按住時重複觸發函數
 
     
   '';
