@@ -5,11 +5,8 @@ let
 in
 {
   home.packages = with pkgs; [
-    quickshell
     libcanberra-gtk3
     sound-theme-freedesktop
-    networkmanager
-    fcitx5
   ];
 
   systemd.user.services.quickshell = {
