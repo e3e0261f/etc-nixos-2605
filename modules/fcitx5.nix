@@ -106,17 +106,17 @@ in
     0=Alt+space
   '';
 
-  systemd.user.services.fcitx5-daemon = {
-    Unit = {
-      Description = "Fcitx5 Input Method Daemon";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
-    };
+  # systemd.user.services.fcitx5-daemon = {
+  #   Unit = {
+  #     Description = "Fcitx5 Input Method Daemon";
+  #     PartOf = [ "graphical-session.target" ];
+  #     After = [ "graphical-session.target" ];
+  #   };
 
-    Service = {
-      ExecStart = "/run/current-system/sw/bin/fcitx5";
-      Restart = "on-failure";
-      RestartSec = 2;
-    };
-  };
+  #   Service = {
+  #     ExecStart = "/run/current-system/sw/bin/fcitx5";
+  #     Restart = "on-failure";
+  #     RestartSec = 2;
+  #   };
+  # };
 }
