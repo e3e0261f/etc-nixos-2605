@@ -87,6 +87,42 @@ in
         "pulse.min.quantum" = "256/48000";
       };
     };
+        # 3. 瀏覽器錄音自動連接壓縮器輸出 (Studio_Compressor_Out)
+    extraConfig.pipewire."99-chrome-routing" = {
+      "stream.rules" = [
+        {
+          matches = [
+            {
+              "application.name" = "Google Chrome";
+              "media.class" = "Stream/Input/Audio";
+            }
+          ];
+          actions = {
+            update-props = {
+              "target.object" = "Studio_Compressor_Out";
+            };
+          };
+        }
+      ];
+    };
+
+    extraConfig.pipewire-pulse."99-chrome-pulse-routing" = {
+      "stream.rules" = [
+        {
+          matches = [
+            {
+              "application.name" = "Google Chrome";
+              "media.class" = "Stream/Input/Audio";
+            }
+          ];
+          actions = {
+            update-props = {
+              "target.object" = "Studio_Compressor_Out";
+            };
+          };
+        }
+      ];
+    };
     
     
     # 2. 物理声卡纯双声道（FL/FR）+ 蓝牙彻底隔离直通
