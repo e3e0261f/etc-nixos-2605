@@ -2,50 +2,70 @@
 { config, pkgs, ... }:
 let
   ladspaDir = "${pkgs.ladspaPlugins}/lib/ladspa";
-  # 📁 指向你的寶庫基礎路徑：
+  # ⚠️ 请确认下面两个文件夹的大小写与你实际路径完全一致
   irDir = "/home/rhys/DOwn/EAsyeffects-main/FokkevanSaane";
-  # hallIrFile = "/home/rhys/DOwn/EAsyeffects-main/6Spaces13Hillside48K.wav";
-
-  # ⭐️【大場地菜單】：把你想聽的那個取消註釋，其他加上 # 即可！
-  
-  # 🏛️ 1. 歐洲宏偉古大教堂（最空靈、聲場最大）：
   Schellingwoude = "${irDir}/Schellingwoude.wav";
-
-  # 🏛️ 2. 大教堂後排聽音位（超強縱深包圍感）：
-  # buikslootRear = "${irDir}/Buiksloot Rear.wav";
-
-  # 🏭 3. 巨型挑高展廳（橫向聲場極度開闊，現代感）：
-  # Transformatorhuis = "${irDir}/Transformatorhuis wide.wav";
-
-  # 🏭 4. 巨型工業廠房（聽流行/搖滾，力量感）：
-  # factoryhall = "${irDir}/Factory Hall.wav";
-
-  # 🌲 5. 森林自然聲場（完全無牆壁壓迫感，極致通透）：
-  # Forest2 = "${irDir}/Forest 2.wav";
-
-  # 🎙️ 6. 機皇金色大廳（你最愛的原汁原味）：
   hallIrFile = "${irDir}/05Hall5.wav";
-  sofaFile   = "/home/rhys/DOwn/EAsyeffects-main/dtf_nh2.sofa";
+  sofaFile = "/home/rhys/DOwn/EAsyeffects-main/dtf_nh2.sofa";
+
+  # 统一给所有虚拟音效滤镜降权，防止抢占默认输出，并锁定 48kHz 防止内部重采样死锁
+  fxCaptureProps = name: {
+    "node.name" = name;
+    "media.class" = "Audio/Sink";
+    "priority.session" = 100; # 低于物理声卡，绝不抢占默认输出
+    "priority.driver" = 100;
+    "audio.rate" = 48000;
+    "audio.channels" = 2;
+    "audio.position" = [
+      "FL"
+      "FR"
+    ];
+  };
+
+  fxPlaybackProps =
+    name: extra:
+    {
+      "node.name" = name;
+      "node.passive" = true; # 不播放声音时自动休眠，不占 CPU 和缓冲区
+      "audio.rate" = 48000;
+      "audio.channels" = 2;
+      "audio.position" = [
+        "FL"
+        "FR"
+      ];
+    }
+    // extra;
 in
 {
-  # 1. 內核硬實時權限
   security.rtkit.enable = true;
   security.pam.loginLimits = [
-    { domain = "@audio"; item = "rtprio";  type = "-"; value = "95"; }
-    { domain = "@audio"; item = "memlock"; type = "-"; value = "unlimited"; }
-    { domain = "@audio"; item = "nice";    type = "-"; value = "-19"; }
+    {
+      domain = "@audio";
+      item = "rtprio";
+      type = "-";
+      value = "95";
+    }
+    {
+      domain = "@audio";
+      item = "memlock";
+      type = "-";
+      value = "unlimited";
+    }
+    {
+      domain = "@audio";
+      item = "nice";
+      type = "-";
+      value = "-19";
+    }
   ];
 
   users.users.rhys.extraGroups = [ "audio" ];
   services.pulseaudio.enable = false;
 
-        # 2. 如果要設定全域環境變數，必須寫在外部的 environment.variables
   environment.variables = {
     SPA_SUPPORT_IO_URING = "true";
   };
 
-  
-  # 2. PipeWire 核心服務
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -54,28 +74,28 @@ in
     jack.enable = true;
     wireplumber.enable = true;
 
-        # 1. 專治破音的黃金優先權與快取塊大小
+    extraLadspaPackages = [ pkgs.ladspaPlugins ];
+
     extraConfig.pipewire."92-low-latency" = {
       "context.properties" = {
         "core.daemon" = true;
         "cpu.max-align" = 64;
-        # 🏎️ 這是 PipeWire 官方支援的強制開 io_uring 屬性
-        "support.io-uring" = true; 
+        "support.io-uring" = true;
       };
     };
-    
 
-    # ⭐️ 官方正統宣告：自動合成 pipewire-ladspa-plugins 並注入後台服務！
-    extraLadspaPackages = [ pkgs.ladspaPlugins ];
-
+    # ✅ 1. 解开采样率与缓冲上限死锁（兼容 44.1kHz 蓝牙与 48kHz 专业声卡）
     extraConfig.pipewire."99-pro-studio" = {
       "context.properties" = {
         "default.clock.rate" = 48000;
-        "default.clock.allowed-rates" = [ 48000 ];
-        "default.clock.quantum" = 512;
-        "default.clock.min-quantum" = 512;
-        "default.clock.max-quantum" = 4096;
-        "default.clock.quantum-limit" = 512;
+        "default.clock.allowed-rates" = [
+          44100
+          48000
+          96000
+        ];
+        "default.clock.quantum" = 1024;
+        "default.clock.min-quantum" = 256;
+        "default.clock.max-quantum" = 8192;
         "resample.quality" = 4;
       };
     };
@@ -84,26 +104,21 @@ in
       "pulse.properties" = {
         "pulse.min.req" = "512/48000";
         "pulse.default.req" = "1024/48000";
-        "pulse.min.quantum" = "256/48000";
+        "pulse.min.quantum" = "512/48000";
       };
     };
 
-    
-    wireplumber.extraConfig."10-pro-audio-card" = {
+    # ✅ 2. 声卡配置 + 蓝牙专属防破音与路由隔离规则
+    wireplumber.extraConfig."10-pro-audio-and-bluetooth" = {
       "monitor.alsa.rules" = [
-        # 1. 聲卡進入 Pro Audio 模式
         {
-          matches = [
-            { "device.name" = "alsa_input.pci-0000_00_1b.0"; }
-          ];
+          matches = [ { "device.name" = "alsa_card.pci-0000_00_1b.0"; } ];
           actions = {
             update-props = {
               "device.profile" = "pro-audio";
             };
           };
         }
-
-        # 2. 通道映射 防休眠爆音
         {
           matches = [
             { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-0"; }
@@ -112,13 +127,11 @@ in
           actions = {
             update-props = {
               "session.suspend-timeout-seconds" = 0;
-              # 🎯 定義這 6 個孔的標準環繞聲位置
-              "audio.position" = [ "FL" "FR" "RL" "RR" "FC" "LFE" ];
+              "priority.session" = 2000; # 最高优先级，确保永远是默认物理声卡
+              "priority.driver" = 2000;
             };
           };
         }
-
-        # 3. 🎯 精確屏蔽那個多餘的輸入端口
         {
           matches = [
             { "node.name" = "alsa_output.pci-0000_00_1b.0.pro-output-1"; }
@@ -131,44 +144,120 @@ in
           };
         }
       ];
+
+      # 🛡️ 蓝牙接收（手机连电脑）防破音、防抢占配置
+      "monitor.bluez.properties" = {
+        "bluez5.enable-sbc-xq" = true;
+        "bluez5.enable-msbc" = true;
+        "bluez5.enable-hw-volume" = true;
+        # 只保留高质量立体声（A2DP），防止手机连接时乱切到低音质通话模式导致卡死
+        "bluez5.roles" = [
+          "a2dp_sink"
+          "a2dp_source"
+        ];
+      };
+
+      "monitor.bluez.rules" = [
+        {
+          matches = [ { "node.name" = "~bluez_input.*"; } ];
+          actions = {
+            update-props = {
+              # 蓝牙音频直接路由到物理声卡，不经过高负载滤镜链，防止重采样崩溃
+              "target.object" = "alsa_output.pci-0000_00_1b.0.pro-output-0";
+              "node.latency" = "2048/48000"; # 给蓝牙足够的抗抖动缓冲，彻底消除咔啦破音
+            };
+          };
+        }
+      ];
     };
 
     # =======================================================
-    # 🎚️ 錄音棚全家桶效果器機架（全立體聲 FL/FR 對齊）
+    # 🎚️ 錄音棚全家桶效果器機架（已全部注入防抢占与隔离属性）
     # =======================================================
     extraConfig.pipewire."99-studio-modules" = {
       "context.modules" = [
-        # 1. 立體聲 EQ（內置）
+        # 1. 立體聲 EQ
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · EQ · PARAMETRIC";
             "media.name" = "Studio_Vocal_EQ";
             "filter.graph" = {
               nodes = [
-                { type = "builtin"; label = "bq_highpass"; name = "hp_l"; control = { "Freq" = 80.0; "Q" = 0.707; }; }
-                { type = "builtin"; label = "bq_peaking"; name = "presence_l"; control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.5; }; }
-                { type = "builtin"; label = "bq_highpass"; name = "hp_r"; control = { "Freq" = 80.0; "Q" = 0.707; }; }
-                { type = "builtin"; label = "bq_peaking"; name = "presence_r"; control = { "Freq" = 3000.0; "Q" = 1.0; "Gain" = 2.5; }; }
+                {
+                  type = "builtin";
+                  label = "bq_highpass";
+                  name = "hp_l";
+                  control = {
+                    "Freq" = 80.0;
+                    "Q" = 0.707;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "bq_peaking";
+                  name = "presence_l";
+                  control = {
+                    "Freq" = 3000.0;
+                    "Q" = 1.0;
+                    "Gain" = 2.5;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "bq_highpass";
+                  name = "hp_r";
+                  control = {
+                    "Freq" = 80.0;
+                    "Q" = 0.707;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "bq_peaking";
+                  name = "presence_r";
+                  control = {
+                    "Freq" = 3000.0;
+                    "Q" = 1.0;
+                    "Gain" = 2.5;
+                  };
+                }
               ];
               links = [
-                { output = "hp_l:Out"; input = "presence_l:In"; }
-                { output = "hp_r:Out"; input = "presence_r:In"; }
+                {
+                  output = "hp_l:Out";
+                  input = "presence_l:In";
+                }
+                {
+                  output = "hp_r:Out";
+                  input = "presence_r:In";
+                }
               ];
-              inputs = [ "hp_l:In" "hp_r:In" ];
-              outputs = [ "presence_l:Out" "presence_r:Out" ];
+              inputs = [
+                "hp_l:In"
+                "hp_r:In"
+              ];
+              outputs = [
+                "presence_l:Out"
+                "presence_r:Out"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_EQ_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_EQ_Out"; "node.passive" = true; };
+            "capture.props" = fxCaptureProps "Studio_EQ_In";
+            "playback.props" = fxPlaybackProps "Studio_EQ_Out" { };
           };
         }
 
-        # 2. 經典 SC4 立體聲壓縮器（LADSPA）
+        # 2. SC4 壓縮器
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · COMP · VOCAL";
             "media.name" = "Studio_Vocal_Compressor";
@@ -176,7 +265,7 @@ in
               nodes = [
                 {
                   type = "ladspa";
-                  plugin = "sc4_1882";
+                  plugin = "${ladspaDir}/sc4_1882.so";
                   label = "sc4";
                   name = "sc4";
                   control = {
@@ -190,19 +279,27 @@ in
                   };
                 }
               ];
-              inputs = [ "sc4:Left input" "sc4:Right input" ];
-              outputs = [ "sc4:Left output" "sc4:Right output" ];
+              inputs = [
+                "sc4:Left input"
+                "sc4:Right input"
+              ];
+              outputs = [
+                "sc4:Left output"
+                "sc4:Right output"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Compressor_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Compressor_Out"; "node.passive" = true; };
+            "capture.props" = fxCaptureProps "Studio_Compressor_In";
+            "playback.props" = fxPlaybackProps "Studio_Compressor_Out" { };
           };
         }
 
-        # 3. 雙聲道噪聲門限器（LADSPA 立體聲）
+        # 3. 噪聲門限器
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · GATE · Noise";
             "media.name" = "Studio_Noise_Gate";
@@ -210,32 +307,52 @@ in
               nodes = [
                 {
                   type = "ladspa";
-                  plugin = "gate_1410";
+                  plugin = "${ladspaDir}/gate_1410.so";
                   label = "gate";
                   name = "gate_l";
-                  control = { "Threshold (dB)" = -40.0; "Attack (ms)" = 2.0; "Hold (ms)" = 50.0; "Decay (ms)" = 100.0; "Range (dB)" = -90.0; };
+                  control = {
+                    "Threshold (dB)" = -40.0;
+                    "Attack (ms)" = 2.0;
+                    "Hold (ms)" = 50.0;
+                    "Decay (ms)" = 100.0;
+                    "Range (dB)" = -90.0;
+                  };
                 }
                 {
                   type = "ladspa";
-                  plugin = "gate_1410";
+                  plugin = "${ladspaDir}/gate_1410.so";
                   label = "gate";
                   name = "gate_r";
-                  control = { "Threshold (dB)" = -40.0; "Attack (ms)" = 2.0; "Hold (ms)" = 50.0; "Decay (ms)" = 100.0; "Range (dB)" = -90.0; };
+                  control = {
+                    "Threshold (dB)" = -40.0;
+                    "Attack (ms)" = 2.0;
+                    "Hold (ms)" = 50.0;
+                    "Decay (ms)" = 100.0;
+                    "Range (dB)" = -90.0;
+                  };
                 }
               ];
-              inputs = [ "gate_l:Input" "gate_r:Input" ];
-              outputs = [ "gate_l:Output" "gate_r:Output" ];
+              inputs = [
+                "gate_l:Input"
+                "gate_r:Input"
+              ];
+              outputs = [
+                "gate_l:Output"
+                "gate_r:Output"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Gate_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Gate_Out"; "node.passive" = true; };
+            "capture.props" = fxCaptureProps "Studio_Gate_In";
+            "playback.props" = fxPlaybackProps "Studio_Gate_Out" { };
           };
         }
 
-        # 4. 雙聲道電子管溫暖飽和器（LADSPA 立體聲）
+        # 4. 電子管溫暖飽和器
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · TUBE · WARMTH";
             "media.name" = "Studio_Tube_Warmth";
@@ -243,63 +360,83 @@ in
               nodes = [
                 {
                   type = "ladspa";
-                  plugin = "valve_1209";
+                  plugin = "${ladspaDir}/valve_1209.so";
                   label = "valve";
                   name = "valve_l";
-                  control = { "Distortion character" = 0.4; "Distortion level" = 0.0; };
+                  control = {
+                    "Distortion character" = 0.4;
+                    "Distortion level" = 0.0;
+                  };
                 }
                 {
                   type = "ladspa";
-                  plugin = "valve_1209";
+                  plugin = "${ladspaDir}/valve_1209.so";
                   label = "valve";
                   name = "valve_r";
-                  control = { "Distortion character" = 0.4; "Distortion level" = 0.0; };
+                  control = {
+                    "Distortion character" = 0.4;
+                    "Distortion level" = 0.0;
+                  };
                 }
               ];
-              inputs = [ "valve_l:Input" "valve_r:Input" ];
-              outputs = [ "valve_l:Output" "valve_r:Output" ];
+              inputs = [
+                "valve_l:Input"
+                "valve_r:Input"
+              ];
+              outputs = [
+                "valve_l:Output"
+                "valve_r:Output"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Tube_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Tube_Out"; "node.passive" = true; };
+            "capture.props" = fxCaptureProps "Studio_Tube_In";
+            "playback.props" = fxPlaybackProps "Studio_Tube_Out" { };
           };
         }
 
-        # 5. 磚牆防爆限制器（LADSPA）
-         {
-           name = "libpipewire-module-filter-chain";
-           flags = [ "ifexists" "nofail" ];
-           args = {
-             "node.description" = "OUT · LIMITER · MASTER";
-             "media.name" = "Studio_Brickwall_Limiter";
-             "filter.graph" = {
-               nodes = [
-                 {
-                   type = "ladspa";
-                   plugin = "fast_lookahead_limiter_1913";
-                   label = "fastLookaheadLimiter";
-                   name = "fastLookaheadLimiter";
-                   control = {
-                     "Input gain (dB)" = 0.0;
-                     "Limit (dB)" = -0.5;
-                     "Release time (s)" = 0.05;
-                   };
-                 }
-               ];
-               inputs = [ "fastLookaheadLimiter:Input 1" "fastLookaheadLimiter:Input 2" ];
-               outputs = [ "fastLookaheadLimiter:Output 1" "fastLookaheadLimiter:Output 2" ];
-             };
-             "audio.position" = [ "FL" "FR" ];
-             "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
-             "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
-           };
-         }
-        
-        
-        # SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA SOFA
+        # 5. 磚牆防爆限制器
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
+          args = {
+            "node.description" = "OUT · LIMITER · MASTER";
+            "media.name" = "Studio_Brickwall_Limiter";
+            "filter.graph" = {
+              nodes = [
+                {
+                  type = "ladspa";
+                  plugin = "${ladspaDir}/fast_lookahead_limiter_1913.so";
+                  label = "fastLookaheadLimiter";
+                  name = "fastLookaheadLimiter";
+                  control = {
+                    "Input gain (dB)" = 0.0;
+                    "Limit (dB)" = -0.5;
+                    "Release time (s)" = 0.05;
+                  };
+                }
+              ];
+              inputs = [
+                "fastLookaheadLimiter:Input 1"
+                "fastLookaheadLimiter:Input 2"
+              ];
+              outputs = [
+                "fastLookaheadLimiter:Output 1"
+                "fastLookaheadLimiter:Output 2"
+              ];
+            };
+            "capture.props" = fxCaptureProps "Studio_Limiter_In";
+            "playback.props" = fxPlaybackProps "Studio_Limiter_Out" { };
+          };
+        }
+        # 6. SOFA 空間音頻
+        {
+          name = "libpipewire-module-filter-chain";
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · SOFA · MONITORS";
             "media.name" = "Studio_SOFA_Monitors";
@@ -309,90 +446,149 @@ in
                   type = "sofa";
                   label = "spatializer";
                   name = "spFL";
-                  config = { filename = sofaFile; };
-                  control = { "Azimuth" = 30.0; "Elevation" = 0.0; "Radius" = 1.2; };
+                  config = {
+                    filename = sofaFile;
+                  };
+                  control = {
+                    "Azimuth" = 30.0;
+                    "Elevation" = 0.0;
+                    "Radius" = 1.2;
+                  };
                 }
                 {
                   type = "sofa";
                   label = "spatializer";
                   name = "spFR";
-                  config = { filename = sofaFile; };
-                  control = { "Azimuth" = 330.0; "Elevation" = 0.0; "Radius" = 1.2; };
+                  config = {
+                    filename = sofaFile;
+                  };
+                  control = {
+                    "Azimuth" = 330.0;
+                    "Elevation" = 0.0;
+                    "Radius" = 1.2;
+                  };
                 }
-                { type = "builtin"; label = "mixer"; name = "mixL"; }
-                { type = "builtin"; label = "mixer"; name = "mixR"; }
+                {
+                  type = "builtin";
+                  label = "mixer";
+                  name = "mixL";
+                }
+                {
+                  type = "builtin";
+                  label = "mixer";
+                  name = "mixR";
+                }
               ];
               links = [
-                { output = "spFL:Out L"; input = "mixL:In 1"; }
-                { output = "spFL:Out R"; input = "mixR:In 1"; }
-                { output = "spFR:Out L"; input = "mixL:In 2"; }
-                { output = "spFR:Out R"; input = "mixR:In 2"; }
+                {
+                  output = "spFL:Out L";
+                  input = "mixL:In 1";
+                }
+                {
+                  output = "spFL:Out R";
+                  input = "mixR:In 1";
+                }
+                {
+                  output = "spFR:Out L";
+                  input = "mixL:In 2";
+                }
+                {
+                  output = "spFR:Out R";
+                  input = "mixR:In 2";
+                }
               ];
-              inputs = [ "spFL:In" "spFR:In" ];
-              outputs = [ "mixL:Out" "mixR:Out" ];
+              inputs = [
+                "spFL:In"
+                "spFR:In"
+              ];
+              outputs = [
+                "mixL:Out"
+                "mixR:Out"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_SOFA_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_SOFA_Out"; "node.passive" = true; };
+            "capture.props" = fxCaptureProps "Studio_SOFA_In";
+            "playback.props" = fxPlaybackProps "Studio_SOFA_Out" { };
           };
         }
-
-        # ⭐️ 卷积器 2：耳机虚拟音箱空间化（串联在耳机前，彻底消除压迫感）
+        # 7. 卷積器 2：耳機虛擬音箱空間化
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "OUT · STUDIO · MONITOR";
             "media.name" = "Studio_Monitor_Spatializer";
             "filter.graph" = {
               nodes = [
-                # 加载你的虚拟音箱空间脉冲 WAV 文件（例如 HeSuVi 或监听室双耳脉冲）
-                { type = "builtin"; label = "convolver"; name = "spatFL"; config = { filename = Schellingwoude; channel = 0; gain = 1.0; }; }
-                { type = "builtin"; label = "convolver"; name = "spatFR"; config = { filename = Schellingwoude; channel = 1; gain = 1.0; }; }
+                {
+                  type = "builtin";
+                  label = "convolver";
+                  name = "spatFL";
+                  config = {
+                    filename = Schellingwoude;
+                    channel = 0;
+                    gain = 1.0;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "convolver";
+                  name = "spatFR";
+                  config = {
+                    filename = Schellingwoude;
+                    channel = 1;
+                    gain = 1.0;
+                  };
+                }
               ];
-              inputs = [ "spatFL:In" "spatFR:In" ];
-              outputs = [ "spatFL:Out" "spatFR:Out" ];
+              inputs = [
+                "spatFL:In"
+                "spatFR:In"
+              ];
+              outputs = [
+                "spatFL:Out"
+                "spatFR:Out"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Spatial_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = {
-              "node.name" = "Studio_Spatial_Out";
-              "node.passive" = true;
-              # 直通你的物理耳机声卡
+            "capture.props" = fxCaptureProps "Studio_Spatial_In";
+            "playback.props" = fxPlaybackProps "Studio_Spatial_Out" {
               "target.object" = "alsa_output.pci-0000_00_1b.0.pro-output-0";
             };
           };
         }
-
-        # =======================================================
-        # 🚀 模組：聽不清救星！500%~1000% 超級音頻放大器（帶防爆保護）
-        # =======================================================
+        # 8. 超級音頻放大器（帶防爆保護）
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "SuperAudio · 500% - 1000%";
             "media.name" = "Audio_Booster";
             "filter.graph" = {
               nodes = [
-                # ⭐️ 1. 純線性硬件級放大（Mult = 5.0 代表基礎放大 500%，可改為 10.0 即 1000%）
                 {
                   type = "builtin";
                   label = "linear";
                   name = "amp_l";
-                  control = { "Mult" = 5.0; };
+                  control = {
+                    "Mult" = 5.0;
+                  };
                 }
                 {
                   type = "builtin";
                   label = "linear";
                   name = "amp_r";
-                  control = { "Mult" = 5.0; };
+                  control = {
+                    "Mult" = 5.0;
+                  };
                 }
-
-                # ⭐️ 2. 串聯磚牆限制器：把小聲拉大，但死守 -0.5dB 物理防爆天花板！
                 {
                   type = "ladspa";
-                  plugin = "fast_lookahead_limiter_1913";
+                  plugin = "${ladspaDir}/fast_lookahead_limiter_1913.so";
                   label = "fastLookaheadLimiter";
                   name = "limiter";
                   control = {
@@ -402,60 +598,52 @@ in
                   };
                 }
               ];
-
-              # 放大後自動進限制器過濾
               links = [
-                { output = "amp_l:Out"; input = "limiter:Input 1"; }
-                { output = "amp_r:Out"; input = "limiter:Input 2"; }
+                {
+                  output = "amp_l:Out";
+                  input = "limiter:Input 1";
+                }
+                {
+                  output = "amp_r:Out";
+                  input = "limiter:Input 2";
+                }
               ];
-
-              inputs = [ "amp_l:In" "amp_r:In" ];
-              outputs = [ "limiter:Output 1" "limiter:Output 2" ];
+              inputs = [
+                "amp_l:In"
+                "amp_r:In"
+              ];
+              outputs = [
+                "limiter:Output 1"
+                "limiter:Output 2"
+              ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = {
-              "node.name" = "Audio_Booster_In";
-              "media.class" = "Audio/Sink";
-            };
-            "playback.props" = {
-              "node.name" = "Audio_Booster_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "Audio_Booster_In";
+            "playback.props" = fxPlaybackProps "Audio_Booster_Out" { };
           };
         }
-
-        
-        # =======================================================
-        # FX · DELAY · STUDIO
-        # Stereo Studio Delay
-        # L = 280ms / R = 420ms
-        # Dry 70% / Wet 30%
-        # =======================================================
+        # 9. FX · DELAY · STUDIO（修正雙聲道端口映射）
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · DELAY · STUDIO";
             "media.name" = "FX_DELAY_STUDIO";
-
             "filter.graph" = {
               nodes = [
-                # -------------------------
-                # LEFT
-                # -------------------------
                 {
                   type = "builtin";
                   label = "copy";
-                  name = "delay_dry_l";
+                  name = "in_l";
                 }
-
                 {
                   type = "builtin";
                   label = "delay";
                   name = "delay_l";
                   config = {
-                    "max-delay" = 2.0;
+                    "max.delay" = 2.0;
                   };
                   control = {
                     "Delay (s)" = 0.280;
@@ -463,7 +651,6 @@ in
                     "Feedforward" = 0.0;
                   };
                 }
-
                 {
                   type = "builtin";
                   label = "mixer";
@@ -473,22 +660,17 @@ in
                     "Gain 2" = 0.30;
                   };
                 }
-
-                # -------------------------
-                # RIGHT
-                # -------------------------
                 {
                   type = "builtin";
                   label = "copy";
-                  name = "delay_dry_r";
+                  name = "in_r";
                 }
-
                 {
                   type = "builtin";
                   label = "delay";
                   name = "delay_r";
                   config = {
-                    "max-delay" = 2.0;
+                    "max.delay" = 2.0;
                   };
                   control = {
                     "Delay (s)" = 0.420;
@@ -496,7 +678,6 @@ in
                     "Feedforward" = 0.0;
                   };
                 }
-
                 {
                   type = "builtin";
                   label = "mixer";
@@ -507,126 +688,55 @@ in
                   };
                 }
               ];
-
               links = [
-                # LEFT
-                { output = "delay_dry_l:Out"; input = "delay_mix_l:In 1"; }
-                { output = "delay_l:Out";     input = "delay_mix_l:In 2"; }
-
-                # RIGHT
-                { output = "delay_dry_r:Out"; input = "delay_mix_r:In 1"; }
-                { output = "delay_r:Out";     input = "delay_mix_r:In 2"; }
+                {
+                  output = "in_l:Out";
+                  input = "delay_l:In";
+                }
+                {
+                  output = "in_l:Out";
+                  input = "delay_mix_l:In 1";
+                }
+                {
+                  output = "delay_l:Out";
+                  input = "delay_mix_l:In 2";
+                }
+                {
+                  output = "in_r:Out";
+                  input = "delay_r:In";
+                }
+                {
+                  output = "in_r:Out";
+                  input = "delay_mix_r:In 1";
+                }
+                {
+                  output = "delay_r:Out";
+                  input = "delay_mix_r:In 2";
+                }
               ];
-
               inputs = [
-                "delay_dry_l:In"
-                "delay_l:In"
-                "delay_dry_r:In"
-                "delay_r:In"
+                "in_l:In"
+                "in_r:In"
               ];
-
               outputs = [
                 "delay_mix_l:Out"
                 "delay_mix_r:Out"
               ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "FX_DELAY_STUDIO_In";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "FX_DELAY_STUDIO_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "FX_DELAY_STUDIO_In";
+            "playback.props" = fxPlaybackProps "FX_DELAY_STUDIO_Out" { };
           };
         }
-
-        # =======================================================
-        # FX · CHORUS · STUDIO
-        # SWH Multivoice Chorus
-        # =======================================================
-        # {
-        #   name = "libpipewire-module-filter-chain";
-        #   flags = [ "ifexists" "nofail" ];
-        #   args = {
-        #     "node.description" = "FX · CHORUS · STUDIO";
-        #     "media.name" = "FX_CHORUS_STUDIO";
-
-        #     "filter.graph" = {
-        #       nodes = [
-        #         {
-        #           type = "ladspa";
-        #           name = "chorus_l";
-        #           plugin = "${ladspaDir}/multivoice_chorus_1201.so";
-        #           label = "multivoiceChorus";
-
-        #          control = {
-        #             "Number of voices" = 3.0;
-        #             "Delay base (ms)" = 20.0;
-        #             "Voice separation (ms)" = 0.5;
-        #             "Detune (%)" = 1.0;
-        #             "LFO frequency (Hz)" = 5.0;
-        #             "Output attenuation (dB)" = -3.0;
-        #           };
-        #         }
-
-        #         {
-        #           type = "ladspa";
-        #           name = "chorus_r";
-        #           plugin = "multivoice_chorus_1201.so";
-        #           label = "multivoiceChorus";
-
-        #           control = {
-        #             "Number of voices" = 3.0;
-        #             "Delay base (ms)" = 20.0;
-        #             "Voice separation (ms)" = 0.5;
-        #             "Detune (%)" = 1.0;
-        #             "LFO frequency (Hz)" = 5.0;
-        #             "Output attenuation (dB)" = -3.0;
-        #           };
-        #         }
-        #       ];
-
-        #       inputs = [
-        #         "chorus_l:Input"
-        #         "chorus_r:Input"
-        #       ];
-
-        #       outputs = [
-        #         "chorus_l:Output"
-        #         "chorus_r:Output"
-        #       ];
-        #     };
-
-        #     "audio.position" = [ "FL" "FR" ];
-
-        #     "capture.props" = {
-        #       "node.name" = "FX_CHORUS_STUDIO_In";
-        #       "media.class" = "Audio/Sink";
-        #     };
-
-        #     "playback.props" = {
-        #       "node.name" = "FX_CHORUS_STUDIO_Out";
-        #       "node.passive" = true;
-        #     };
-        #   };
-        # }
-
-        # =======================================================
-        # FX · FLANGER · STUDIO
-        # SWH Flanger
-        # =======================================================
+        # 10. FX · FLANGER · STUDIO
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · FLANGER · STUDIO";
             "media.name" = "FX_FLANGER_STUDIO";
-
             "filter.graph" = {
               nodes = [
                 {
@@ -634,7 +744,6 @@ in
                   name = "flanger_l";
                   plugin = "${ladspaDir}/flanger_1191.so";
                   label = "flanger";
-
                   control = {
                     "Delay base (ms)" = 8.0;
                     "Max slowdown (ms)" = 3.0;
@@ -642,13 +751,11 @@ in
                     "Feedback" = 0.25;
                   };
                 }
-
                 {
                   type = "ladspa";
                   name = "flanger_r";
                   plugin = "${ladspaDir}/flanger_1191.so";
                   label = "flanger";
-
                   control = {
                     "Delay base (ms)" = 8.0;
                     "Max slowdown (ms)" = 3.0;
@@ -657,43 +764,29 @@ in
                   };
                 }
               ];
-
               inputs = [
                 "flanger_l:Input"
                 "flanger_r:Input"
               ];
-
               outputs = [
                 "flanger_l:Output"
                 "flanger_r:Output"
               ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "FX_FLANGER_STUDIO_In";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "FX_FLANGER_STUDIO_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "FX_FLANGER_STUDIO_In";
+            "playback.props" = fxPlaybackProps "FX_FLANGER_STUDIO_Out" { };
           };
         }
-
-        # =======================================================
-        # FX · PHASER · STUDIO
-        # SWH LFO Phaser
-        # =======================================================
+        # 11. FX · PHASER · STUDIO
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "FX · PHASER · STUDIO";
             "media.name" = "FX_PHASER_STUDIO";
-
             "filter.graph" = {
               nodes = [
                 {
@@ -702,7 +795,6 @@ in
                   plugin = "${ladspaDir}/phasers_1217.so";
                   label = "lfoPhaser";
                 }
-
                 {
                   type = "ladspa";
                   name = "phaser_r";
@@ -710,83 +802,102 @@ in
                   label = "lfoPhaser";
                 }
               ];
-
               inputs = [
                 "phaser_l:Input"
                 "phaser_r:Input"
               ];
-
               outputs = [
                 "phaser_l:Output"
                 "phaser_r:Output"
               ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "FX_PHASER_STUDIO_In";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "FX_PHASER_STUDIO_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "FX_PHASER_STUDIO_In";
+            "playback.props" = fxPlaybackProps "FX_PHASER_STUDIO_Out" { };
           };
         }
-
-        # =======================================================
-        # 🎸 破音模組 1：硬裁剪失真（Hard Clipper 立體聲版）
-        # 效果：直接把波形強制削頂，產生極其粗暴、帶磁性的喇叭撕裂破音
-        # =======================================================
+        # 12~16. 五組 Overdrive 破音模組
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "🔥 OVERDRIVE · HARD CLIPPER";
             "media.name" = "Studio_Overdrive";
             "filter.graph" = {
               nodes = [
-                # 左聲道過載鏈：前級推大 (Gain) -> 軟/硬裁剪失真 (bq_peaking 激增波形)
-                { type = "builtin"; label = "linear"; name = "drive_l"; control = { "Mult" = 3.0; }; } # 推大 3 倍進去過載
-                { type = "builtin"; label = "bq_peaking"; name = "clip_l"; control = { "Freq" = 1500.0; "Q" = 0.5; "Gain" = 12.0; }; } # 高增益染色
-
-                # 右聲道過載鏈
-                { type = "builtin"; label = "linear"; name = "drive_r"; control = { "Mult" = 3.0; }; }
-                { type = "builtin"; label = "bq_peaking"; name = "clip_r"; control = { "Freq" = 1500.0; "Q" = 0.5; "Gain" = 12.0; }; }
+                {
+                  type = "builtin";
+                  label = "linear";
+                  name = "drive_l";
+                  control = {
+                    "Mult" = 3.0;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "bq_peaking";
+                  name = "clip_l";
+                  control = {
+                    "Freq" = 1500.0;
+                    "Q" = 0.5;
+                    "Gain" = 12.0;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "linear";
+                  name = "drive_r";
+                  control = {
+                    "Mult" = 3.0;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "bq_peaking";
+                  name = "clip_r";
+                  control = {
+                    "Freq" = 1500.0;
+                    "Q" = 0.5;
+                    "Gain" = 12.0;
+                  };
+                }
               ];
               links = [
-                { output = "drive_l:Out"; input = "clip_l:In"; }
-                { output = "drive_r:Out"; input = "clip_r:In"; }
+                {
+                  output = "drive_l:Out";
+                  input = "clip_l:In";
+                }
+                {
+                  output = "drive_r:Out";
+                  input = "clip_r:In";
+                }
               ];
-              inputs = [ "drive_l:In" "drive_r:In" ];
-              outputs = [ "clip_l:Out" "clip_r:Out" ];
+              inputs = [
+                "drive_l:In"
+                "drive_r:In"
+              ];
+              outputs = [
+                "clip_l:Out"
+                "clip_r:Out"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Studio_Overdrive_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Overdrive_Out"; "node.passive" = true; };
+            "capture.props" = fxCaptureProps "Studio_Overdrive_In";
+            "playback.props" = fxPlaybackProps "Studio_Overdrive_Out" { };
           };
         }
-
-                # =======================================================
-        # 🎸 破音模組 2：SWH Diode
-        # 二极管非线性失真
-        # Mode:
-        #   0 = None
-        #   1 = Half Wave
-        #   2 = Full Wave
-        # =======================================================
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "🔥 OVERDRIVE · DIODE";
             "media.name" = "SWH_Diode";
-
             "filter.graph" = {
               nodes = [
-                # 左声道
                 {
                   type = "ladspa";
                   name = "diode_l";
@@ -796,8 +907,6 @@ in
                     "Mode (0 for none, 1 for half wave, 2 for full wave)" = 2.0;
                   };
                 }
-
-                # 右声道
                 {
                   type = "ladspa";
                   name = "diode_r";
@@ -808,48 +917,30 @@ in
                   };
                 }
               ];
-
               inputs = [
                 "diode_l:Input"
                 "diode_r:Input"
               ];
-
               outputs = [
                 "diode_l:Output"
                 "diode_r:Output"
               ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "SWH_Diode_In";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "SWH_Diode_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "SWH_Diode_In";
+            "playback.props" = fxPlaybackProps "SWH_Diode_Out" { };
           };
         }
-
-
-        # =======================================================
-        # 🎸 破音模組 3：SWH FOverdrive
-        # Fast Overdrive
-        # Drive level：1.0 ～ 3.0
-        # =======================================================
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "🔥 OVERDRIVE · FAST DRIVE";
             "media.name" = "SWH_FOverdrive";
-
             "filter.graph" = {
               nodes = [
-                # 左声道
                 {
                   type = "ladspa";
                   name = "foverdrive_l";
@@ -859,8 +950,6 @@ in
                     "Drive level" = 2.0;
                   };
                 }
-
-                # 右声道
                 {
                   type = "ladspa";
                   name = "foverdrive_r";
@@ -871,50 +960,30 @@ in
                   };
                 }
               ];
-
               inputs = [
                 "foverdrive_l:Input"
                 "foverdrive_r:Input"
               ];
-
               outputs = [
                 "foverdrive_l:Output"
                 "foverdrive_r:Output"
               ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "SWH_FOverdrive_In";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "SWH_FOverdrive_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "SWH_FOverdrive_In";
+            "playback.props" = fxPlaybackProps "SWH_FOverdrive_Out" { };
           };
         }
-
-
-        # =======================================================
-        # 🎸 破音模組 4：SWH Valve
-        # Valve Saturation / 真空管饱和
-        #
-        # Distortion level     = 0.0 ～ 1.0
-        # Distortion character = 0.0 ～ 1.0
-        # =======================================================
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "🔥 OVERDRIVE · TUBE SATURATION";
             "media.name" = "SWH_Valve";
-
             "filter.graph" = {
               nodes = [
-                # 左声道
                 {
                   type = "ladspa";
                   name = "valve_l";
@@ -925,8 +994,6 @@ in
                     "Distortion character" = 0.50;
                   };
                 }
-
-                # 右声道
                 {
                   type = "ladspa";
                   name = "valve_r";
@@ -938,50 +1005,30 @@ in
                   };
                 }
               ];
-
               inputs = [
                 "valve_l:Input"
                 "valve_r:Input"
               ];
-
               outputs = [
                 "valve_l:Output"
                 "valve_r:Output"
               ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "SWH_Valve_In";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "SWH_Valve_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "SWH_Valve_In";
+            "playback.props" = fxPlaybackProps "SWH_Valve_Out" { };
           };
         }
-
-
-        # =======================================================
-        # 🎸 破音模組 5：SWH Valve Rectifier
-        # 真空管整流器 + Sag + Distortion
-        #
-        # Sag level  = 0.0 ～ 1.0
-        # Distortion = 0.0 ～ 1.0
-        # =======================================================
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "🔥 OVERDRIVE · TUBE RECTIFIER";
             "media.name" = "SWH_ValveRect";
-
             "filter.graph" = {
               nodes = [
-                # 左声道
                 {
                   type = "ladspa";
                   name = "valve_rect_l";
@@ -992,8 +1039,6 @@ in
                     "Distortion" = 0.50;
                   };
                 }
-
-                # 右声道
                 {
                   type = "ladspa";
                   name = "valve_rect_r";
@@ -1005,52 +1050,63 @@ in
                   };
                 }
               ];
-
               inputs = [
                 "valve_rect_l:Input"
                 "valve_rect_r:Input"
               ];
-
               outputs = [
                 "valve_rect_l:Output"
                 "valve_rect_r:Output"
               ];
             };
-
-            "audio.position" = [ "FL" "FR" ];
-
-            "capture.props" = {
-              "node.name" = "SWH_ValveRect_In";
-              "media.class" = "Audio/Sink";
-            };
-
-            "playback.props" = {
-              "node.name" = "SWH_ValveRect_Out";
-              "node.passive" = true;
-            };
+            "capture.props" = fxCaptureProps "SWH_ValveRect_In";
+            "playback.props" = fxPlaybackProps "SWH_ValveRect_Out" { };
           };
         }
-        
-        # 7. 純大廳混響（你的 05Hall5）
+        # 17. 純大廳混響（05Hall5）
         {
           name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
+          flags = [
+            "ifexists"
+            "nofail"
+          ];
           args = {
             "node.description" = "Fokke van Saane Hall5";
             "media.name" = "Hall5 Wet Reverb";
             "filter.graph" = {
               nodes = [
-                { type = "builtin"; label = "convolver"; name = "convFL"; config = { filename = hallIrFile; channel = 0; gain = 1.0; }; }
-                { type = "builtin"; label = "convolver"; name = "convFR"; config = { filename = hallIrFile; channel = 1; gain = 1.0; }; }
+                {
+                  type = "builtin";
+                  label = "convolver";
+                  name = "convFL";
+                  config = {
+                    filename = hallIrFile;
+                    channel = 0;
+                    gain = 1.0;
+                  };
+                }
+                {
+                  type = "builtin";
+                  label = "convolver";
+                  name = "convFR";
+                  config = {
+                    filename = hallIrFile;
+                    channel = 1;
+                    gain = 1.0;
+                  };
+                }
               ];
-              inputs = [ "convFL:In" "convFR:In" ];
-              outputs = [ "convFL:Out" "convFR:Out" ];
+              inputs = [
+                "convFL:In"
+                "convFR:In"
+              ];
+              outputs = [
+                "convFL:Out"
+                "convFR:Out"
+              ];
             };
-            "audio.position" = [ "FL" "FR" ];
-            "capture.props" = { "node.name" = "Hall5_Soundstage_Sink"; "media.class" = "Audio/Sink"; };
-            "playback.props" = {
-              "node.name" = "Hall5_Soundstage_Output";
-              "node.passive" = true;
+            "capture.props" = fxCaptureProps "Hall5_Soundstage_Sink";
+            "playback.props" = fxPlaybackProps "Hall5_Soundstage_Output" {
               "target.object" = "alsa_output.pci-0000_00_1b.0.pro-output-0";
             };
           };
@@ -1058,28 +1114,9 @@ in
       ];
     };
   };
-
-# EQ	频率塑形、削减共振	FX · EQ · PARAMETRIC
-# Compressor	动态压缩，让音量更稳定	FX · COMP · STUDIO
-# Limiter	防止峰值爆音、母线保护	FX · LIMITER · MASTER
-# Gate	消除底噪、控制无声段	FX · GATE · STUDIO
-# Delay	回声、空间感、节奏效果	FX · DELAY · STUDIO
-# Reverb	房间、Hall、Plate 等空间	FX · REVERB · STUDIO
-# Chorus	加宽、复制/调制声音	FX · CHORUS · STUDIO
-# Flanger	金属扫频、特殊空间感	FX · FLANGER · STUDIO
-# Phaser	相位旋转效果	FX · PHASER · STUDIO
-
-
-# =======================================================
-  # 🛡️ 1. 宣告式防呆：確保 /var/lib/alsa 目錄永遠存在
-  # =======================================================
   systemd.tmpfiles.rules = [
     "d /var/lib/alsa 0755 root root -"
   ];
-
-  # =======================================================
-  # 🚀 2. 開機硬體電路自動通電服務（開機自動解鎖 Pro Audio 物理硬體）
-  # =======================================================
   systemd.services.init-pro-audio-hardware = {
     description = "Initialize ALC1150 Codec for Pro Audio (Unmute & Line-In)";
     wantedBy = [ "multi-user.target" ];
@@ -1089,18 +1126,13 @@ in
       RemainAfterExit = true;
     };
     script = ''
-      # ⭐️ 防搶跑：開機時等待 PCH 聲卡註冊完成（最多等 3 秒）
       for i in $(seq 1 6); do
-        if ${pkgs.alsa-utils}/bin/amixer -c PCH info >/dev/null 2>&1; then
-          break
-        fi
-        sleep 0.5
+      if ${pkgs.alsa-utils}/bin/amixer -c PCH info >/dev/null 2>&1; then
+      break
+      fi
+      sleep 0.5
       done
-
-      # ⭐️ 1. 優先嘗試讀取 asound.state 存檔
       ${pkgs.alsa-utils}/bin/alsactl restore || true
-
-      # ⭐️ 2. 強制物理線路通電（音量鎖定 10%）
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Master' 100% unmute || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Headphone' 100% unmute || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Auto-Mute Mode' 'Disabled' || true
@@ -1108,9 +1140,6 @@ in
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Capture' 20% cap || true
     '';
   };
-
-
-  # 3. 系統工具
   environment.systemPackages = with pkgs; [
     pipewire
     qpwgraph
