@@ -549,72 +549,72 @@ in
         # FX · CHORUS · STUDIO
         # SWH Multivoice Chorus
         # =======================================================
-        {
-          name = "libpipewire-module-filter-chain";
-          flags = [ "ifexists" "nofail" ];
-          args = {
-            "node.description" = "FX · CHORUS · STUDIO";
-            "media.name" = "FX_CHORUS_STUDIO";
+        # {
+        #   name = "libpipewire-module-filter-chain";
+        #   flags = [ "ifexists" "nofail" ];
+        #   args = {
+        #     "node.description" = "FX · CHORUS · STUDIO";
+        #     "media.name" = "FX_CHORUS_STUDIO";
 
-            "filter.graph" = {
-              nodes = [
-                {
-                  type = "ladspa";
-                  name = "chorus_l";
-                  plugin = "${ladspaDir}/multivoice_chorus_1201.so";
-                  label = "multivoiceChorus";
+        #     "filter.graph" = {
+        #       nodes = [
+        #         {
+        #           type = "ladspa";
+        #           name = "chorus_l";
+        #           plugin = "${ladspaDir}/multivoice_chorus_1201.so";
+        #           label = "multivoiceChorus";
 
-                 control = {
-                    "Number of voices" = 3.0;
-                    "Delay base (ms)" = 20.0;
-                    "Voice separation (ms)" = 0.5;
-                    "Detune (%)" = 1.0;
-                    "LFO frequency (Hz)" = 5.0;
-                    "Output attenuation (dB)" = -3.0;
-                  };
-                }
+        #          control = {
+        #             "Number of voices" = 3.0;
+        #             "Delay base (ms)" = 20.0;
+        #             "Voice separation (ms)" = 0.5;
+        #             "Detune (%)" = 1.0;
+        #             "LFO frequency (Hz)" = 5.0;
+        #             "Output attenuation (dB)" = -3.0;
+        #           };
+        #         }
 
-                {
-                  type = "ladspa";
-                  name = "chorus_r";
-                  plugin = "multivoice_chorus_1201.so";
-                  label = "multivoiceChorus";
+        #         {
+        #           type = "ladspa";
+        #           name = "chorus_r";
+        #           plugin = "multivoice_chorus_1201.so";
+        #           label = "multivoiceChorus";
 
-                  control = {
-                    "Number of voices" = 3.0;
-                    "Delay base (ms)" = 20.0;
-                    "Voice separation (ms)" = 0.5;
-                    "Detune (%)" = 1.0;
-                    "LFO frequency (Hz)" = 5.0;
-                    "Output attenuation (dB)" = -3.0;
-                  };
-                }
-              ];
+        #           control = {
+        #             "Number of voices" = 3.0;
+        #             "Delay base (ms)" = 20.0;
+        #             "Voice separation (ms)" = 0.5;
+        #             "Detune (%)" = 1.0;
+        #             "LFO frequency (Hz)" = 5.0;
+        #             "Output attenuation (dB)" = -3.0;
+        #           };
+        #         }
+        #       ];
 
-              inputs = [
-                "chorus_l:Input"
-                "chorus_r:Input"
-              ];
+        #       inputs = [
+        #         "chorus_l:Input"
+        #         "chorus_r:Input"
+        #       ];
 
-              outputs = [
-                "chorus_l:Output"
-                "chorus_r:Output"
-              ];
-            };
+        #       outputs = [
+        #         "chorus_l:Output"
+        #         "chorus_r:Output"
+        #       ];
+        #     };
 
-            "audio.position" = [ "FL" "FR" ];
+        #     "audio.position" = [ "FL" "FR" ];
 
-            "capture.props" = {
-              "node.name" = "FX_CHORUS_STUDIO_In";
-              "media.class" = "Audio/Sink";
-            };
+        #     "capture.props" = {
+        #       "node.name" = "FX_CHORUS_STUDIO_In";
+        #       "media.class" = "Audio/Sink";
+        #     };
 
-            "playback.props" = {
-              "node.name" = "FX_CHORUS_STUDIO_Out";
-              "node.passive" = true;
-            };
-          };
-        }
+        #     "playback.props" = {
+        #       "node.name" = "FX_CHORUS_STUDIO_Out";
+        #       "node.passive" = true;
+        #     };
+        #   };
+        # }
 
         # =======================================================
         # FX · FLANGER · STUDIO
