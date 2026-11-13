@@ -1105,7 +1105,7 @@ in
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Headphone' 100% unmute || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Auto-Mute Mode' 'Disabled' || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Input Source' 'Line' || true
-      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Capture' 10% cap || true
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Capture' 20% cap || true
     '';
   };
 
