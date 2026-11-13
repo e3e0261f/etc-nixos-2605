@@ -248,7 +248,13 @@ in
             };
             "audio.position" = [ "FL" "FR" ];
             "capture.props" = { "node.name" = "Studio_Compressor_In"; "media.class" = "Audio/Sink"; };
-            "playback.props" = { "node.name" = "Studio_Compressor_Out"; "node.passive" = true; };
+            # "playback.props" = { "node.name" = "Studio_Compressor_Out"; "node.passive" = true; };
+            "playback.props" = {
+              "node.name" = "Studio_Compressor_Out";
+              "node.description" = "Studio Vocal Compressor (Mic)";
+              "media.class" = "Audio/Source/Virtual"; # ⭐️ 關鍵：將輸出端直接變成虛擬麥克風！
+              "priority.session" = 3000; # ⭐️ 優先級高於物理聲卡 (2000)，讓瀏覽器默認優先連它
+            };
           };
         }
 
