@@ -90,8 +90,17 @@
   security.rtkit.enable = true;
 
   # 藍牙支援
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        Enable = "Source,Sink,Media,Socket";
+        Experimental = true;
+      };
+    };
+  };
+
   services.blueman.enable = true;
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
