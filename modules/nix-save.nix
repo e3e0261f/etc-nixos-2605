@@ -1,6 +1,30 @@
 { pkgs, ... }:
 
 {
+
+  # 1. 限制开机引导菜单最多只显示最近 20 个版本（根据你用的引导器二选一，或两个都写也没冲突）
+  boot.loader.systemd-boot.configurationLimit = 20;
+  # 如果你用的是 GRUB 引导，把上面那行换成下面这行：
+  # boot.loader.grub.configurationLimit = 20;
+
+  # 2. 每周自动保留最新 20 个历史记录，删除多余的并释放空间
+  systemd.services.nix-keep-20-generations = {
+    description = "Keep only the last 20 NixOS generations";
+    serviceConfig.Type = "oneshot";
+    script = ''
+      ${pkgs.nix}/bin/nix-env --delete-generations +20 --profile /nix/var/nix/profiles/system
+      ${pkgs.nix}/bin/nix-collect-garbage
+      /run/current-system/bin/switch-to-configuration boot
+    '';
+  };
+
+  systemd.timers.nix-keep-20-generations = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly"; # 每周自动清理一次（也可以改成 "daily" 每天清理）
+      Persistent = true;     # 如果关机错过了时间，开机后会自动补执行
+    };
+  };
   environment.systemPackages = [
     # --- 1. nix-test: 測試、熱回滾、離線測試、代理指定與 Waybar 刷新 ---
     (pkgs.writeShellScriptBin "nix-test" ''
