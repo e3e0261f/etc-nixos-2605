@@ -256,7 +256,7 @@
     enable32Bit = true;
   };
 
-    # 啟用藍牙並開啟實驗性功能（提升電量顯示與連線穩定度）
+  # 啟用藍牙並開啟實驗性功能（提升電量顯示與連線穩定度）
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -267,27 +267,8 @@
       };
     };
   };
-
-  # 停用 PulseAudio，改用 PipeWire
-  # services.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-
-    # 設定 WirePlumber 允許電腦作為藍牙免持裝置（接收手機通話）
-    wireplumber.extraConfig."10-bluez" = {
-      "monitor.bluez.properties" = {
-        "bluez5.enable-sbc-xq" = true;
-        "bluez5.enable-msbc" = true;
-        "bluez5.enable-hw-volume" = true;
-        # 關鍵設定：同時啟用 hfp_hf 與 hsp_hs 讓手機把電腦當成耳麥
-        "bluez5.roles" = [ "a2dp_sink" "a2dp_source" "hfp_hf" "hsp_hs" ];
-      };
-    };
-  };
+  
 
   # 这是 Linux 下最直观的进程级联网审计防火墙。只要任何未知程序（或其拉起的子进程）尝试连接外网，它会立刻弹窗/记录：进程路径、PID、命令行参数、目标 IP/域名、端口、协议，一眼就能揪出后台偷连行为。
   services.opensnitch.enable = true;
