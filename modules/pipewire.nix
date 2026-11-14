@@ -344,7 +344,16 @@ in
              };
              "audio.position" = [ "FL" "FR" ];
              "capture.props" = { "node.name" = "Studio_Limiter_In"; "media.class" = "Audio/Sink"; };
-             "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
+             # "playback.props" = { "node.name" = "Studio_Limiter_Out"; "node.passive" = true; };
+                "playback.props" = {
+               "node.name" = "Studio_Limiter_Out";
+               "node.description" = "Studio Master Limiter (Final Mic)";
+               # ⭐️ 關鍵 1：註冊為虛擬麥克風，所有軟體與藍牙都能直接讀取！
+               "media.class" = "Audio/Source/Virtual";
+               # ⭐️ 關鍵 2：最高優先級（高於物理聲卡 2000 與壓縮器 3000），成為系統預設麥克風
+               "priority.session" = 4000;
+               "priority.driver" = 4000;
+             };
            };
          }
         
