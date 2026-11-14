@@ -12,7 +12,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./nix-save.nix
-      ./keyd.nix
+      # ./keyd.nix
       ./dae.nix
       ./pipewire.nix
       ./fonts.nix

@@ -75,7 +75,7 @@
     alsa-utils                # ALSA 底層音訊除錯工具 (aplay, amixer)
     pciutils                  # lspci - PCI-E 匯流排與顯卡硬體拓撲查詢
     usbutils                  # lsusb - 物理 USB 總線硬體枚舉與狀態查詢
-    keyd                      # 系統底層鍵盤映射重定義守護進程
+    # keyd                      # 系統底層鍵盤映射重定義守護進程
     lm_sensors                # CPU/主機板溫度與風扇轉速感測器
     power-profiles-daemon     # 系統電源效能模式切換守護進程
     brightnessctl             # 螢幕背光硬體調節工具
