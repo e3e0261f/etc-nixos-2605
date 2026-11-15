@@ -182,7 +182,7 @@
   users.users."rhys" = {
     isNormalUser = true;
     description = "Rhys";
-    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" "input" "podman" "bluetooth" "libvirtd" "kvm" "ydotool"];
+    extraGroups = [ "networkmanager" "wheel" "storage" "video" "render" "audio" "adbusers" "input" "podman" "bluetooth" "libvirtd" "kvm" "ydotool" "uinput"];
     shell = pkgs.fish;
   };
   programs.fish.enable = true;
@@ -270,6 +270,10 @@
   security.rtkit.enable = true;
   
 
+    # 开启 uinput 支持，允许创建虚拟手柄
+  hardware.uinput.enable = true;
+  # 启用 input-remapper 服务（自带图形界面，方便映射左摇杆和开关快捷键）
+  services.input-remapper.enable = true;
   # 这是 Linux 下最直观的进程级联网审计防火墙。只要任何未知程序（或其拉起的子进程）尝试连接外网，它会立刻弹窗/记录：进程路径、PID、命令行参数、目标 IP/域名、端口、协议，一眼就能揪出后台偷连行为。
   services.opensnitch.enable = true;
   # 🚀 开启 ydotool 后台极轻量守护进程（原生处理内核 input 权限）
