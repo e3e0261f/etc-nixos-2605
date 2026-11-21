@@ -101,7 +101,7 @@ in
           googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
           cfdns: 'https://1.1.1.1/dns-query'
-          opennic: 'tcp+udp://95.216.99.249:53'
+          # opennic: 'tcp+udp://95.216.99.249:53'
           opennic: 'tcp+udp://31.3.128.55:53'
         }
         routing {
