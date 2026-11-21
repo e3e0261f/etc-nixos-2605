@@ -1168,6 +1168,9 @@ in
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Auto-Mute Mode' 'Disabled' || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Input Source' 'Line' || true
       ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Capture' 40% cap || true
+      # 設定預設錄音輸入為 Rear Mic，並關閉直接監聽避免回音
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Input Source' 'Rear Mic' || true
+      ${pkgs.alsa-utils}/bin/amixer -c PCH sset 'Rear Mic Boost' 10% || true
     '';
   };
 
