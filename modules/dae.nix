@@ -187,6 +187,9 @@ in
     
           # 【修正】Steam 國內下載/語音直連
           domain(geosite: steam@cn) -> direct
+          # 让原神 / HoYoPlay 的下载与更新服务器走本地直连
+          domain(suffix: hoyoverse.com, suffix: mihoyo.com, suffix: yuanshen.com) -> direct
+          domain(keyword: autopatch) -> direct
 
           # 【修正】Steam 商店、社群、圖片 CDN 強制走代理
           # domain(geosite: steam) -> for1
