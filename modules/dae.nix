@@ -191,6 +191,7 @@ in
           domain(suffix: hoyoverse.com, suffix: mihoyo.com, suffix: yuanshen.com) -> direct
           domain(keyword: autopatch) -> direct
           domain(keyword: deploy.static.akamaitechnologies.com) -> direct
+          domain(suffix: winehq.org) -> for1
 
           # 【修正】Steam 商店、社群、圖片 CDN 強制走代理
           # domain(geosite: steam) -> for1
