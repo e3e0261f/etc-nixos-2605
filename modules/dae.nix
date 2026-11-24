@@ -131,7 +131,13 @@ in
           for1 {
               # policy: min_moving_avg
               policy: random
-              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: '4倍|6倍|剩余|到期|3x|客服|支持AI')
+              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: '4倍|6倍|剩余|到期|客服|支持AI')
+          }
+          
+          DOwn1 {
+              # policy: min_moving_avg
+              policy: random
+              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: '剩余|到期|客服|支持AI')
           }
 
           google_ai {
@@ -159,8 +165,8 @@ in
           # pname(Albion-Online, albion-online) -> direct(must)
           # domain(suffix: albiononline.com) -> direct(must)
           # domain(keyword: "albion.zone") -> direct
-          pname(Albion-Online, AlbionLauncher) -> for1
-          dip(185.163.0.0/16) -> for1
+          pname(Albion-Online, AlbionLauncher) -> DOwn1
+          dip(185.163.0.0/16) -> DOwn1
           # pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
