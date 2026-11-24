@@ -98,11 +98,11 @@ in
       #
       dns {
         upstream {
-          googledns: 'tcp+udp://8.8.8.8:53'
+          # googledns: 'tcp+udp://8.8.8.8:53'
           alidns: 'udp://223.5.5.5:53'
-          cfdns: 'https://1.1.1.1/dns-query'
-          # opennic: 'tcp+udp://95.216.99.249:53'
-          opennic: 'tcp+udp://31.3.128.55:53'
+          # cfdns: 'https://1.1.1.1/dns-query'
+          opennic: 'tcp+udp://95.216.99.249:53'
+          # opennic: 'tcp+udp://31.3.128.55:53'
         }
         routing {
           request {
@@ -110,18 +110,13 @@ in
             qtype(aaaa) -> reject
 
             qname(geosite:cn) -> alidns
-            # !qname(geosite:cn) && qname(geosite:google) -> opennic
-            # fallback: alidns
             fallback: opennic
           }
-          # response {
-          #   # 信任我們啟用的安全上游
-          #   upstream(googledns) -> accept
-          #   upstream(alidns) -> accept
-          #   upstream(opennic) -> accept
-          #   ip(geoip:private) && !qname(geosite:cn) -> opennic
-          #   fallback: accept
-          # }
+          response {
+            upstream(opennic) -> accept
+            ip(geoip:private) && !qname(geosite:cn) -> opennic
+            fallback: accept
+          }
         }
       }
       # =======================================================
@@ -134,11 +129,11 @@ in
               filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: '4倍|6倍|剩余|到期|客服|支持AI')
           }
           
-          DOwn1 {
+          dl {
               # min_moving_avg 会自动测速并锁定延迟最低、速度最快的节点
               policy: min_moving_avg
               # 核心：排除掉拥堵的“直連”家宽节点！放行中转、香港、新加坡、美国等大带宽节点
-              filter: subtag(my_sub) && !name(regex: '直連|直连|剩余|到期|客服')
+              filter: subtag(my_sub) && !name(regex: '剩余|到期|客服')
           }
           google_ai {
               policy: min_moving_avg
@@ -165,8 +160,9 @@ in
           # pname(Albion-Online, albion-online) -> direct(must)
           # domain(suffix: albiononline.com) -> direct(must)
           # domain(keyword: "albion.zone") -> direct
-          pname(Albion-Online, AlbionLauncher) -> DOwn1
-          dip(185.163.0.0/16) -> DOwn1
+          pname(Albion-Online, albion-online, AlbionLauncher) -> dl
+          domain(suffix: albiononline.com) -> dl
+          dip(185.163.0.0/16) -> dl
           # pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
