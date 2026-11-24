@@ -135,11 +135,11 @@ in
           }
           
           DOwn1 {
-              # policy: min_moving_avg
-              policy: random
-              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: '剩余|到期|客服|支持AI')
+              # min_moving_avg 会自动测速并锁定延迟最低、速度最快的节点
+              policy: min_moving_avg
+              # 核心：排除掉拥堵的“直連”家宽节点！放行中转、香港、新加坡、美国等大带宽节点
+              filter: subtag(my_sub) && !name(regex: '直連|直连|剩余|到期|客服')
           }
-
           google_ai {
               policy: min_moving_avg
               filter: subtag(my_sub)  && name(regex: 'I') && !name(regex: 'HK|广州|剩余|到期|3x|客服|支持AI')
