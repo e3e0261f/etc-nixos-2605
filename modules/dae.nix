@@ -155,10 +155,9 @@ in
           domain(keyword: hinet.net) -> direct
           
           # pname(flatpak) -> for1
-          domain(keyword: "albion") -> for1
-          # pname(Albion-Online, albion-online) -> direct(must)
-          # domain(suffix: albiononline.com) -> direct(must)
-          # domain(keyword: "albion.zone") -> direct
+          pname(Albion-Online, albion-online) -> direct(must)
+          domain(suffix: albiononline.com) -> direct(must)
+          domain(keyword: "albion.zone") -> direct
           # pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
