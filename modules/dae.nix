@@ -109,10 +109,10 @@ in
             qtype(https) -> reject
             qtype(aaaa) -> reject
 
-            # qname(geosite:cn) -> alidns
-            !qname(geosite:cn) && qname(geosite:google) -> opennic
-            fallback: alidns
-            # fallback: opennic
+            qname(geosite:cn) -> alidns
+            # !qname(geosite:cn) && qname(geosite:google) -> opennic
+            # fallback: alidns
+            fallback: opennic
           }
           # response {
           #   # 信任我們啟用的安全上游
@@ -158,6 +158,8 @@ in
           pname(Albion-Online, albion-online) -> direct(must)
           domain(suffix: albiononline.com) -> direct(must)
           domain(keyword: "albion.zone") -> direct
+          pname(Albion-Online, AlbionLauncher) -> for1
+          dip(185.163.0.0/16) -> for1
           # pname(cloudflared) -> direct(must)
           domain(keyword: "argotunnel.com") -> direct
           domain(keyword: "cloudflare.com") -> direct
