@@ -129,8 +129,9 @@ in
       # =======================================================
       group { # 在这里替换你想要的策略，如 random, min, fixed(0), min_avg10
           for1 {
-              policy: min_moving_avg
-              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: 'HK|广州|4倍|6倍|剩余|到期|3x|客服|支持AI')
+              # policy: min_moving_avg
+              policy: random
+              filter: subtag(my_sub)  && name(regex: 'REALITY') && !name(regex: '4倍|6倍|剩余|到期|3x|客服|支持AI')
           }
 
           google_ai {
