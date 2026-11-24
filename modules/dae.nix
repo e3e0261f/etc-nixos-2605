@@ -98,23 +98,25 @@ in
       #
       dns {
         upstream {
-          # googledns: 'tcp+udp://8.8.8.8:53'
           ali: 'udp://223.5.5.5:53'
-          # cfdns: 'https://1.1.1.1/dns-query'
           oc: 'tcp+udp://95.216.99.249:53'
-          # opennic: 'tcp+udp://31.3.128.55:53'
         }
         routing {
           request {
             qtype(https) -> reject
             qtype(aaaa) -> reject
 
-            qname(geosite:cn) -> oc
-            fallback: ali
+            # 1. 国内域名走阿里 DNS（国内网站全速直连，不再绕去芬兰）
+            qname(geosite:cn) -> ali
+
+            # 2. 专门让 Albion 游戏与下载域名也走阿里 DNS（拿亚洲高速 CDN，下载不卡顿）
+            qname(suffix: albiononline.com, keyword: albion) -> ali
+
+            # 3. 其余所有海外域名（包括 YouTube、Google、Discord 等）继续用你喜欢的开源 OpenNIC！
+            fallback: oc
           }
           response {
-            upstream(oc) -> accept
-            ip(geoip:private) && !qname(geosite:cn) -> oc
+            # 既然国内和 Albion 走 ali，国外全走无污染的 oc，这里直接全部放行即可，响应更快
             fallback: accept
           }
         }
