@@ -110,7 +110,7 @@ in
             qname(geosite:cn) -> ali
 
             # 2. 专门让 Albion 游戏与下载域名也走阿里 DNS（拿亚洲高速 CDN，下载不卡顿）
-            qname(suffix: albiononline.com, keyword: albion) -> ali
+            # qname(suffix: albiononline.com, keyword: albion) -> ali
 
             # 3. 其余所有海外域名（包括 YouTube、Google、Discord 等）继续用你喜欢的开源 OpenNIC！
             fallback: oc
