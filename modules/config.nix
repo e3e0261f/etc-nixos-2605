@@ -268,6 +268,33 @@
     };
   };
   security.rtkit.enable = true;
+
+    # 1. 為 librime 加上 Lua 支援，否則白霜詞庫的 Lua 腳本會全部報錯
+  nixpkgs.overlays = [
+    (final: prev: {
+      librime = (prev.librime.override {
+        plugins = [ prev.librime-lua ];
+      }).overrideAttrs (old: {
+        buildInputs = (old.buildInputs or [ ]) ++ [ prev.luajit ];
+      });
+    })
+  ];
+
+  # 3. 從底層徹底根治 Caps Lock 誤觸死鎖（二選一）
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings.main = {
+        # 【推薦方案 A】點按是 Esc，長按是 Ctrl（從物理層消滅 Caps Lock 死鎖）
+        capslock = "overload(control, esc)";
+
+        # 【方案 B】如果你想用 Caps Lock 像 macOS 一樣安全切換中英文：
+        # 把上面那行註解掉，改用下面這行，並取消 fcitx5/config 裡 1=F13 的註解
+        # capslock = "f13";
+      };
+    };
+  };
   
 
     # 开启 uinput 支持，允许创建虚拟手柄
